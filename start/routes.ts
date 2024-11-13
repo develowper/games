@@ -7,10 +7,10 @@
 |
 */
 
-import webRoutes from './routes/web.ts';
-import apiRoutes from './routes/api.ts';
-import adminWebRoutes from './routes/admin_web.ts';
-import adminApiRoutes from './routes/admin_api.ts';
+import webRoutes from './routes/web.js';
+import apiRoutes from './routes/api.js';
+import adminWebRoutes from './routes/admin_web.js';
+import adminApiRoutes from './routes/admin_api.js';
 
 webRoutes()
 apiRoutes()
