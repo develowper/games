@@ -24,7 +24,7 @@ export default function () {
     router.get('me', [AuthController, 'me']).as('auth.me')
 
     router.group(() => {
-      router.get('', [PanelController, 'view']).as('')
+      router.get('', [PanelController, 'index']).as('index')
     }).prefix('panel').as('panel')
 
 

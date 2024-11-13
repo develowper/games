@@ -4,7 +4,7 @@ import {HttpContext} from "@adonisjs/core/http";
 
 export default class PanelController {
 
-  view({}: HttpContext) {
+  index({}: HttpContext) {
 
   }
 }
