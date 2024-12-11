@@ -21,13 +21,14 @@ const authConfig = defineConfig({
     admin_web: sessionGuard({
       useRememberMeTokens: false,
       provider: sessionUserProvider({
-        model: () => import('#models/user')
+        model: () => import('#models/admin')
       }),
     }),
     admin_api: tokensGuard({
       provider: tokensUserProvider({
         tokens: 'accessTokens',
-        model: () => import('#models/user')
+        model: () => import('#models/admin')
+
       }),
     }),
   },

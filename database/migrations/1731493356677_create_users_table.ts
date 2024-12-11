@@ -1,17 +1,41 @@
 import { BaseSchema } from '@adonisjs/lucid/schema'
+import Helper from '#services/helper_service'
 
 export default class extends BaseSchema {
   protected tableName = 'users'
 
   async up() {
     this.schema.createTable(this.tableName, (table) => {
-      table.increments('id').notNullable()
-      table.string('full_name').nullable()
-      table.string('email', 254).notNullable().unique()
+      table.bigIncrements('id').notNullable()
+      table.string('telegram_id', 30).nullable()
+      table.string('phone', 30).nullable()
+      table.string('full_name', 100).nullable()
+      table.string('username', 30).notNullable().unique().index()
+      table.enum('role', Helper.USER_ROLES).defaultTo(Helper.USER_ROLES[0])
+      table.boolean('is_active').defaultTo(true)
       table.string('password').notNullable()
-
-      table.timestamp('created_at').notNullable()
-      table.timestamp('updated_at').nullable()
+      table.json('settings').defaultTo(null)
+      // table.timestamp('created_at').notNullable()
+      // table.timestamp('updated_at').nullable()
+      table.integer('play_count').unsigned().defaultTo(0)
+      table.integer('win_count').unsigned().defaultTo(0)
+      table.integer('row_win_count').unsigned().defaultTo(0)
+      table.bigInteger('prize').unsigned().defaultTo(0)
+      table.bigInteger('score').unsigned().defaultTo(0)
+      table.bigInteger('rank').unsigned().defaultTo(0)
+      table.integer('today_prize').unsigned().defaultTo(0)
+      for (let i = 0; i < Helper.ROOMS.length; i++) {
+        table.bigInteger(`card_${Helper.ROOMS[i].cardPrice}_count`).unsigned().defaultTo(0)
+        table.integer(`today_card_${Helper.ROOMS[i].cardPrice}_count`).unsigned().defaultTo(0)
+      }
+      table
+        .integer('agency_id')
+        .notNullable()
+        .unsigned()
+        .references('id')
+        .inTable('agencies')
+        .onDelete('CASCADE')
+      table.timestamps()
     })
   }
 

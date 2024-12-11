@@ -59,13 +59,14 @@
       },
     }
   </script>
-
+  @routes()
   @vite(['inertia/app/app.ts', `inertia/pages/${page.component}.vue`])
   @inertiaHead()
 </head>
 
 <body class="min-h-screen w-screen font-sans">
   @inertia()
+{{--  {{ __('greeting') }}--}}
 </body>
 
 </html>

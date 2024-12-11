@@ -1,5 +1,7 @@
 import { defineConfig } from '@adonisjs/inertia'
 import type { InferSharedProps } from '@adonisjs/inertia/types'
+import Helper from "#services/helper_service";
+
 
 const inertiaConfig = defineConfig({
   /**
@@ -11,7 +13,16 @@ const inertiaConfig = defineConfig({
    * Data that should be shared with all rendered pages
    */
   sharedData: {
-    errors: (ctx) => ctx.session?.flashMessages.get('errors'),
+    // user: (ctx) => ctx.auth?.user,
+    // notification: (ctx) => ctx.session.flashMessages.get('notification'),
+    errors: (ctx) => ctx.session?.flashMessages.get('errors') ?? {},
+    'langFile': Helper.getLangFile(),
+    __: (ctx) => {
+      return {
+        ...ctx.i18n,
+        locale: ctx.i18n.locale,
+      }
+    },
   },
 
   /**
@@ -26,5 +37,6 @@ const inertiaConfig = defineConfig({
 export default inertiaConfig
 
 declare module '@adonisjs/inertia/types' {
-  export interface SharedProps extends InferSharedProps<typeof inertiaConfig> {}
+  export interface SharedProps extends InferSharedProps<typeof inertiaConfig> {
+  }
 }
