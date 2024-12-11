@@ -188,7 +188,15 @@ export default class Daberna extends BaseModel {
     const af = await AgencyFinancial.find(1)
     af.balance += commissionPrice
     af.save()
-    Transaction.add('commission', 'daberna', game.id, 'agency', af.agencyId, commissionPrice)
+    Transaction.add(
+      'commission',
+      'daberna',
+      game.id,
+      'agency',
+      af.agencyId,
+      commissionPrice,
+      af.agencyId
+    )
 
     rowWinners.forEach(async (w) => {
       const user = await User.query().preload('financial').where('id', w.user_id).first()
@@ -199,7 +207,15 @@ export default class Daberna extends BaseModel {
       financial.balance += rowWinnerPrize
       user.save()
       financial.save()
-      Transaction.add('row_win', 'daberna', game.id, 'user', user.id, rowWinnerPrize)
+      Transaction.add(
+        'row_win',
+        'daberna',
+        game.id,
+        'user',
+        user.id,
+        rowWinnerPrize,
+        user?.agencyId
+      )
     })
     winners.forEach(async (w) => {
       const user = await User.query().preload('financial').where('id', w.user_id).first()
@@ -211,7 +227,7 @@ export default class Daberna extends BaseModel {
       financial.balance += winnerPrize
       user.save()
       financial.save()
-      Transaction.add('win', 'daberna', game.id, 'user', user.id, winnerPrize)
+      Transaction.add('win', 'daberna', game.id, 'user', user.id, winnerPrize, user?.agencyId)
     })
 
     // room.clearCount++

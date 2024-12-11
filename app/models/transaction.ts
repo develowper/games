@@ -47,9 +47,9 @@ export default class Transaction extends BaseModel {
     toType,
     toId,
     amount,
+    agencyId,
     gateway = null,
-    title = null,
-    agencyId: 1
+    title = null
   ): Transaction {
     return await Transaction.create({
       agencyId: agencyId,
