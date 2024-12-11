@@ -61,7 +61,7 @@ export default class SocketIo {
 
       emitter.on('room-update', (data: any) => {
         socket.to(`room-${data.type}`).emit(`room-update`, data)
-        // logger.info(socket.id)
+        logger.info(data)
       })
 
       emitter.on('game-start', (data: any) => {
