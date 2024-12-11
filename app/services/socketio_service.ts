@@ -44,16 +44,27 @@ export default class SocketIo {
 
       if (roomType) {
         socket.join(`room-${roomType}`)
+        const room = await Room.findBy('type', roomType)
+        if (room)
+          emitter.emit('room-update', {
+            type: roomType,
+            cmnd: 'card-added',
+            players: room.players,
+            start_with_me: room.startWithMe,
+            seconds_remaining: room.playerCount > 1 ? room.secondsRemaining : room.maxSeconds,
+            player_count: room.playerCount,
+            card_count: room.cardCount,
+          })
         socket.emit('request-room-accepted', roomType)
 
         // RoomController.startGame(await Room.query().where('id', 1))
       }
 
-      socket.on('request-room', async (data) => {
-        // logger.info(data)
-        socket.join(`room-${data.type}`)
-        socket.emit('request-room-accepted', data)
-      })
+      // socket.on('request-room', async (data) => {
+      //   // logger.info(data)
+      //   socket.join(`room-${data.type}`)
+      //   socket.emit('request-room-accepted', data)
+      // })
       if (this.user)
         emitter.on(`user-${this.user.id}-info`, (data: any) => {
           socket.emit(`user-${this.user.id}-info`, data)
@@ -61,7 +72,7 @@ export default class SocketIo {
 
       emitter.on('room-update', (data: any) => {
         socket.to(`room-${data.type}`).emit(`room-update`, data)
-        logger.info(data)
+        // logger.info(data)
       })
 
       emitter.on('game-start', (data: any) => {

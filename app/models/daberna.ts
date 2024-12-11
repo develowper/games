@@ -51,7 +51,6 @@ export default class Daberna extends BaseModel {
     const info = Helper.DABERNA
     const numbers: number[] = Helper.shuffle(Helper.range(info.min, info.max))
 
-
     const card: number[][] = new Array(info.row).fill(0).map(() => new Array(info.col).fill(0))
 
     for (let i = 0; i < card.length; i++) {
@@ -64,7 +63,10 @@ export default class Daberna extends BaseModel {
         // console.log(`**********shuffledFillIndex ${k}**${index}********`)
         // console.log(index)
         for (let z = 0; z < numbers.length; z++) {
-          if (numbers[z] >= (10 * (index)) && numbers[z] < (10 * (index + 1)) || (index == info.col - 1 && numbers[z] == info.col * 10)) {
+          if (
+            (numbers[z] >= 10 * index && numbers[z] < 10 * (index + 1)) ||
+            (index == info.col - 1 && numbers[z] == info.col * 10)
+          ) {
             // console.log(`${numbers[z]} >= ${(10 * (index + 1))} & ${numbers[z]} < ${(10 * (index + 2))}`)
             picked = numbers.splice(z, 1)[0]
             card[i][index as number] = picked as number
@@ -76,7 +78,6 @@ export default class Daberna extends BaseModel {
       }
     }
     return card
-
   }
 
   public static async makeGame(room: Room) {
