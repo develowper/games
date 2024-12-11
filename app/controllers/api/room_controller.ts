@@ -133,7 +133,7 @@ export default class RoomController {
     const mySocket = await app.container.make('MySocket')
 
     rooms.forEach(async (room) => {
-      console.log(`players ${room.playerCount}`, `time ${room.secondsRemaining}`)
+      // console.log(`players ${room.playerCount}`, `time ${room.secondsRemaining}`)
       if (room.playerCount > 1 && room.secondsRemaining == room.maxSeconds) {
         //create game and empty room
         const game = await Daberna.makeGame(room)
