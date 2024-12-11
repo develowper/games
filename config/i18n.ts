@@ -6,7 +6,7 @@ const i18nConfig = defineConfig({
   defaultLocale: env.get('LOCALE'),
   formatter: formatters.icu(),
   fallbackLocales: {
-    fa: 'fa' // show Spanish content when a user speaks Catalin
+    fa: 'fa',
   },
   loaders: [
     /**
@@ -19,7 +19,7 @@ const i18nConfig = defineConfig({
      *   - "resources/lang/it"
      */
     loaders.fs({
-      location: app.languageFilesPath()
+      location: app.languageFilesPath(),
     }),
   ],
 })

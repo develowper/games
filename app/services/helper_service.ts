@@ -74,10 +74,10 @@ class Helper {
     string,
     typeof UserFinancial | typeof AdminFinancial | typeof AgencyFinancial
   > = {
-      user: UserFinancial,
-      admin: AdminFinancial,
-      agency: AgencyFinancial,
-    }
+    user: UserFinancial,
+    admin: AdminFinancial,
+    agency: AgencyFinancial,
+  }
   public static ROOMS = [
     {
       type: 'd5000',
@@ -214,12 +214,47 @@ class Helper {
   static createSettings() {
     Setting.createMany([
       { key: 'min_charge', value: Helper.MIN_CHARGE },
-      { key: 'card_to_card', value: JSON.stringify([{ active: 1, card: '1234123412341234', name: 'test' }, { active: 0, card: '1111222233334444', name: 'test2' },]) },
-      { key: 'winwheel', value: JSON.stringify({ active: 1, labels: [5000, 0, 0, 10000, 0, 0, 5000, 0, 0, 5000, 0, 0, 20000, 0] }) },
-      { key: 'charge_title', value: Helper.t('validate.min', { item: Helper.t('charge'), value: `${Helper.asPrice(`${Helper.MIN_CHARGE}`)} ${Helper.t('currency')}` }) },
-      { key: 'card_to_card_title', value: Helper.t('validate.min', { item: Helper.t('charge'), value: `${Helper.asPrice(`${Helper.MIN_CHARGE}`)} ${Helper.t('currency')}` }) },
-      { key: 'withdraw_title', value: Helper.t('withdraw_title', { item1: Helper.asPrice(`${Helper.MIN_WITHDRAW}`), item2: `${Helper.WITHDRAW_HOUR_LIMIT} ${Helper.t('hour')}` }) },
-      { key: 'support_links', value: JSON.stringify([{ name: Helper.t('telegram'), color: 0x0000ff, url: `${Helper.SUPPORT.telegram}`, }]) },
+      {
+        key: 'card_to_card',
+        value: JSON.stringify([
+          { active: 1, card: '1234123412341234', name: 'test' },
+          { active: 0, card: '1111222233334444', name: 'test2' },
+        ]),
+      },
+      {
+        key: 'winwheel',
+        value: JSON.stringify({
+          active: 1,
+          labels: [5000, 0, 0, 10000, 0, 0, 5000, 0, 0, 5000, 0, 0, 20000, 0],
+        }),
+      },
+      {
+        key: 'charge_title',
+        value: Helper.t('validate.min', {
+          item: Helper.t('charge'),
+          value: `${Helper.asPrice(`${Helper.MIN_CHARGE}`)} ${Helper.t('currency')}`,
+        }),
+      },
+      {
+        key: 'card_to_card_title',
+        value: Helper.t('validate.min', {
+          item: Helper.t('charge'),
+          value: `${Helper.asPrice(`${Helper.MIN_CHARGE}`)} ${Helper.t('currency')}`,
+        }),
+      },
+      {
+        key: 'withdraw_title',
+        value: Helper.t('withdraw_title', {
+          item1: Helper.asPrice(`${Helper.MIN_WITHDRAW}`),
+          item2: `${Helper.WITHDRAW_HOUR_LIMIT} ${Helper.t('hour')}`,
+        }),
+      },
+      {
+        key: 'support_links',
+        value: JSON.stringify([
+          { name: Helper.t('telegram'), color: 0x0000ff, url: `${Helper.SUPPORT.telegram}` },
+        ]),
+      },
       { key: 'policy', value: Helper.t('policy_content') },
     ])
   }
@@ -292,7 +327,7 @@ class Helper {
     while (currentIndex != 0) {
       randomIndex = Math.floor(Math.random() * currentIndex)
       currentIndex--
-        ;[array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]]
+      ;[array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]]
     }
 
     return array
@@ -302,10 +337,9 @@ class Helper {
     return Array.from({ length: end + 1 - start }, (v, k) => k + start)
   }
   static toShamsi(day, time = false) {
-    var t = new Date().getTime();
-    if (!day) return '';
-    else
-      var today = new Date(day);
+    var t = new Date().getTime()
+    if (!day) return ''
+    else var today = new Date(day)
     let options: any = {
       hour12: false,
       year: 'numeric',
@@ -314,7 +348,7 @@ class Helper {
       timeZone: 'Asia/Tehran',
 
       calendar: 'persian',
-    };
+    }
     if (time)
       options = {
         ...options,
@@ -322,15 +356,22 @@ class Helper {
         minute: '2-digit',
       }
 
-    return today.toLocaleDateString('fa-IR', options);
+    return today.toLocaleDateString('fa-IR', options)
   }
   static f2e(num: any) {
-
     const persianToLatinMap: any = {
-      '۰': '0', '۱': '1', '۲': '2', '۳': '3', '۴': '4', '۵': '5', '۶': '6', '۷': '7', '۸': '8', '۹': '9'
+      '۰': '0',
+      '۱': '1',
+      '۲': '2',
+      '۳': '3',
+      '۴': '4',
+      '۵': '5',
+      '۶': '6',
+      '۷': '7',
+      '۸': '8',
+      '۹': '9',
     }
-    return `${num}`.replace(/[۰-۹]/g, char => persianToLatinMap[char])
-
+    return `${num}`.replace(/[۰-۹]/g, (char) => persianToLatinMap[char])
   }
 }
 export default Helper
