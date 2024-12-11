@@ -1,7 +1,12 @@
 // import type { HttpContext } from '@adonisjs/core/http'
 
 import type { HttpContext } from '@adonisjs/core/http'
-import { cardToCardValidator, chargeValidator, winWheelValidator, withdrawValidator } from '#validators/transaction'
+import {
+  cardToCardValidator,
+  chargeValidator,
+  winWheelValidator,
+  withdrawValidator,
+} from '#validators/transaction'
 import Transaction from '#models/transaction'
 import Helper from '#services/helper_service'
 import { DateTime } from 'luxon'
@@ -15,9 +20,6 @@ import AgencyFinancial from '../../models/agency_financial.js'
 export default class TransactionsController {
   //
   async create({ request, response, auth, i18n }: HttpContext) {
-
-
-
     const amount = request.input('amount')
     const type = request.input('type')
     const fromType = request.input('from_type')
@@ -33,13 +35,24 @@ export default class TransactionsController {
       case 'charge':
         await request.validateUsing(chargeValidator)
         const gapChargeMinutes = Helper.CARDTOCARD_MINUTE_LIMIT
-        const lastChargeTransaction = await Transaction.query().where('type', type).where('created_at', '>', DateTime.now().minus({ minutes: gapChargeMinutes }).toJSDate()).first()
+        const lastChargeTransaction = await Transaction.query()
+          .where('type', type)
+          .where('created_at', '>', DateTime.now().minus({ minutes: gapChargeMinutes }).toJSDate())
+          .first()
 
         if (lastChargeTransaction) {
-          return response.status(Helper.ERROR_STATUS).json({ status: 'danger', message: Helper.t('gap_requests_is_*', { item: `${gapChargeMinutes} ${Helper.t('minute')}` }) })
+          return response.status(Helper.ERROR_STATUS).json({
+            status: 'danger',
+            message: Helper.t('gap_requests_is_*', {
+              item: `${gapChargeMinutes} ${Helper.t('minute')}`,
+            }),
+          })
         }
 
-        desc = Helper.t('wallet_charge_*_by_*', { item1: `${Helper.asPrice(`${amount}`)} ${Helper.t('currency')}`, item2: `${Helper.t(fromType)} (${fromId})` })
+        desc = Helper.t('wallet_charge_*_by_*', {
+          item1: `${Helper.asPrice(`${amount}`)} ${Helper.t('currency')}`,
+          item2: `${Helper.t(fromType)} (${fromId})`,
+        })
         const res = await Transaction.makePayUrl(
           orderId,
           amount,
@@ -49,7 +62,9 @@ export default class TransactionsController {
           user?.id
         )
         if (res.status !== 'success') {
-          return response.status(Helper.ERROR_STATUS).json({ status: 'danger', message: res.message })
+          return response
+            .status(Helper.ERROR_STATUS)
+            .json({ status: 'danger', message: res.message })
         }
         await Transaction.create({
           agencyId: user?.agencyId,
@@ -76,11 +91,23 @@ export default class TransactionsController {
         await request.validateUsing(cardToCardValidator)
         const gapMinutes = Helper.CARDTOCARD_MINUTE_LIMIT
 
-        desc = Helper.t('cardtocard_*_from_*_to_*', { item1: `${Helper.asPrice(amount)} ${Helper.t('currency')}`, item2: `${fromCard}`, item3: `${toCard}` })
-        const lastTransaction = await Transaction.query().where('type', type).where('created_at', '>', DateTime.now().minus({ minutes: gapMinutes }).toJSDate()).first()
+        desc = Helper.t('cardtocard_*_from_*_to_*', {
+          item1: `${Helper.asPrice(amount)} ${Helper.t('currency')}`,
+          item2: `${fromCard}`,
+          item3: `${toCard}`,
+        })
+        const lastTransaction = await Transaction.query()
+          .where('type', type)
+          .where('created_at', '>', DateTime.now().minus({ minutes: gapMinutes }).toJSDate())
+          .first()
 
         if (lastTransaction) {
-          return response.status(Helper.ERROR_STATUS).json({ status: 'danger', message: Helper.t('gap_requests_is_*', { item: `${gapMinutes} ${Helper.t('minute')}` }) })
+          return response.status(Helper.ERROR_STATUS).json({
+            status: 'danger',
+            message: Helper.t('gap_requests_is_*', {
+              item: `${gapMinutes} ${Helper.t('minute')}`,
+            }),
+          })
         }
 
         await Transaction.create({
@@ -95,9 +122,12 @@ export default class TransactionsController {
           amount: amount,
           payId: `${orderId}`,
           appVersion: appVersion,
-          info: JSON.stringify({ from_card: fromCard, to_card: toCard })
+          info: JSON.stringify({ from_card: fromCard, to_card: toCard }),
         })
-        return response.json({ status: 'success', message: Helper.t('request_registered_successfully') })
+        return response.json({
+          status: 'success',
+          message: Helper.t('request_registered_successfully'),
+        })
 
         break
       case 'winwheel':
@@ -106,22 +136,34 @@ export default class TransactionsController {
         const winWheel = JSON.parse((await Setting.query().where('key', 'winwheel').first())?.value)
 
         if (!winWheel || winWheel.active != 1) {
-          return response.status(Helper.ERROR_STATUS).json({ status: 'danger', message: Helper.t('*_is_*', { item1: Helper.t('winwheel'), item2: Helper.t('inactive') }) })
+          return response.status(Helper.ERROR_STATUS).json({
+            status: 'danger',
+            message: Helper.t('*_is_*', {
+              item1: Helper.t('winwheel'),
+              item2: Helper.t('inactive'),
+            }),
+          })
         }
-        const lastWinWheel = await Transaction.query().where('type', type).where('created_at', '>', now.minus({ hours: winWheelGapHours }).toJSDate()).first()
+        const lastWinWheel = await Transaction.query()
+          .where('type', type)
+          .where('created_at', '>', now.minus({ hours: winWheelGapHours }).toJSDate())
+          .first()
 
         if (lastWinWheel) {
-
-          const diffInMinutes = Math.round(lastWinWheel.createdAt.plus({ hours: winWheelGapHours }).diff(now, 'minutes').minutes)
+          const diffInMinutes = Math.round(
+            lastWinWheel.createdAt.plus({ hours: winWheelGapHours }).diff(now, 'minutes').minutes
+          )
           const hour = Math.floor(diffInMinutes / 60)
           const min = Math.floor(diffInMinutes % 60)
-          return response.status(Helper.ERROR_STATUS).json({ status: 'danger', message: Helper.t('try_*_*_later', { item1: `${hour}`, item2: `${min}` }) })
+          return response.status(Helper.ERROR_STATUS).json({
+            status: 'danger',
+            message: Helper.t('try_*_*_later', { item1: `${hour}`, item2: `${min}` }),
+          })
         }
-        const randomIndex = Math.floor(Math.random() * winWheel.labels.length);
+        const randomIndex = Math.floor(Math.random() * winWheel.labels.length)
         const winLabel = parseInt(`${winWheel.labels[randomIndex]}`)
 
         desc = Helper.t('winwheel_prize_*', { item: Helper.asPrice(`${winLabel}`) })
-
 
         const transaction = await Transaction.create({
           agencyId: user?.agencyId,
@@ -136,7 +178,7 @@ export default class TransactionsController {
           payId: `${orderId}`,
           appVersion: appVersion,
           info: null,
-          payedAt: now
+          payedAt: now,
         })
         let msg = Helper.t('no_prize_unfortunately')
         if (winLabel > 0) {
@@ -157,32 +199,63 @@ export default class TransactionsController {
           await agencyFinancial.save()
           msg = Helper.t('wallet_added_*', { item: `${winLabel}` })
         }
-        return response.json({ status: 'success', 'message': msg, prize: winLabel, index: randomIndex })
+        return response.json({
+          status: 'success',
+          message: msg,
+          prize: winLabel,
+          index: randomIndex,
+        })
         break
       case 'withdraw':
         await request.validateUsing(withdrawValidator)
 
         const withdrawGapHours = Helper.WITHDRAW_HOUR_LIMIT
-        const lastWthdraw = await Transaction.query().where('type', type).where('created_at', '>', now.minus({ hours: withdrawGapHours }).toJSDate()).first()
+        const lastWthdraw = await Transaction.query()
+          .where('type', type)
+          .where('created_at', '>', now.minus({ hours: withdrawGapHours }).toJSDate())
+          .first()
 
         if (lastWthdraw) {
-
-          const diffInMinutes = Math.round(lastWthdraw.createdAt.plus({ hours: withdrawGapHours }).diff(now, 'minutes').minutes)
+          const diffInMinutes = Math.round(
+            lastWthdraw.createdAt.plus({ hours: withdrawGapHours }).diff(now, 'minutes').minutes
+          )
           const hour = Math.floor(diffInMinutes / 60)
           const min = Math.floor(diffInMinutes % 60)
-          return response.status(Helper.ERROR_STATUS).json({ status: 'danger', message: Helper.t('try_*_*_later', { item1: `${hour}`, item2: `${min}` }) })
+          return response.status(Helper.ERROR_STATUS).json({
+            status: 'danger',
+            message: Helper.t('try_*_*_later', { item1: `${hour}`, item2: `${min}` }),
+          })
         }
         if (!user.fullName) {
-          return response.status(Helper.ERROR_STATUS).json({ status: 'danger', message: Helper.t('add_from_profile_*', { item: Helper.t('name') }) })
+          return response.status(Helper.ERROR_STATUS).json({
+            status: 'danger',
+            message: Helper.t('add_from_profile_*', { item: Helper.t('name') }),
+          })
         }
         const financial = await UserFinancial.firstOrCreate({
           userId: user?.id,
         })
 
         if (!financial.card) {
-          return response.status(Helper.ERROR_STATUS).json({ status: 'danger', message: Helper.t('add_from_profile_*', { item: Helper.t('card') }) })
+          return response.status(Helper.ERROR_STATUS).json({
+            status: 'danger',
+            message: Helper.t('add_from_profile_*', { item: Helper.t('card') }),
+          })
         }
-        desc = Helper.t('withdraw_request_*_*_to_*', { item1: Helper.asPrice(`${amount}`), item2: `${Helper.t('user')} ${user?.fullName} (${user?.id})`, item3: financial.card })
+        if (financial.balance < amount) {
+          return response.status(Helper.ERROR_STATUS).json({
+            status: 'danger',
+            message: Helper.t('messages.validate.max', {
+              item: Helper.t('amount'),
+              value: `${Helper.asPrice(`${amount}`)} ${Helper.t('currency')}`,
+            }),
+          })
+        }
+        desc = Helper.t('withdraw_request_*_*_to_*', {
+          item1: Helper.asPrice(`${amount}`),
+          item2: `${Helper.t('user')} ${user?.fullName} (${user?.id})`,
+          item3: financial.card,
+        })
 
         await Transaction.create({
           agencyId: user?.agencyId,
@@ -198,11 +271,11 @@ export default class TransactionsController {
           appVersion: appVersion,
           info: JSON.stringify({ to_card: financial.card, to_name: user?.fullName }),
         })
-        return response.json({ status: 'success', 'message': Helper.t('request_registered_successfully') })
-
-
+        return response.json({
+          status: 'success',
+          message: Helper.t('request_registered_successfully'),
+        })
     }
-
 
     // const transaction = await Transaction.query()
     //   .where('for_type', 'agency')
@@ -223,7 +296,6 @@ export default class TransactionsController {
     //     })
     //     .save()
     // } else {
-
   }
 
   async done({ request, response, inertia }: HttpContext) {
@@ -236,8 +308,6 @@ export default class TransactionsController {
     const appVersion = request.input('app_version')
     const info = request.input('info')
     const orderId = request.input('order_id') ?? `${userId}\$${sku}\$${DateTime.now().toMillis()}`
-
-
 
     if (market && ['bazaar', 'myket'].includes(market)) {
       if (!(await this.checkPayment(sku, token, market))) {
@@ -257,8 +327,6 @@ export default class TransactionsController {
     } else {
       const paymentResponse = await Transaction.confirmPay(request)
 
-
-
       const transaction: Transaction =
         paymentResponse && paymentResponse.order_id
           ? await Transaction.query().where('pay_id', paymentResponse.order_id).first()
@@ -277,8 +345,9 @@ export default class TransactionsController {
       if (status === 'success') {
         if (transaction.type === 'charge') {
           const financial = await Helper.FINANCIAL_MODELS[transaction.toType].firstOrNew(
-            { column: transaction.toId, }
-            , { column: transaction.toId })
+            { column: transaction.toId },
+            { column: transaction.toId }
+          )
           financial.merge({
             balance: (financial.balance ?? 0) + transaction.amount,
           })
@@ -295,12 +364,17 @@ export default class TransactionsController {
 
       return inertia.render('Invoice', {
         lang: {
-          title: paymentResponse.status === 'success' ? Helper.t('payment_success') : Helper.t('payment_fail'),
+          title:
+            paymentResponse.status === 'success'
+              ? Helper.t('payment_success')
+              : Helper.t('payment_fail'),
           pay_id: Helper.t('pay_id'),
           pay_time: Helper.t('time'),
           pay_type: Helper.t('pay_type'),
           amount: Helper.t('amount'),
-          return: transaction.appVersion ? Helper.t('return_to_application') : Helper.t('return_to_site'),
+          return: transaction.appVersion
+            ? Helper.t('return_to_application')
+            : Helper.t('return_to_site'),
           currency: Helper.t('currency'),
         },
         now: jalaliDate,
@@ -309,10 +383,12 @@ export default class TransactionsController {
         amount: transaction.amount ?? '_',
         type: transaction.title,
         link:
-          transaction?.type === 'charge' ? (transaction.appVersion ? '' :
-            transaction.fromType === 'admin'
-              ? 'admin.panel.index'
-              : 'panel.index')
+          transaction?.type === 'charge'
+            ? transaction.appVersion
+              ? ''
+              : transaction.fromType === 'admin'
+                ? 'admin.panel.index'
+                : 'panel.index'
             : '',
         message: paymentResponse.message ?? '',
       })
@@ -325,7 +401,6 @@ export default class TransactionsController {
     return true
   }
   async search({ request, response, auth }: HttpContext) {
-
     const user = auth.user
     const userId = user?.id
     const page = request.input('page') ?? 1
@@ -338,17 +413,13 @@ export default class TransactionsController {
       // .whereNotNull('payed_at')
       .where((query) => {
         query.where({ fromId: userId, fromType: 'user' }).orWhere({ toId: userId, toType: 'user' })
-      });
+      })
 
-    if (search)
-      query.where('title', 'like', `%${search}%`)
+    if (search) query.where('title', 'like', `%${search}%`)
     if (type) {
-      if (type == 'win')
-        query.whereIn('type', ['win', 'winwheel'])
-      else if (type == 'charge')
-        query.whereIn('type', ['charge', 'cardtocard'])
-      else
-        query.where('type', type)
+      if (type == 'win') query.whereIn('type', ['win', 'winwheel'])
+      else if (type == 'charge') query.whereIn('type', ['charge', 'cardtocard'])
+      else query.where('type', type)
     }
 
     return response.json(await query.orderBy(sort, dir).paginate(page, Helper.PAGINATE))
