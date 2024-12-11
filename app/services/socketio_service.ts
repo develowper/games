@@ -36,8 +36,7 @@ export default class SocketIo {
 
     this.wsIo.on('connection', async (socket) => {
       this.socket = socket
-      console.log('onConnection****')
-      console.log('  ws server service connected')
+      console.log('*****  ws server service connected')
       const token = socket.handshake.auth.token ?? socket.handshake.headers.token
       const roomType = socket.handshake.headers['request-room']
       this.user = await this.authenticateUser({ socket, token })
@@ -73,7 +72,7 @@ export default class SocketIo {
         })
 
       emitter.on('room-update', (data: any) => {
-        socket.to(`room-${data.type}`).emit(`room-update`, data)
+        this.wsIo.to(`room-${data.type}`).emit(`room-update`, data)
         // logger.info(data)
       })
 
