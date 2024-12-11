@@ -43,7 +43,7 @@ export default class SocketIo {
       this.user = await this.authenticateUser({ socket, token })
 
       if (roomType) {
-        socket.join(`room-${roomType}`)
+        this.wsIo.join(`room-${roomType}`)
         const room = await Room.findBy('type', roomType)
         if (room)
           emitter.emit('room-update', {
