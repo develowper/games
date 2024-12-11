@@ -84,7 +84,7 @@ export default class RoomController {
         room.playerCount == 2 ||
         (room.playerCount > 2 && room.secondsRemaining == room.maxSeconds)
       )
-        room.startAt = DateTime.now().plus({ seconds: room.maxSeconds })
+        room.startAt = DateTime.now().plus({ seconds: room.maxSeconds - 1 })
 
       room.save()
       userFinancials.balance -= totalPrice

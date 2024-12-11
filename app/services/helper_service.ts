@@ -44,7 +44,7 @@ class Helper {
   }
   public static TRANSACTION = {
     gateways: ['wallet', 'zarinpal'],
-    types: ['win', 'withdraw', 'charge', 'commission', 'winwheel', 'cardtocard'],
+    types: ['win', 'row_win', 'withdraw', 'charge', 'commission', 'winwheel', 'cardtocard'],
     fromTypes: ['agency', 'user', 'admin', 'daberna'],
   }
   public static SUPPORT = {
