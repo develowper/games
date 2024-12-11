@@ -96,7 +96,7 @@ export default class SocketIo {
       this.wsIo?.emit(data.event, data)
     })
 
-    // SocketIo.setTimeChecker()
+    SocketIo.setTimeChecker()
   }
   public async emitToRoom(room: string, event: string, data: any) {
     // var room = this.wsIo.sockets.adapter.rooms[room]
