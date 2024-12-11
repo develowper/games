@@ -85,6 +85,7 @@ export default class Room extends BaseModel {
 
     const now = DateTime.now()
     const diffInSeconds = Math.round(this.startAt.diff(now, 'seconds').seconds)
+    Helper.log(diffInSeconds)
     return diffInSeconds >= 0 ? diffInSeconds : this.maxSeconds
   }
 
