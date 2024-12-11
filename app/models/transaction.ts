@@ -48,9 +48,11 @@ export default class Transaction extends BaseModel {
     toId,
     amount,
     gateway = null,
-    title = null
+    title = null,
+    agencyId: 1
   ): Transaction {
     return await Transaction.create({
+      agencyId: agencyId,
       type: type,
       fromType: fromType,
       fromId: fromId,
@@ -121,9 +123,8 @@ export default class Transaction extends BaseModel {
               return { status: 'danger', message: result }
             }
           } catch (error) {
-
             // if (error.response) {
-            //   // The request was made and the server responded with a status code // that falls out of the range of 2xx 
+            //   // The request was made and the server responded with a status code // that falls out of the range of 2xx
             //   console.log('Status:', error.response.status);
             //   console.log('Data:', error.response.data);
             // }
@@ -140,7 +141,6 @@ export default class Transaction extends BaseModel {
               message: error?.response?.data?.errors?.message ?? Helper.t('problem_get_pay_link'),
             }
           }
-
 
         case 'nextpay':
           const nextpayParams = {
@@ -234,8 +234,8 @@ export default class Transaction extends BaseModel {
             const data = {
               merchant_id: Env.get('ZARINPAL_TOKEN'),
               amount:
-                ((await Transaction.query().where('pay_id', request.input('Authority')).first())?.amount ??
-                  0) * 10,
+                ((await Transaction.query().where('pay_id', request.input('Authority')).first())
+                  ?.amount ?? 0) * 10,
               authority: request.input('Authority'),
             }
 
@@ -250,14 +250,18 @@ export default class Transaction extends BaseModel {
               }
             )
             result = zarinpalResponse.data
-
           }
-          const error = result.errors != null && Array.isArray(result.errors) ? result.errors[0] : result.errors
+          const error =
+            result.errors != null && Array.isArray(result.errors) ? result.errors[0] : result.errors
           if (!error && result.data?.code === 100) {
             return { status: 'success', order_id: request.input('Authority'), info: result }
           }
           if (!error && result.data?.code === 101) {
-            return { status: 'danger', message: Helper.t('factor_payed_before'), order_id: request.input('Authority') }
+            return {
+              status: 'danger',
+              message: Helper.t('factor_payed_before'),
+              order_id: request.input('Authority'),
+            }
           }
           if (error) {
             return { status: 'danger', message: error?.message }
