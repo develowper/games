@@ -8,7 +8,7 @@ export default class extends BaseSchema {
     this.schema.createTable(this.tableName, (table) => {
       table.increments('id')
       table.string('key')
-      table.json('value').nullable()
+      table.json('value').nullable().collate('utf8mb4_general_ci')
       table.boolean('editable').defaultTo(true)
 
       table.timestamps()
