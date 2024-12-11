@@ -43,19 +43,20 @@ export default class SocketIo {
       this.user = await this.authenticateUser({ socket, token })
 
       if (roomType) {
-        const res = socket.join(`room-${roomType}`)
+        const res = await socket.join(`room-${roomType}`)
+        Helper.log('**************')
         Helper.log(res)
-        const room = await Room.findBy('type', roomType)
-        if (room)
-          emitter.emit('room-update', {
-            type: roomType,
-            cmnd: 'card-added',
-            players: room.players,
-            start_with_me: room.startWithMe,
-            seconds_remaining: room.playerCount > 1 ? room.secondsRemaining : room.maxSeconds,
-            player_count: room.playerCount,
-            card_count: room.cardCount,
-          })
+        // const room = await Room.findBy('type', roomType)
+        // if (room)
+        //   await emitter.emit('room-update', {
+        //     type: roomType,
+        //     cmnd: 'card-added',
+        //     players: room.players,
+        //     start_with_me: room.startWithMe,
+        //     seconds_remaining: room.playerCount > 1 ? room.secondsRemaining : room.maxSeconds,
+        //     player_count: room.playerCount,
+        //     card_count: room.cardCount,
+        //   })
         socket.emit('request-room-accepted', roomType)
 
         // RoomController.startGame(await Room.query().where('id', 1))
