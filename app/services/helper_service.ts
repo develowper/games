@@ -52,7 +52,7 @@ class Helper {
   }
 
   public static SOCKET_LINK =
-    'http://adonis.ailverchi.ae' ??
+    `http://adonis.ailverchi.ae:${env.get('PORT')}` ??
     /*'http://172.16.6.2:9204' ??*/ `${env.get('APP_URL')}:${env.get('PORT')}`
   public static ERROR_STATUS = 400
   public static BANK = 'zarinpal'

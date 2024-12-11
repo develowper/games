@@ -25,7 +25,7 @@ export default class SocketIo {
   }
 
   public async init() {
-    console.log('*********   socket service inited ')
+    // console.log('*********   socket service inited ')
     this.wsIo = new Server(server.getNodeServer(), {
       cors: {
         origin: ['*'],
