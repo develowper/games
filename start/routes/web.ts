@@ -16,25 +16,38 @@ import { HttpContext } from '@adonisjs/core/http'
 
 export default function () {
   router.get('test', async () => {
-
+    return
+    const room = await Room.first()
+    room.players = JSON.stringify([
+      { user_id: 2, username: 'mojraj', user_role: 'us', card_count: 100 },
+      { user_id: 3, username: 'mojraj2', user_role: 'us', card_count: 100 },
+    ])
+    room.playerCount = 2
+    room.save()
+    return Daberna.makeGame(room)
 
     return await Setting.findBy({ key: 'policy' })
 
-    return await Setting.query().where('key', 'withdraw_title').update({ value: Helper.t('withdraw_title', { item1: Helper.asPrice(`${Helper.MIN_WITHDRAW}`), item2: `${Helper.WITHDRAW_HOUR_LIMIT} ${Helper.t('hour')}` }) })
-    return await Setting.createMany([
-      { key: 'policy', value: Helper.t('policy_content') }
-
-    ])
+    return await Setting.query()
+      .where('key', 'withdraw_title')
+      .update({
+        value: Helper.t('withdraw_title', {
+          item1: Helper.asPrice(`${Helper.MIN_WITHDRAW}`),
+          item2: `${Helper.WITHDRAW_HOUR_LIMIT} ${Helper.t('hour')}`,
+        }),
+      })
+    return await Setting.createMany([{ key: 'policy', value: Helper.t('policy_content') }])
 
     return Transaction.makePayUrl(Date.now(), 2000, 'ali', 'description', '09011111111', 2)
     return Daberna.makeGame(await Room.first())
   })
 
-  router.get('policy', async ({ request, response }: HttpContext) => {
-    if (request.header('Accept')?.includes('application/json'))
-      return response.send({ data: (await Setting.findBy('key', 'policy'))?.value })
-
-  }).as('policy')
+  router
+    .get('policy', async ({ request, response }: HttpContext) => {
+      if (request.header('Accept')?.includes('application/json'))
+        return response.send({ data: (await Setting.findBy('key', 'policy'))?.value })
+    })
+    .as('policy')
   router.on('/').renderInertia('home', { prop1: 'test' }).as('home')
 
   router

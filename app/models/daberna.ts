@@ -114,7 +114,12 @@ export default class Daberna extends BaseModel {
           })
         })
     })
-
+    // return boards.map((item) =>
+    //   item.card
+    //     .flat()
+    //     .filter((num) => num !== 0)
+    //     .reduce((acc, num) => acc + 1, 0)
+    // )
     const rw =
       boards.some((item) => item.user_role === 'ro') && Math.floor(Math.random() * 101) <= room.rwp
 
