@@ -134,7 +134,7 @@ export default class RoomController {
 
     rooms.forEach(async (room) => {
       // console.log(`players ${room.playerCount}`, `time ${room.secondsRemaining}`)
-      if (true || (room.playerCount > 1 && room.secondsRemaining == room.maxSeconds)) {
+      if (room.playerCount > 1 && room.secondsRemaining == room.maxSeconds) {
         //create game and empty room
         const game = await Daberna.makeGame(room)
         // const tmp = await Daberna.query().orderBy('id', 'DESC').first()
