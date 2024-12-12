@@ -37,6 +37,8 @@ export default class TransactionsController {
         const gapChargeMinutes = Helper.CARDTOCARD_MINUTE_LIMIT
         const lastChargeTransaction = await Transaction.query()
           .where('type', type)
+          .where('to_type', 'user')
+          .where('to_id', user?.id)
           .where('created_at', '>', DateTime.now().minus({ minutes: gapChargeMinutes }).toJSDate())
           .first()
 
@@ -98,6 +100,8 @@ export default class TransactionsController {
         })
         const lastTransaction = await Transaction.query()
           .where('type', type)
+          .where('to_type', 'user')
+          .where('to_id', user?.id)
           .where('created_at', '>', DateTime.now().minus({ minutes: gapMinutes }).toJSDate())
           .first()
 
@@ -146,6 +150,8 @@ export default class TransactionsController {
         }
         const lastWinWheel = await Transaction.query()
           .where('type', type)
+          .where('to_type', 'user')
+          .where('to_id', user?.id)
           .where('created_at', '>', now.minus({ hours: winWheelGapHours }).toJSDate())
           .first()
 
@@ -211,6 +217,8 @@ export default class TransactionsController {
 
         const withdrawGapHours = Helper.WITHDRAW_HOUR_LIMIT
         const lastWthdraw = await Transaction.query()
+          .where('to_type', 'user')
+          .where('to_id', user?.id)
           .where('type', type)
           .where('created_at', '>', now.minus({ hours: withdrawGapHours }).toJSDate())
           .first()
