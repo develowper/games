@@ -43,8 +43,7 @@ export default class SocketIo {
 
       if (roomType) {
         const res = await socket.join(`room-${roomType}`)
-        Helper.log('**************')
-        Helper.log(res)
+
         // const room = await Room.findBy('type', roomType)
         // if (room)
         //   await emitter.emit('room-update', {

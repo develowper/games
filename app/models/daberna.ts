@@ -235,12 +235,12 @@ export default class Daberna extends BaseModel {
       Transaction.add('win', 'daberna', game.id, 'user', user.id, winnerPrize, user?.agencyId)
     })
 
-    // room.clearCount++
-    // room.playerCount = 0
-    // room.cardCount = 0
-    // room.players = null
-    // room.startAt = null
-    // room.save()
+    room.clearCount++
+    room.playerCount = 0
+    room.cardCount = 0
+    room.players = null
+    room.startAt = null
+    room.save()
     return game
   }
 
