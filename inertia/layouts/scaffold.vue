@@ -7,7 +7,6 @@
       <Head>
         <meta name="author" :content="__('app_name')" />
         <link rel="shortcut icon" type="image/x-icon" :href="favicon" />
-
         <slot name="header" />
       </Head>
       <Alert ref="alert" />
@@ -125,6 +124,7 @@ export default {
     // this.initSocket();
     // this.initSocketIO();
   },
+
   methods: {
     __,
     dir,
