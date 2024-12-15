@@ -32,14 +32,14 @@ export default class HttpExceptionHandler extends ExceptionHandler {
    */
   async handle(error: unknown, ctx: HttpContext) {
     if (error instanceof authErrors.E_UNAUTHORIZED_ACCESS) {
-      if (!('inertia' in ctx)) {
+      if (ctx.request.url().includes('api')) {
         ctx.response
           .status(401)
           .send({ errors: [{ message: ctx.i18n.t('messages.first_login_or_register') }] })
         return
       }
     } else if (error instanceof authErrors.E_INVALID_CREDENTIALS) {
-      if (!('inertia' in ctx)) {
+      if (ctx.request.url().includes('api')) {
         ctx.response.status(400).send({
           errors: [
             { message: ctx.i18n.t('messages.not_found_*', { item: ctx.i18n.t('messages.user') }) },
