@@ -17,7 +17,7 @@ export default defineConfig({
     }),
     vue(),
     adonisjs({
-      entrypoints: ['inertia/app/app.ts'],
+      entrypoints: ['inertia/app/app.ts', 'inertia/css/app.css'],
       reload: ['resources/views/**/*.edge', 'resources/lang/**'],
     }),
     Components({
@@ -25,6 +25,7 @@ export default defineConfig({
       dts: true,
     }),
   ],
+
   /**
    * Define aliases for importing modules from
    * your frontend code
