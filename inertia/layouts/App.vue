@@ -9,5 +9,3 @@ onMounted(() => {
   window.tailwindElements()
 })
 </script>
-
-<style scoped></style>

@@ -7,7 +7,7 @@
   "license": "UNLICENSED",
   "scripts": {
     "start": "node ace build --ignore-ts-errors  && ENV_PATH=../ node build/bin/server.js",
-    "start1": "node ace build  &&  node build/bin/server.js",
+    "start1": "node ace build --ignore-ts-errors  &&  node build/bin/server.js",
     "build": "node ace build --ignore-ts-errors",
     "dev": "node ace serve --hmr",
     "test": "node ace test",
@@ -71,7 +71,7 @@
     "@adonisjs/static": "^1.1.1",
     "@adonisjs/vite": "^3.0.0",
     "@heroicons/vue": "^2.2.0",
-    "@inertiajs/vue3": "^1.2.0",
+    "@inertiajs/vue3": "^1.3.0",
     "@izzyjs/route": "^1.2.0",
     "@vinejs/vine": "^2.1.0",
     "@vue/server-renderer": "^3.5.13",

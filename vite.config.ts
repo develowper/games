@@ -11,8 +11,8 @@ export default defineConfig({
   plugins: [
     inertia({
       ssr: {
-        enabled: true,
-        entrypoint: 'inertia/app/ssr.tsx',
+        enabled: false,
+        entrypoint: 'inertia/app/ssr.ts',
       },
     }),
     vue(),

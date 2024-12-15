@@ -56,9 +56,11 @@ const inertiaConfig = defineConfig({
    * Options for the server-side rendering
    */
   ssr: {
-    enabled: true,
-    entrypoint: 'inertia/app/ssr.tsx',
-    pages: (ctx, page) => !page.startsWith('admin'),
+    enabled: false,
+    entrypoint: 'inertia/app/ssr.ts',
+    pages: (ctx, page) => {
+      return !page.startsWith('Auth') && !page.startsWith('Panel')
+    },
   },
 })
 
