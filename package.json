@@ -6,7 +6,7 @@
   "type": "module",
   "license": "UNLICENSED",
   "scripts": {
-    "start": "node ace build --ignore-ts-errors  && pnpm i --prod && ENV_PATH=../ node build/bin/server.js",
+    "start": "node ace build --ignore-ts-errors  && ENV_PATH=../ node build/bin/server.js",
     "start2": "node ace build --ignore-ts-errors  && ENV_PATH=../ node build/bin/server.js",
     "start1": "node ace build  &&  node build/bin/server.js",
     "build": "node ace build --ignore-ts-errors",
