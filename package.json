@@ -7,7 +7,6 @@
   "license": "UNLICENSED",
   "scripts": {
     "start": "node ace build --ignore-ts-errors  && ENV_PATH=../ node build/bin/server.js",
-    "start2": "node ace build --ignore-ts-errors  && ENV_PATH=../ node build/bin/server.js",
     "start1": "node ace build  &&  node build/bin/server.js",
     "build": "node ace build --ignore-ts-errors",
     "dev": "node ace serve --hmr",
