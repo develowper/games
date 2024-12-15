@@ -50,6 +50,8 @@ router.use([
  */
 export const middleware = router.named({
   checkServerStatus: () => import('#middleware/check_server_status_middleware'),
-  guest: () => import('#middleware/guest_middleware'),
-  auth: () => import('#middleware/auth_middleware'),
+  guest_user: () => import('#middleware/guest_user_middleware'),
+  guest_admin: () => import('#middleware/guest_admin_middleware'),
+  auth_user: () => import('#middleware/auth_user_middleware'),
+  auth_admin: () => import('#middleware/auth_admin_middleware'),
 })

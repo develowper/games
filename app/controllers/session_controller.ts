@@ -1,4 +1,3 @@
 // import type { HttpContext } from '@adonisjs/core/http'
 
-export default class SessionController {
-}
+export default class SessionController {}

@@ -35,6 +35,7 @@ export default class extends BaseSchema {
         .references('id')
         .inTable('agencies')
         .onDelete('CASCADE')
+      table.tinyint('agency_level').unsigned()
       table.timestamps()
     })
   }

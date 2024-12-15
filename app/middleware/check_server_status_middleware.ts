@@ -9,7 +9,10 @@ export default class CheckServerStatusMiddleware {
      * Middleware logic goes here (before the next call)
      */
     const res = await HelperService.serverStatus()
-    if (res !== 'active') throw new Exception(i18n.t('messages.*_is_*', { item: i18n.t('messages.server'), value: __(res) }))
+    if (res !== 'active')
+      throw new Exception(
+        i18n.t('messages.*_is_*', { item: i18n.t('messages.server'), value: __(res) })
+      )
     /**
      * Call next method in the pipeline and return its output
      */

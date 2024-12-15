@@ -1,5 +1,5 @@
 import { BaseSchema } from '@adonisjs/lucid/schema'
-import Helper from '../../app/services/helper_service.js'
+import Helper, { createRooms, pluck } from '../../app/services/helper_service.js'
 
 export default class extends BaseSchema {
   protected tableName = 'rooms'
@@ -7,7 +7,7 @@ export default class extends BaseSchema {
   async up() {
     this.schema.createTable(this.tableName, (table) => {
       table.increments('id')
-      table.enum('type', Helper.pluck(Helper.ROOMS, 'type'))
+      table.enum('type', pluck(Helper.ROOMS, 'type'))
       table.integer('card_price').unsigned()
       table.string('title', 100)
       table.string('image', 100)
@@ -29,7 +29,7 @@ export default class extends BaseSchema {
       table.timestamps()
     })
 
-    Helper.createRooms()
+    createRooms()
   }
 
   async down() {

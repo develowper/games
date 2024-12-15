@@ -1,4 +1,4 @@
-import {defineConfig} from '@adonisjs/vite'
+import { defineConfig } from '@adonisjs/vite'
 import app from '@adonisjs/core/services/app'
 
 const viteBackendConfig = defineConfig({
@@ -14,7 +14,6 @@ const viteBackendConfig = defineConfig({
    * "vite build" command.
    */
   manifestFile: `${app.inProduction ? 'build/' : ''}public/assets/.vite/manifest.json`,
-
 
   /**
    * Feel free to change the value of the "assetsUrl" to

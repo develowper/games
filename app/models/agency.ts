@@ -1,7 +1,12 @@
 import { DateTime } from 'luxon'
-import { BaseModel, column } from '@adonisjs/lucid/orm'
+import { BaseModel, column, hasOne } from '@adonisjs/lucid/orm'
+import UserFinancial from '#models/user_financial'
+import type { HasOne } from '@adonisjs/lucid/types/relations'
+import AgencyFinancial from '#models/agency_financial'
 
 export default class Agency extends BaseModel {
+  @hasOne(() => AgencyFinancial)
+  declare financial: HasOne<typeof AgencyFinancial>
   @column({ isPrimary: true })
   declare id: number
 

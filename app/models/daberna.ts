@@ -1,6 +1,6 @@
 import { DateTime } from 'luxon'
 import { BaseModel, column } from '@adonisjs/lucid/orm'
-import Helper from '#services/helper_service'
+import Helper, { range, shuffle } from '#services/helper_service'
 import Room from '#models/room'
 import AgencyFinancial from '#models/agency_financial'
 import Transaction from '#models/transaction'
@@ -49,12 +49,12 @@ export default class Daberna extends BaseModel {
 
   public static makeCard() {
     const info = Helper.DABERNA
-    const numbers: number[] = Helper.shuffle(Helper.range(info.min, info.max))
+    const numbers: number[] = shuffle(range(info.min, info.max))
 
     const card: number[][] = new Array(info.row).fill(0).map(() => new Array(info.col).fill(0))
 
     for (let i = 0; i < card.length; i++) {
-      const shuffledFillIndex = Helper.shuffle(Helper.range(0, info.col - 1))
+      const shuffledFillIndex = shuffle(range(0, info.col - 1))
 
       let picked: number
       for (let j = 0; j < info.fillInRow; j++) {
@@ -86,7 +86,7 @@ export default class Daberna extends BaseModel {
       return null
     }
     const info = Helper.DABERNA
-    const numbers: number[] = Helper.shuffle(Helper.range(info.min, info.max))
+    const numbers: number[] =  shuffle( range(info.min, info.max))
 
     const boards = []
     // for (let i = 0; i < 10000; i++) {

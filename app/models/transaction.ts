@@ -1,6 +1,6 @@
 import { DateTime } from 'luxon'
 import { BaseModel, column } from '@adonisjs/lucid/orm'
-import Helper from '#services/helper_service'
+import Helper, { __ } from '#services/helper_service'
 import Env from '#start/env'
 import axios from 'axios'
 export default class Transaction extends BaseModel {
@@ -64,10 +64,10 @@ export default class Transaction extends BaseModel {
       payedAt: DateTime.now(),
       title:
         title ??
-        Helper.t('*_from_*_to_*', {
-          item1: Helper.t(type),
-          item2: `${Helper.t(fromType)} (${fromId})`,
-          item3: `${Helper.t(toType)} (${toId})`,
+        __('*_from_*_to_*', {
+          item1: __(type),
+          item2: `${__(fromType)} (${fromId})`,
+          item3: `${__(toType)} (${toId})`,
         }),
     })
   }
@@ -138,7 +138,7 @@ export default class Transaction extends BaseModel {
             // }
             return {
               status: 'danger',
-              message: error?.response?.data?.errors?.message ?? Helper.t('problem_get_pay_link'),
+              message: error?.response?.data?.errors?.message ?? __('problem_get_pay_link'),
             }
           }
 
@@ -326,7 +326,7 @@ export default class Transaction extends BaseModel {
     } catch (error) {
       return {
         status: 'danger',
-        message: Helper.t('problem_confirm_pay'),
+        message: __('problem_confirm_pay'),
       }
     }
   }

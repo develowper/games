@@ -1,4 +1,3 @@
 // import type { HttpContext } from '@adonisjs/core/http'
 
-export default class AdminFinancialsController {
-}
+export default class AdminFinancialsController {}

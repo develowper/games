@@ -31,14 +31,22 @@ export default class HttpExceptionHandler extends ExceptionHandler {
    * response to the client
    */
   async handle(error: unknown, ctx: HttpContext) {
-
     if (error instanceof authErrors.E_UNAUTHORIZED_ACCESS) {
-      ctx.response.status(401).send({ errors: [{ message: ctx.i18n.t('messages.first_login_or_register') }] });
-      return
-    }
-    else if (error instanceof authErrors.E_INVALID_CREDENTIALS) {
-      ctx.response.status(400).send({ errors: [{ message: ctx.i18n.t('messages.not_found_*', { item: ctx.i18n.t('messages.user') }) }] });
-      return
+      if (!('inertia' in ctx)) {
+        ctx.response
+          .status(401)
+          .send({ errors: [{ message: ctx.i18n.t('messages.first_login_or_register') }] })
+        return
+      }
+    } else if (error instanceof authErrors.E_INVALID_CREDENTIALS) {
+      if (!('inertia' in ctx)) {
+        ctx.response.status(400).send({
+          errors: [
+            { message: ctx.i18n.t('messages.not_found_*', { item: ctx.i18n.t('messages.user') }) },
+          ],
+        })
+        return
+      }
     }
 
     return super.handle(error, ctx)

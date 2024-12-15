@@ -6,13 +6,14 @@ const PanelController = () => import('#controllers/panel_controller')
 import { middleware } from '#start/kernel'
 import Daberna from '#models/daberna'
 import Room from '#models/room'
-import Helper from '#services/helper_service'
+import Helper, { __, asPrice } from '#services/helper_service'
 import Transaction from '#models/transaction'
 import Setting from '../../app/models/setting.js'
 import User from '../../app/models/user.js'
 import hash from '@adonisjs/core/services/hash'
 import SettingController from '../../app/controllers/api/setting_controller.js'
 import { HttpContext } from '@adonisjs/core/http'
+import db from '@adonisjs/lucid/services/db'
 
 export default function () {
   router.get('test', async () => {
@@ -31,12 +32,12 @@ export default function () {
     return await Setting.query()
       .where('key', 'withdraw_title')
       .update({
-        value: Helper.t('withdraw_title', {
-          item1: Helper.asPrice(`${Helper.MIN_WITHDRAW}`),
-          item2: `${Helper.WITHDRAW_HOUR_LIMIT} ${Helper.t('hour')}`,
+        value: __('withdraw_title', {
+          item1: asPrice(`${Helper.MIN_WITHDRAW}`),
+          item2: `${Helper.WITHDRAW_HOUR_LIMIT} ${__('hour')}`,
         }),
       })
-    return await Setting.createMany([{ key: 'policy', value: Helper.t('policy_content') }])
+    return await Setting.createMany([{ key: 'policy', value: __('policy_content') }])
 
     return Transaction.makePayUrl(Date.now(), 2000, 'ali', 'description', '09011111111', 2)
     return Daberna.makeGame(await Room.first())
@@ -48,15 +49,19 @@ export default function () {
         return response.send({ data: (await Setting.findBy('key', 'policy'))?.value })
     })
     .as('policy')
-  router.on('/').renderInertia('home', { prop1: 'test' }).as('home')
+
+  router.on('/').renderInertia('Main', { prop1: 'test' }).as('/')
+  router.on('contact-us').renderInertia('ContactUs', { prop1: 'test' }).as('page.contact_us')
+  router.on('articles').renderInertia('Article/Index', {}).as('article.index')
 
   router
     .group(() => {
       router.post('register', [AuthController, 'register']).as('auth.register')
       router.post('login', [AuthController, 'login']).as('auth.login')
+      router.on('login').renderInertia('Auth/Login', {}).as('login-form')
     })
     .use(
-      middleware.guest({
+      middleware.guest_user({
         guards: ['web' /*, 'api'*/],
       })
     )
@@ -75,7 +80,7 @@ export default function () {
         .as('panel')
     })
     .use(
-      middleware.auth({
+      middleware.auth_user({
         guards: ['web' /*, 'api'*/],
       })
     )

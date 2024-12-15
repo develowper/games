@@ -1,34 +1,35 @@
-import {defineConfig} from '@adonisjs/auth'
-import {sessionGuard, sessionUserProvider} from '@adonisjs/auth/session'
-import type {InferAuthEvents, Authenticators} from '@adonisjs/auth/types'
-import {tokensGuard, tokensUserProvider} from "@adonisjs/auth/access_tokens";
+import { defineConfig } from '@adonisjs/auth'
+import { sessionGuard, sessionUserProvider } from '@adonisjs/auth/session'
+import type { InferAuthEvents, Authenticators } from '@adonisjs/auth/types'
+import { tokensGuard, tokensUserProvider } from '@adonisjs/auth/access_tokens'
 
 const authConfig = defineConfig({
   default: 'web',
   guards: {
     web: sessionGuard({
-      useRememberMeTokens: false,
+      useRememberMeTokens: true,
+      rememberMeTokensAge: '2 months',
       provider: sessionUserProvider({
-        model: () => import('#models/user')
+        model: () => import('#models/user'),
       }),
     }),
     api: tokensGuard({
       provider: tokensUserProvider({
         tokens: 'accessTokens',
-        model: () => import('#models/user')
+        model: () => import('#models/user'),
       }),
     }),
     admin_web: sessionGuard({
-      useRememberMeTokens: false,
+      useRememberMeTokens: true,
+      rememberMeTokensAge: '2 months',
       provider: sessionUserProvider({
-        model: () => import('#models/admin')
+        model: () => import('#models/admin'),
       }),
     }),
     admin_api: tokensGuard({
       provider: tokensUserProvider({
         tokens: 'accessTokens',
-        model: () => import('#models/admin')
-
+        model: () => import('#models/admin'),
       }),
     }),
   },
@@ -41,10 +42,8 @@ export default authConfig
  * guards.
  */
 declare module '@adonisjs/auth/types' {
-  export interface Authenticators extends InferAuthenticators<typeof authConfig> {
-  }
+  export interface Authenticators extends InferAuthenticators<typeof authConfig> {}
 }
 declare module '@adonisjs/core/types' {
-  interface EventsList extends InferAuthEvents<Authenticators> {
-  }
+  interface EventsList extends InferAuthEvents<Authenticators> {}
 }

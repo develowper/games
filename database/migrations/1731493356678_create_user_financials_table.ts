@@ -1,5 +1,5 @@
 import { BaseSchema } from '@adonisjs/lucid/schema'
-import Helper from '#services/helper_service'
+import Helper, {createUsers} from '#services/helper_service'
 
 export default class extends BaseSchema {
   protected tableName = 'user_financials'
@@ -19,7 +19,7 @@ export default class extends BaseSchema {
       table.string('sheba', 40).nullable().defaultTo(null)
       table.timestamps()
 
-      Helper.createUsers()
+      createUsers()
     })
   }
 

@@ -1,16 +1,12 @@
 import env from '#start/env'
 import app from '@adonisjs/core/services/app'
-// import langPath from '../../resources/lang/fa-IR.json' assert {type: "json"}
-import fs from 'fs'
+import fs from 'node:fs'
 import Setting from '#models/setting'
 import collect from 'collect.js'
 import { HttpContext } from '@adonisjs/core/http'
 import { inject } from '@adonisjs/core'
-import i18nManager from '@adonisjs/i18n/services/main'
-import { url } from 'inspector'
-// const fa = i18nManager.locale('fa-IR')
+const i18nManager = await import('@adonisjs/i18n/services/main')
 import logger from '@adonisjs/core/services/logger'
-import { isArray } from 'node:util'
 import User from '#models/user'
 import Agency from '#models/agency'
 import AgencyFinancial from '#models/agency_financial'
@@ -18,6 +14,8 @@ import AdminFinancial from '#models/admin_financial'
 import UserFinancial from '#models/user_financial'
 import Admin from '#models/admin'
 import Room from '#models/room'
+import { usePage } from '@inertiajs/vue3'
+import { errors } from '@vinejs/vine'
 @inject()
 class Helper {
   constructor(protected ctx: HttpContext | null) {
@@ -135,9 +133,9 @@ class Helper {
     },
   ]
   public static TICKET_STATUSES = [
-    { title: Helper.t('responded'), key: 'responded', color: 0xff44ff44 },
-    { title: Helper.t('processing'), key: 'processing', color: 0xff4477ce },
-    { title: Helper.t('closed'), key: 'closed', color: 0xffe74646 },
+    { title: Helper.__('responded'), key: 'responded', color: 0xff44ff44 },
+    { title: Helper.__('processing'), key: 'processing', color: 0xff4477ce },
+    { title: Helper.__('closed'), key: 'closed', color: 0xffe74646 },
   ]
   public static MARKETS = {
     bazaar: '',
@@ -152,15 +150,11 @@ class Helper {
     // return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     return price.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ',')
   }
-  static t(key: string, data: any = {}) {
-    const __ = HttpContext.get()?.i18n ?? i18nManager?.locale(i18nManager.defaultLocale)
-    return __?.t(`messages.${key}`, data)
+  static __(key: string, data: any = {}) {
+    const _ = HttpContext.get()?.i18n ?? i18nManager?.defaultLocale
+    return _?.t(`messages.${key}`, data)
   }
 
-  public __(key: string, data: any = {}) {
-    const ___ = HttpContext.get()?.i18n
-    return ___.t(key, data)
-  }
   public static async getSetting(key: string) {
     return await Setting.findBy('key', key)
   }
@@ -184,8 +178,13 @@ class Helper {
     // return translation
   }
 
-  public static getLangFile() {
-    const path = app.languageFilesPath(env.get('LOCALE', '') + '.json')
+  public static getLangFile(ctx: HttpContext | null) {
+    let locale
+
+    if (ctx?.i18n) locale = ctx.i18n.locale
+    else locale = i18nManager?.defaultLocale
+    const path = app.languageFilesPath(`${locale}/messages.json`)
+
     try {
       return JSON.parse(fs.readFileSync(path, 'utf8'))
     } catch (err) {
@@ -232,43 +231,73 @@ class Helper {
       },
       {
         key: 'charge_title',
-        value: Helper.t('validate.min', {
-          item: Helper.t('charge'),
-          value: `${Helper.asPrice(`${Helper.MIN_CHARGE}`)} ${Helper.t('currency')}`,
+        value: __('validate.min', {
+          item: __('charge'),
+          value: `${asPrice(`${Helper.MIN_CHARGE}`)} ${__('currency')}`,
         }),
       },
       {
         key: 'card_to_card_title',
-        value: Helper.t('validate.min', {
-          item: Helper.t('charge'),
-          value: `${Helper.asPrice(`${Helper.MIN_CHARGE}`)} ${Helper.t('currency')}`,
+        value: __('validate.min', {
+          item: __('charge'),
+          value: `${asPrice(`${Helper.MIN_CHARGE}`)} ${__('currency')}`,
         }),
       },
       {
         key: 'withdraw_title',
-        value: Helper.t('withdraw_title', {
-          item1: Helper.asPrice(`${Helper.MIN_WITHDRAW}`),
-          item2: `${Helper.WITHDRAW_HOUR_LIMIT} ${Helper.t('hour')}`,
+        value: __('withdraw_title', {
+          item1: asPrice(`${Helper.MIN_WITHDRAW}`),
+          item2: `${Helper.WITHDRAW_HOUR_LIMIT} ${__('hour')}`,
         }),
       },
       {
         key: 'support_links',
         value: JSON.stringify([
-          { name: Helper.t('telegram'), color: 0x0000ff, url: `${Helper.SUPPORT.telegram}` },
+          { name: __('telegram'), color: 0x0000ff, url: `${Helper.SUPPORT.telegram}` },
         ]),
       },
-      { key: 'policy', value: Helper.t('policy_content') },
+      { key: 'policy', value: __('policy_content') },
     ])
   }
   static createUsers() {
     User.createMany([
       { username: 'mahyar.sh', password: 'm2330m', phone: '09011111111', agencyId: 1 },
-      { username: 'mojraj', password: '123123', phone: '09015555555', agencyId: 1 },
-      { username: 'mojraj2', password: '123123', phone: '09015555556', agencyId: 1 },
-      { username: 'mojraj3', password: '123123', phone: '09015555557', agencyId: 1 },
-      { username: 'mojraj4', password: '123123', phone: '09015565555', agencyId: 1 },
-      { username: 'mojraj5', password: '123123', phone: '09015575555', agencyId: 1 },
-      { username: 'mojraj6', password: '123123', phone: '09015455555', agencyId: 1 },
+      { username: 'mojraj', password: '123123', phone: '09015555555', agencyId: 1, agencyLevel: 0 },
+      {
+        username: 'mojraj2',
+        password: '123123',
+        phone: '09015555556',
+        agencyId: 1,
+        agencyLevel: 0,
+      },
+      {
+        username: 'mojraj3',
+        password: '123123',
+        phone: '09015555557',
+        agencyId: 1,
+        agencyLevel: 0,
+      },
+      {
+        username: 'mojraj4',
+        password: '123123',
+        phone: '09015565555',
+        agencyId: 1,
+        agencyLevel: 0,
+      },
+      {
+        username: 'mojraj5',
+        password: '123123',
+        phone: '09015575555',
+        agencyId: 1,
+        agencyLevel: 0,
+      },
+      {
+        username: 'mojraj6',
+        password: '123123',
+        phone: '09015455555',
+        agencyId: 1,
+        agencyLevel: 0,
+      },
     ])
     UserFinancial.createMany([
       { id: 1, userId: 1, balance: 1000000 },
@@ -282,12 +311,27 @@ class Helper {
   }
   static createAdmins() {
     Admin.createMany([
-      { username: 'mahyar.sh', password: 'm2330m', phone: '09011111111', agencyId: 1 },
+      {
+        username: 'mahyar.sh',
+        password: env.get('pswd'),
+        phone: '09011111111',
+        role: 'go',
+        agencyId: 1,
+        agencyLevel: 0,
+      },
+      {
+        username: 'mojraj',
+        password: env.get('pswd'),
+        phone: '09011111111',
+        role: 'go',
+        agencyId: 1,
+        agencyLevel: 0,
+      },
     ])
     AdminFinancial.createMany([{ id: 1, adminId: 1, balance: 0 }])
   }
   static createAgencies() {
-    Agency.createMany([{ id: 1, name: Helper.t('central'), parentId: null, level: 0 }])
+    Agency.createMany([{ id: 1, name: __('central'), parentId: null, level: 0 }])
     AgencyFinancial.createMany([{ id: 1, agencyId: 1, balance: 0 }])
   }
   static createRooms() {
@@ -299,7 +343,7 @@ class Helper {
         card_price: room.cardPrice,
         win_score: room.winScore,
         max_seconds: room.maxSeconds,
-        title: Helper.t('room_*', { item: room.cardPrice }),
+        title: Helper.__('room_*', { item: room.cardPrice }),
         max_user_cards_count: room.maxUserCardsCount,
         max_cards_count: room.maxCardsCount,
         image: room.image,
@@ -313,6 +357,9 @@ class Helper {
   }
   public static log(data: any) {
     logger.info(data)
+  }
+  public static inertiaError(data) {
+    throw new errors.E_VALIDATION_ERROR(data)
   }
   public static pluck(arr: any[], key: string | string[]) {
     if (!Array.isArray(key)) {
@@ -375,5 +422,34 @@ class Helper {
     }
     return `${num}`.replace(/[۰-۹]/g, (char) => persianToLatinMap[char])
   }
+
+  static dir() {
+    let $lang = usePage().props.language
+    if ($lang == 'en') return 'ltr'
+    else return 'rtl'
+  }
 }
+// export default Helper
+export const {
+  dir,
+  f2e,
+  toShamsi,
+  range,
+  shuffle,
+  pluck,
+  createRooms,
+  createUsers,
+  createAgencies,
+  createAdmins,
+  createSettings,
+  getLangFile,
+  getSetting,
+  getSettings,
+  asPrice,
+  __,
+  lang,
+  log,
+  sendError,
+  inertiaError,
+} = Helper
 export default Helper

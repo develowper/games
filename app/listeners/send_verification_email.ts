@@ -1,4 +1,4 @@
-import {inject} from '@adonisjs/core'
+import { inject } from '@adonisjs/core'
 import TokensService from '#services/tokens_service'
 import UserRegistered from '#events/user_registered'
 
@@ -18,5 +18,4 @@ export default class SendVerificationEmail {
     tokensService.generate(event.user.email)
     console.log(event.user)
   }
-
 }

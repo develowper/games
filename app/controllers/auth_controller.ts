@@ -3,6 +3,7 @@ import { loginValidator, registerValidator } from '#validators/auth'
 import User from '#models/user'
 import Admin from '#models/admin'
 import UserRegistered from '#events/user_registered'
+import { log } from '#services/helper_service'
 
 export default class AuthController {
   async register({ request, response, auth }: HttpContext) {
@@ -17,13 +18,13 @@ export default class AuthController {
 
   async login({ request, auth, response }: HttpContext) {
     const { username, password } = await request.validateUsing(loginValidator)
-    const isAdmin = request.matchesRoute('admin.login')
+    const isAdmin = request.matchesRoute('admin.auth.login')
+
     const user = await (isAdmin ? Admin : User).verifyCredentials(username, password)
+    if (isAdmin) await auth.use('admin_web').login(user as Admin, !!request.input('remember'))
+    else await auth.use('web').login(user as User, !!request.input('remember'))
 
-    if (isAdmin) await auth.use('admin_web').login(user as Admin)
-    else await auth.use('web').login(user as User)
-
-    return response.redirect().toRoute(`${isAdmin ? 'admin' : 'user'}.panel`)
+    return response.redirect().toRoute(`${isAdmin ? 'admin' : 'user'}.panel.index`)
   }
 
   async logout({ request, auth, response }: HttpContext) {

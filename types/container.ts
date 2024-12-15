@@ -1,7 +1,7 @@
-import { SocketIo } from "../app/services/socketio_service.js";
+import { SocketIo } from '../app/services/socketio_service.js'
 
 declare module '@adonisjs/core/types' {
-    interface ContainerBindings {
-        MySocket: SocketIo
-    }
+  interface ContainerBindings {
+    MySocket: SocketIo
+  }
 }

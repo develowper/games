@@ -1,32 +1,29 @@
 /// <reference path="../../adonisrc.ts" />
 /// <reference path="../../config/inertia.ts" />
 
-import '../../resources/scss/app.scss';
-import {createSSRApp, h} from 'vue'
-import type {DefineComponent} from 'vue'
-import {createInertiaApp} from '@inertiajs/vue3'
-import {resolvePageComponent} from '@adonisjs/inertia/helpers'
+// import '../../resources/scss/app.scss'
+import { createSSRApp, h } from 'vue'
+import type { DefineComponent } from 'vue'
+import { createInertiaApp } from '@inertiajs/vue3'
+import { resolvePageComponent } from '@adonisjs/inertia/helpers'
 
-const appName = import.meta.env.VITE_APP_NAME || 'AdonisJS'
+const appName = import.meta.env.VITE_APP_NAME || 'Paris'
 
 createInertiaApp({
-  progress: {color: '#5468FF'},
+  progress: { color: '#ff5484' },
 
   title: (title) => `${title} - ${appName}`,
 
   resolve: (name) => {
     return resolvePageComponent(
       `../pages/${name}.vue`,
-      import.meta.glob<DefineComponent>('../pages/**/*.vue'),
+      import.meta.glob<DefineComponent>('../pages/**/*.vue')
     )
   },
 
-  setup({el, App, props, plugin}) {
-
-    const vueApp = createSSRApp({render: () => h(App, props)})
+  setup({ el, App, props, plugin }) {
+    const vueApp = createSSRApp({ render: () => h(App, props) })
     vueApp.use(plugin).mount(el)
     vueApp.config.globalProperties.test = '1'
-
-
   },
 })

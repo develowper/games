@@ -1,5 +1,5 @@
 import { BaseSchema } from '@adonisjs/lucid/schema'
-import Helper from '#services/helper_service'
+import Helper, {createAgencies} from '#services/helper_service'
 
 export default class extends BaseSchema {
   protected tableName = 'agency_financials'
@@ -20,7 +20,7 @@ export default class extends BaseSchema {
       table.timestamps()
     })
 
-    Helper.createAgencies()
+    createAgencies()
   }
 
   async down() {

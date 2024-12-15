@@ -59,12 +59,12 @@ export default class DetectUserLocaleMiddleware {
     if ('view' in ctx) {
       ctx.view.share({ i18n: ctx.i18n })
     }
-    if ('inertia' in ctx) {
-      ctx.inertia.share({
-        locale: language,
-        translations: i18nManager.getTranslationsFor(language),
-      })
-    }
+    // if ('inertia' in ctx) {
+    //   ctx.inertia.share({
+    //     locale: language,
+    //     translations: i18nManager.getTranslationsFor(language),
+    //   })
+    // }
     return next()
   }
 }

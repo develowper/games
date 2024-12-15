@@ -1,15 +1,12 @@
 import { HttpContext, Route } from '@adonisjs/core/http'
 import { loginValidator, registerValidator, updateValidator } from '#validators/auth'
 import User from '#models/user'
-import Helper from '../../services/helper_service.js'
+import Helper, {__} from '../../services/helper_service.js'
 import UserFinancial from '../../models/user_financial.js'
 import hash from '@adonisjs/core/services/hash'
 
 export default class UserController {
-
-
   async update({ response, request, auth }) {
-
     const user: User = auth?.user
 
     const financial = await UserFinancial.firstOrCreate({ userId: user?.id })
@@ -22,20 +19,30 @@ export default class UserController {
     const password = request.input('password')
     const data = await request.validateUsing(updateValidator, { meta: { id: user?.id } })
     switch (type) {
-
       case 'user':
         if (fullName && user?.fullName && fullName != user?.fullName)
-          return response.badRequest({ message: Helper.t('not_editable_*', { item: Helper.t('full_name') }) })
-        user?.merge({
-          fullName: fullName ?? user.fullName,
-          username: username,
-          phone: phone,
-        }).save()
-        financial.merge({
-          card: card,
-          sheba: sheba,
-        }).save()
-        return response.send({ status: 'success', message: Helper.t('edited_successfully'), user, financial })
+          return response.badRequest({
+            message: __('not_editable_*', { item: __('full_name') }),
+          })
+        user
+          ?.merge({
+            fullName: fullName ?? user.fullName,
+            username: username,
+            phone: phone,
+          })
+          .save()
+        financial
+          .merge({
+            card: card,
+            sheba: sheba,
+          })
+          .save()
+        return response.send({
+          status: 'success',
+          message: __('edited_successfully'),
+          user,
+          financial,
+        })
 
         break
       case 'password':
@@ -43,21 +50,15 @@ export default class UserController {
           //hash automatically before save if is dirty
           user.password = password
           await user.save()
-          return response.send({ status: 'success', message: Helper.t('edited_successfully') })
+          return response.send({ status: 'success', message: __('edited_successfully') })
         }
         break
     }
-
-
   }
-
-
-
 
   async forget({ response }: HttpContext) {
     return response.json({ url: `https://t.me/${Helper.BOT}?start=recover_password` })
   }
-
 
   async register({ request, response, i18n }: HttpContext) {
     const data = await request.validateUsing(registerValidator)

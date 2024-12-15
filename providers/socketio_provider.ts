@@ -3,42 +3,32 @@ import type { ApplicationService } from '@adonisjs/core/types'
 
 export default class SocketioProvider {
   socket: any
-  constructor(protected app: ApplicationService) {
-  }
+  constructor(protected app: ApplicationService) {}
 
   /**
    * Register bindings to the container
    */
   register() {
-
     this.app.container.singleton('MySocket', async () => {
       return new SocketIo()
     })
     // this.app.container.alias('MySocket', SocketIo)
-
   }
 
   /**
    * The container bindings have booted
    */
-  async boot() {
-
-
-
-  }
+  async boot() {}
 
   /**
    * The application has been booted
    */
-  async start() {
-
-  }
+  async start() {}
 
   /**
    * The process has been started
    */
   async ready() {
-
     const socket = await this.app.container.make('MySocket')
     socket.init()
     // const { SocketIo } = await import('#services/socketio_service')
@@ -53,6 +43,5 @@ export default class SocketioProvider {
   /**
    * Preparing to shutdown the app
    */
-  async shutdown() {
-  }
+  async shutdown() {}
 }

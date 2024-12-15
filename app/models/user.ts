@@ -7,7 +7,7 @@ import Post from '#models/post'
 import type { HasMany, HasOne } from '@adonisjs/lucid/types/relations'
 import { DbAccessTokensProvider } from '@adonisjs/auth/access_tokens'
 import UserFinancial from './user_financial.js'
-import Helper from '../services/helper_service.js'
+import { DbRememberMeTokensProvider } from '@adonisjs/auth/session'
 
 const AuthFinder = withAuthFinder(() => hash.use('scrypt'), {
   uids: ['username'],
@@ -15,13 +15,14 @@ const AuthFinder = withAuthFinder(() => hash.use('scrypt'), {
 })
 
 export default class User extends compose(BaseModel, AuthFinder) {
+  static rememberMeTokens = DbRememberMeTokensProvider.forModel(User)
+
   public serializeExtras = true
 
   @hasMany(() => Post)
   declare posts: HasMany<typeof Post>
 
   @hasOne(() => UserFinancial)
-
   declare financial: HasOne<typeof UserFinancial>
   public financialInfo?: UserFinancial
 
@@ -34,6 +35,12 @@ export default class User extends compose(BaseModel, AuthFinder) {
 
   @column()
   declare agencyId: number
+
+  @column()
+  declare agencyLevel: number
+
+  @column()
+  declare access: object
 
   @column()
   declare fullName: string | null
@@ -90,5 +97,12 @@ export default class User extends compose(BaseModel, AuthFinder) {
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   declare updatedAt: DateTime | null
 
+  @column.dateTime({ autoCreate: true, autoUpdate: true })
+  declare updatedAt: DateTime | null
+
   static accessTokens = DbAccessTokensProvider.forModel(User)
+
+  public getAccesses() {
+    return []
+  }
 }

@@ -8,7 +8,7 @@ import {
   withdrawValidator,
 } from '#validators/transaction'
 import Transaction from '#models/transaction'
-import Helper from '#services/helper_service'
+import Helper, { __, asPrice } from '#services/helper_service'
 import { DateTime } from 'luxon'
 import User from '#models/user'
 import Admin from '#models/admin'
@@ -45,15 +45,15 @@ export default class TransactionsController {
         if (lastChargeTransaction) {
           return response.status(Helper.ERROR_STATUS).json({
             status: 'danger',
-            message: Helper.t('gap_requests_is_*', {
-              item: `${gapChargeMinutes} ${Helper.t('minute')}`,
+            message: __('gap_requests_is_*', {
+              item: `${gapChargeMinutes} ${__('minute')}`,
             }),
           })
         }
 
-        desc = Helper.t('wallet_charge_*_by_*', {
-          item1: `${Helper.asPrice(`${amount}`)} ${Helper.t('currency')}`,
-          item2: `${Helper.t(fromType)} (${fromId})`,
+        desc = __('wallet_charge_*_by_*', {
+          item1: `${asPrice(`${amount}`)} ${__('currency')}`,
+          item2: `${__(fromType)} (${fromId})`,
         })
         const res = await Transaction.makePayUrl(
           orderId,
@@ -85,7 +85,7 @@ export default class TransactionsController {
         // }
         return response.json({
           status: res.status,
-          message: Helper.t('redirect_to_payment_page'),
+          message: __('redirect_to_payment_page'),
           url: res.url,
         })
         break
@@ -93,8 +93,8 @@ export default class TransactionsController {
         await request.validateUsing(cardToCardValidator)
         const gapMinutes = Helper.CARDTOCARD_MINUTE_LIMIT
 
-        desc = Helper.t('cardtocard_*_from_*_to_*', {
-          item1: `${Helper.asPrice(amount)} ${Helper.t('currency')}`,
+        desc = __('cardtocard_*_from_*_to_*', {
+          item1: `${asPrice(amount)} ${__('currency')}`,
           item2: `${fromCard}`,
           item3: `${toCard}`,
         })
@@ -108,8 +108,8 @@ export default class TransactionsController {
         if (lastTransaction) {
           return response.status(Helper.ERROR_STATUS).json({
             status: 'danger',
-            message: Helper.t('gap_requests_is_*', {
-              item: `${gapMinutes} ${Helper.t('minute')}`,
+            message: __('gap_requests_is_*', {
+              item: `${gapMinutes} ${__('minute')}`,
             }),
           })
         }
@@ -130,7 +130,7 @@ export default class TransactionsController {
         })
         return response.json({
           status: 'success',
-          message: Helper.t('request_registered_successfully'),
+          message: __('request_registered_successfully'),
         })
 
         break
@@ -142,9 +142,9 @@ export default class TransactionsController {
         if (!winWheel || winWheel.active != 1) {
           return response.status(Helper.ERROR_STATUS).json({
             status: 'danger',
-            message: Helper.t('*_is_*', {
-              item1: Helper.t('winwheel'),
-              item2: Helper.t('inactive'),
+            message: __('*_is_*', {
+              item1: __('winwheel'),
+              item2: __('inactive'),
             }),
           })
         }
@@ -163,13 +163,13 @@ export default class TransactionsController {
           const min = Math.floor(diffInMinutes % 60)
           return response.status(Helper.ERROR_STATUS).json({
             status: 'danger',
-            message: Helper.t('try_*_*_later', { item1: `${hour}`, item2: `${min}` }),
+            message: __('try_*_*_later', { item1: `${hour}`, item2: `${min}` }),
           })
         }
         const randomIndex = Math.floor(Math.random() * winWheel.labels.length)
-        const winLabel = parseInt(`${winWheel.labels[randomIndex]}`)
+        const winLabel = Number.parseInt(`${winWheel.labels[randomIndex]}`)
 
-        desc = Helper.t('winwheel_prize_*', { item: Helper.asPrice(`${winLabel}`) })
+        desc = __('winwheel_prize_*', { item: asPrice(`${winLabel}`) })
 
         const transaction = await Transaction.create({
           agencyId: user?.agencyId,
@@ -186,7 +186,7 @@ export default class TransactionsController {
           info: null,
           payedAt: now,
         })
-        let msg = Helper.t('no_prize_unfortunately')
+        let msg = __('no_prize_unfortunately')
         if (winLabel > 0) {
           const financial = await UserFinancial.firstOrNew({
             userId: transaction.toId,
@@ -203,7 +203,7 @@ export default class TransactionsController {
             balance: (agencyFinancial.balance ?? 0) - transaction.amount,
           })
           await agencyFinancial.save()
-          msg = Helper.t('wallet_added_*', { item: `${winLabel}` })
+          msg = __('wallet_added_*', { item: `${winLabel}` })
         }
         return response.json({
           status: 'success',
@@ -231,13 +231,13 @@ export default class TransactionsController {
           const min = Math.floor(diffInMinutes % 60)
           return response.status(Helper.ERROR_STATUS).json({
             status: 'danger',
-            message: Helper.t('try_*_*_later', { item1: `${hour}`, item2: `${min}` }),
+            message: __('try_*_*_later', { item1: `${hour}`, item2: `${min}` }),
           })
         }
         if (!user.fullName) {
           return response.status(Helper.ERROR_STATUS).json({
             status: 'danger',
-            message: Helper.t('add_from_profile_*', { item: Helper.t('name') }),
+            message: __('add_from_profile_*', { item: __('name') }),
           })
         }
         const financial = await UserFinancial.firstOrCreate({
@@ -247,21 +247,21 @@ export default class TransactionsController {
         if (!financial.card) {
           return response.status(Helper.ERROR_STATUS).json({
             status: 'danger',
-            message: Helper.t('add_from_profile_*', { item: Helper.t('card') }),
+            message: __('add_from_profile_*', { item: __('card') }),
           })
         }
         if (financial.balance < amount) {
           return response.status(Helper.ERROR_STATUS).json({
             status: 'danger',
-            message: Helper.t('messages.validate.max', {
-              item: Helper.t('amount'),
-              value: `${Helper.asPrice(`${amount}`)} ${Helper.t('currency')}`,
+            message: __('messages.validate.max', {
+              item: __('amount'),
+              value: `${Helper.asPrice(`${amount}`)} ${__('currency')}`,
             }),
           })
         }
-        desc = Helper.t('withdraw_request_*_*_to_*', {
+        desc = __('withdraw_request_*_*_to_*', {
           item1: Helper.asPrice(`${amount}`),
-          item2: `${Helper.t('user')} ${user?.fullName} (${user?.id})`,
+          item2: `${__('user')} ${user?.fullName} (${user?.id})`,
           item3: financial.card,
         })
 
@@ -281,7 +281,7 @@ export default class TransactionsController {
         })
         return response.json({
           status: 'success',
-          message: Helper.t('request_registered_successfully'),
+          message: __('request_registered_successfully'),
         })
     }
 
@@ -319,7 +319,7 @@ export default class TransactionsController {
 
     if (market && ['bazaar', 'myket'].includes(market)) {
       if (!(await this.checkPayment(sku, token, market))) {
-        return response.json({ status: 'danger', message: Helper.t('problem_confirm_pay') })
+        return response.json({ status: 'danger', message: __('problem_confirm_pay') })
       }
 
       // const transaction = await Transaction.create({
@@ -341,11 +341,11 @@ export default class TransactionsController {
           : new Transaction()
 
       const now = transaction.payedAt ?? DateTime.now()
-      const jalaliDate = Helper.toShamsi(now, true)
+      const jalaliDate = __oShamsi(now, true)
 
       status = paymentResponse.status
       const orderToken = paymentResponse.order_id
-      const user = await Helper.TRANSACTION_MODELS[transaction?.fromType]?.find(transaction?.fromId)
+      const user = await __RANSACTION_MODELS[transaction?.fromType]?.find(transaction?.fromId)
       const userType = user instanceof Admin ? 'admin' : 'user'
 
       const column = `${transaction.toType}Id`
@@ -372,18 +372,13 @@ export default class TransactionsController {
 
       return inertia.render('Invoice', {
         lang: {
-          title:
-            paymentResponse.status === 'success'
-              ? Helper.t('payment_success')
-              : Helper.t('payment_fail'),
-          pay_id: Helper.t('pay_id'),
-          pay_time: Helper.t('time'),
-          pay_type: Helper.t('pay_type'),
-          amount: Helper.t('amount'),
-          return: transaction.appVersion
-            ? Helper.t('return_to_application')
-            : Helper.t('return_to_site'),
-          currency: Helper.t('currency'),
+          title: paymentResponse.status === 'success' ? __('payment_success') : __('payment_fail'),
+          pay_id: __('pay_id'),
+          pay_time: __('time'),
+          pay_type: __('pay_type'),
+          amount: __('amount'),
+          return: transaction.appVersion ? __('return_to_application') : __('return_to_site'),
+          currency: __('currency'),
         },
         now: jalaliDate,
         status: paymentResponse.status ?? 'danger',

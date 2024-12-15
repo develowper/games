@@ -1,10 +1,9 @@
 import { DateTime } from 'luxon'
-import jalaali from 'jalaali-js'
-import Helper from '#services/helper_service'
 import env from '#start/env'
 import axios from 'axios'
 import User from '../models/user.js'
 import Admin from '../models/admin.js'
+import {Helper} from "#services/helper_service";
 
 export default class Telegram {
   public static async log(to: string, type: string, data: any) {
@@ -51,7 +50,7 @@ export default class Telegram {
           if (data.amount > 0) msg += '🟢🟢🟢🛒 یک تراکنش انجام شد\n'
           else msg += '🟠🟠🟠🛒 یک پلن خریداری شد\n'
           msg += `🆔 شناسه کاربر: ${us?.id}\n`
-          msg += `👤 نام\n${us?.fullname}\n`
+          msg += `👤 نام\n${us?.fullName}\n`
           msg += `📱 شماره تماس\n${us?.phone}\n`
           msg += `⭐ نوع\n${data.title}\n`
           msg += `📊 مقدار\n${data.amount.toLocaleString()}\n`

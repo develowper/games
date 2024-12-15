@@ -1,9 +1,8 @@
-import User from "#models/user";
+import User from '#models/user'
 
 declare module '@adonisjs/core/types' {
-
   interface EventsList {
-    'user:registered': User,
+    'user:registered': User
     'room-update': any
   }
 }

@@ -12,6 +12,7 @@
       "": ""
     },
     "messages": {
+      "string": "{field} ضروری است",
       "required": "{field} ضروری است",
       "unique": "{field} تکراری است",
       "database.unique": "{field} تکراری است",

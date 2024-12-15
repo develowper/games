@@ -2,7 +2,7 @@
 
 import type { HttpContext } from '@adonisjs/core/http'
 import Room from '#models/room'
-import __ from '#services/helper_service'
+import __, { asPrice, sendError } from '#services/helper_service'
 import UserFinancial from '#models/user_financial'
 import { inject } from '@adonisjs/core'
 import Helper from '#services/helper_service'
@@ -41,7 +41,7 @@ export default class RoomController {
         .status(Helper.ERROR_STATUS)
         .json({ message: i18n.t('messages.not_found_*', { item: i18n.t('messages.game_room') }) })
     }
-    // const settings = await Helper.getSettings([
+    // const settings = await  getSettings([
     //   'max_user_room_cards',
     //   'max_room_cards',
     //   'row_win_percent',
@@ -51,9 +51,7 @@ export default class RoomController {
     const userBeforeCardCounts = room.getUserCardCount()
 
     if (userBeforeCardCounts + cardCount > room.maxUserCardsCount) {
-      return Helper.sendError(
-        i18n.t('messages.validate.max_cards', { value: room.maxUserCardsCount })
-      )
+      return sendError(i18n.t('messages.validate.max_cards', { value: room.maxUserCardsCount }))
     }
 
     const userFinancials = await UserFinancial.firstOrCreate({ userId: user?.id }, { balance: 0 })
@@ -65,10 +63,10 @@ export default class RoomController {
     if (userFinancials.balance < totalPrice) {
       // userFinancials.balance = 100000
       // userFinancials.save()
-      return Helper.sendError(
+      return sendError(
         i18n.t('messages.validate.min', {
           item: i18n.t('messages.wallet'),
-          value: `${Helper.asPrice(totalPrice)} ${i18n.t('messages.currency')}`,
+          value: `${asPrice(totalPrice)} ${i18n.t('messages.currency')}`,
         })
       )
     }

@@ -19,8 +19,7 @@ export default class SocketIo {
   public wsIo
   public static timer
   constructor(/*protected app: ApplicationService*/) {
-    console.log('*********   socket service created ')
-
+    // console.log('*********   socket service created ')
     // console.log(Daberna.makeCard())
   }
 
@@ -96,7 +95,7 @@ export default class SocketIo {
       this.wsIo?.emit(data.event, data)
     })
 
-    SocketIo.setTimeChecker()
+    // SocketIo.setTimeChecker()
   }
   public async emitToRoom(room: string, event: string, data: any) {
     // var room = this.wsIo.sockets.adapter.rooms[room]
@@ -129,7 +128,7 @@ export default class SocketIo {
       const user = await auth.authenticate()
       return user
     } catch (error) {
-      console.log(error)
+      // console.log(error)
       socket.disconnect()
     }
   }

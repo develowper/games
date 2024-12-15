@@ -32,5 +32,5 @@ export default loggerConfig
  * in your application.
  */
 declare module '@adonisjs/core/types' {
-  export interface LoggersList extends InferLoggers<typeof loggerConfig> { }
+  export interface LoggersList extends InferLoggers<typeof loggerConfig> {}
 }

@@ -1,5 +1,5 @@
 import { BaseSchema } from '@adonisjs/lucid/schema'
-import Helper from '../../app/services/helper_service.js'
+import Helper, {createSettings} from '../../app/services/helper_service.js'
 
 export default class extends BaseSchema {
   protected tableName = 'settings'
@@ -14,7 +14,7 @@ export default class extends BaseSchema {
       table.timestamps()
     })
 
-    Helper.createSettings()
+     createSettings()
   }
 
   async down() {

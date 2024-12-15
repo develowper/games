@@ -1,7 +1,9 @@
 import { defineConfig } from '@adonisjs/inertia'
 import type { InferSharedProps } from '@adonisjs/inertia/types'
-import Helper from "#services/helper_service";
-
+import { getLangFile } from '#services/helper_service'
+import Admin from '#models/admin'
+import AgencyFinancial from '#models/agency_financial'
+import Agency from '#models/agency'
 
 const inertiaConfig = defineConfig({
   /**
@@ -13,30 +15,55 @@ const inertiaConfig = defineConfig({
    * Data that should be shared with all rendered pages
    */
   sharedData: {
-    // user: (ctx) => ctx.auth?.user,
-    // notification: (ctx) => ctx.session.flashMessages.get('notification'),
-    errors: (ctx) => ctx.session?.flashMessages.get('errors') ?? {},
-    'langFile': Helper.getLangFile(),
-    __: (ctx) => {
+    auth: async (ctx) => {
       return {
-        ...ctx.i18n,
-        locale: ctx.i18n.locale,
+        user: ctx.auth?.user ?? {},
+        agencyFinancial:
+          ctx?.auth?.user instanceof Admin
+            ? await AgencyFinancial.findBy('agency_id', ctx?.auth?.user.agencyId)
+            : {},
       }
     },
+    agency: async (ctx) =>
+      ctx?.auth?.user instanceof Admin
+        ? ((await Agency.query()
+            .preload('financial')
+            .where('id', ctx?.auth?.user.agencyId)
+            .first()) ?? { financial: {} })
+        : { financial: {} },
+
+    flash: (ctx) => {
+      return {
+        message: ctx.session?.flashMessages.get('flash_message'),
+        status: ctx.session?.flashMessages.get('flash_status'),
+      }
+    },
+    // notification: (ctx) => ctx.session.flashMessages.get('notification'),
+    errors: (ctx) => ctx.session?.flashMessages.get('errors') ?? {},
+    language: (ctx) => getLangFile(ctx),
+    isAdmin: (ctx) => ctx?.auth?.user instanceof Admin,
+    accesses: (ctx) => ctx?.auth?.user?.getAccesses(),
+    pageItems: [24, 50, 100],
+    // __: (ctx) => {
+    //   return {
+    //     ...ctx.i18n,
+    //     locale: ctx.i18n.locale,
+    //   }
+    // },
   },
 
   /**
    * Options for the server-side rendering
    */
   ssr: {
-    enabled: true,
-    entrypoint: 'inertia/app/ssr.ts'
-  }
+    enabled: false,
+    entrypoint: 'inertia/app/ssr.ts',
+    pages: (ctx, page) => !page.startsWith('admin'),
+  },
 })
 
 export default inertiaConfig
 
 declare module '@adonisjs/inertia/types' {
-  export interface SharedProps extends InferSharedProps<typeof inertiaConfig> {
-  }
+  export interface SharedProps extends InferSharedProps<typeof inertiaConfig> {}
 }

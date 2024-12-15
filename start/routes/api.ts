@@ -8,9 +8,7 @@ const RoomController = () => import('../../app/controllers/api/room_controller.j
 const TransactionController = () => import('../../app/controllers/api/transaction_controller.js')
 
 export default () => {
-
   router.any('api/transaction/done', [TransactionController, 'done']).as('api.transaction.done')
-
 
   //auth
   router
@@ -23,16 +21,15 @@ export default () => {
       router.post('room/join', [RoomController, 'payAndJoin']).as('room.join')
       router.post('transaction/create', [TransactionController, 'create']).as('transaction.create')
       router.get('transaction/search', [TransactionController, 'search']).as('transaction.search')
-
-
     })
     // .use(middleware.checkServerStatus)
     .use(
-      middleware.auth({
+      middleware.auth_user({
         guards: ['api'],
       })
-    ).as('api.user').prefix('api')
-
+    )
+    .as('api.user')
+    .prefix('api')
 
   //guest
   router
@@ -42,12 +39,10 @@ export default () => {
       router.post('user/forget', [UserController, 'forget']).as('forget')
     })
     .use(
-      middleware.guest({
+      middleware.guest_user({
         guards: ['api'],
       })
     )
     .as('api.user')
     .prefix('api')
-
-
 }

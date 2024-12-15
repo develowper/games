@@ -16,7 +16,7 @@ scheduler
 
 app.ready(async () => {
   const mySocket = await app.container.make('MySocket')
-  console.log(mserver.getNodeServer())
+  // console.log(mserver.getNodeServer())
 
   scheduler
     .call(async () => {
