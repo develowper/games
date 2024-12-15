@@ -17,7 +17,7 @@ export default defineConfig({
     }),
     vue(),
     adonisjs({
-      entrypoints: ['inertia/app/app.ts', 'inertia/css/app.css'],
+      entrypoints: ['inertia/app/app.ts', 'inertia/css/app.css', 'inertia/js/scripts.css'],
       reload: ['resources/views/**/*.edge', 'resources/lang/**'],
     }),
     Components({
