@@ -1,11 +1,11 @@
 <script>
-import ApplicationLogo from '~/Components/ApplicationLogo.vue'
+import ApplicationLogo from '~/components/ApplicationLogo.vue'
 import { Head, Link } from '@inertiajs/vue3'
 import mitt from 'mitt'
-import Alert from '~/Components/Alert.vue'
-import Dialog from '~/Components/Dialog.vue'
-import Toast from '~/Components/Toast.vue'
-import LoadingIcon from '~/Components/LoadingIcon.vue'
+import Alert from '~/components/Alert.vue'
+import Dialog from '~/components/Dialog.vue'
+import Toast from '~/components/Toast.vue'
+import LoadingIcon from '~/components/LoadingIcon.vue'
 import { route } from '@izzyjs/route/client'
 import { __ } from '../js/mixins.js'
 

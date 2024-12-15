@@ -184,16 +184,16 @@
 </template>
 
 <script>
-import LoadingIcon from '~/Components/LoadingIcon.vue'
-import Image from '~/Components/Image.vue'
-import Scaffold from '~/Layouts/Scaffold.vue'
+import LoadingIcon from '~/components/LoadingIcon.vue'
+import Image from '~/components/Image.vue'
+import Scaffold from '~/layouts/Scaffold.vue'
 import { Head, Link } from '@inertiajs/vue3'
 import heroImage from '~/images/hero.jpg'
-import PrimaryButton from '~/Components/PrimaryButton.vue'
-import SecondaryButton from '~/Components/SecondaryButton.vue'
+import PrimaryButton from '~/components/PrimaryButton.vue'
+import SecondaryButton from '~/components/SecondaryButton.vue'
 import { EyeIcon } from '@heroicons/vue/24/outline'
 import { PencilIcon } from '@heroicons/vue/24/solid'
-import SearchInput from '~/Components/SearchInput.vue'
+import SearchInput from '~/components/SearchInput.vue'
 import { Swiper, SwiperSlide } from 'swiper/vue'
 import { Navigation, Pagination, Scrollbar, A11y } from 'swiper/modules'
 import 'swiper/css'

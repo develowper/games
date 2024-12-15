@@ -75,12 +75,12 @@
 </template>
 
 <script>
-import Scaffold from '~/Layouts/Scaffold.vue'
-import SecondaryButton from '~/Components/SecondaryButton.vue'
-import PrimaryButton from '~/Components/PrimaryButton.vue'
+import Scaffold from '~/layouts/Scaffold.vue'
+import SecondaryButton from '~/components/SecondaryButton.vue'
+import PrimaryButton from '~/components/PrimaryButton.vue'
 import { Head, Link } from '@inertiajs/vue3'
-import LoadingIcon from '~/Components/LoadingIcon.vue'
-import Image from '~/Components/Image.vue'
+import LoadingIcon from '~/components/LoadingIcon.vue'
+import Image from '~/components/Image.vue'
 import {} from '@heroicons/vue/24/outline'
 import { EyeIcon, CurrencyDollarIcon, UserIcon } from '@heroicons/vue/24/solid'
 

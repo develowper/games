@@ -114,7 +114,7 @@
 </template>
 
 <script>
-import Scaffold from '~/Layouts/Scaffold.vue'
+import Scaffold from '~/layouts/Scaffold.vue'
 import { Head, Link } from '@inertiajs/vue3'
 import heroImage from '~/images/hero.jpg'
 

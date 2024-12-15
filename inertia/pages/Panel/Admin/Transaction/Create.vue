@@ -23,7 +23,7 @@
 </template>
 
 <script>
-import Panel from '~/Layouts/Panel.vue'
+import Panel from '~/layouts/Panel.vue'
 import { Head, Link } from '@inertiajs/vue3'
 import { ChevronDownIcon, HomeIcon } from '@heroicons/vue/24/outline'
 

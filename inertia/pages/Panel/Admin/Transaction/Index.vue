@@ -353,9 +353,9 @@
 </template>
 
 <script>
-import Panel from '~/Layouts/Panel.vue'
+import Panel from '~/layouts/Panel.vue'
 import { Head, Link, useForm } from '@inertiajs/vue3'
-import Pagination from '~/Components/Pagination.vue'
+import Pagination from '~/components/Pagination.vue'
 import {
   Bars2Icon,
   MagnifyingGlassIcon,
@@ -364,8 +364,8 @@ import {
   XMarkIcon,
   ArrowsUpDownIcon,
 } from '@heroicons/vue/24/outline'
-import Image from '~/Components/Image.vue'
-import Tooltip from '~/Components/Tooltip.vue'
+import Image from '~/components/Image.vue'
+import Tooltip from '~/components/Tooltip.vue'
 import { Dropdown } from 'tw-elements'
 import { __, asPrice, toShamsi, cropText } from '~/js/mixins.js'
 import { route } from '@izzyjs/route/client'

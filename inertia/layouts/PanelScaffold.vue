@@ -242,12 +242,12 @@
 
 <script>
 import { Head, Link } from '@inertiajs/vue3'
-import Navbar from '~/Components/Navbar.vue'
-import Footer from '~/Components/Footer.vue'
-import Toast from '~/Components/Toast.vue'
-import Image from '~/Components/Image.vue'
-import Dialog from '~/Components/Dialog.vue'
-import App from '~/Layouts/App.vue'
+import Navbar from '~/components/Navbar.vue'
+import Footer from '~/components/Footer.vue'
+import Toast from '~/components/Toast.vue'
+import Image from '~/components/Image.vue'
+import Dialog from '~/components/Dialog.vue'
+import App from '~/layouts/App.vue'
 import {
   Bars3Icon,
   BellAlertIcon,
@@ -257,10 +257,10 @@ import {
 import { provide, onMounted, getCurrentInstance } from 'vue'
 import { router } from '@inertiajs/vue3'
 import mitt from 'mitt'
-import Alert from '~/Components/Alert.vue'
-import LoadingIcon from '~/Components/LoadingIcon.vue'
-import NotificaionButton from '~/Components/NotificaionButton.vue'
-import WalletCharge from '~/Components/WalletCharge.vue'
+import Alert from '~/components/Alert.vue'
+import LoadingIcon from '~/components/LoadingIcon.vue'
+import NotificaionButton from '~/components/NotificaionButton.vue'
+import WalletCharge from '~/components/WalletCharge.vue'
 import favicon from '~/images/logo.png'
 import { __, dir, isAdmin, showToast } from '~/js/mixins.js'
 import { route } from '@izzyjs/route/client'

@@ -235,7 +235,7 @@
 </template>
 
 <script>
-import Panel from '~/Layouts/Panel.vue'
+import Panel from '~/layouts/Panel.vue'
 
 import { Head, Link } from '@inertiajs/vue3'
 
@@ -263,7 +263,7 @@ import {
   ShoppingBagIcon,
 } from '@heroicons/vue/24/outline'
 import { inject, watchEffect } from 'vue'
-import Chart from '~/Components/Chart.vue'
+import Chart from '~/components/Chart.vue'
 
 export default {
   setup(props) {

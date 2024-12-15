@@ -355,7 +355,7 @@
 </template>
 
 <script>
-import Panel from '~/Layouts/Panel.vue'
+import Panel from '~/layouts/Panel.vue'
 
 import { Head, Link } from '@inertiajs/vue3'
 
@@ -384,8 +384,8 @@ import {
   BanknotesIcon,
 } from '@heroicons/vue/24/outline'
 import { inject, watchEffect } from 'vue'
-import Chart from '~/Components/Chart.vue'
-import TomanIcon from '~/Components/TomanIcon.vue'
+import Chart from '~/components/Chart.vue'
+import TomanIcon from '~/components/TomanIcon.vue'
 import { __, asPrice, getAgency, hasAccess, isAdmin } from '~/js/mixins.js'
 import { route } from '@izzyjs/route/client'
 export default {
