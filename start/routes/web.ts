@@ -17,12 +17,12 @@ import db from '@adonisjs/lucid/services/db'
 
 export default function () {
   router.get('test', async () => {
-    return
     const room = await Room.first()
     room.players = JSON.stringify([
-      { user_id: 2, username: 'mojraj', user_role: 'us', card_count: 100 },
-      { user_id: 3, username: 'mojraj2', user_role: 'us', card_count: 100 },
+      { user_id: 2, username: 'mojraj', user_role: 'us', card_count: 1 },
+      { user_id: 3, username: 'mojraj2', user_role: 'us', card_count: 1 },
     ])
+    room.cardCount = 2
     room.playerCount = 2
     room.save()
     return Daberna.makeGame(room)

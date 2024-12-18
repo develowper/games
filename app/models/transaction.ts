@@ -63,7 +63,7 @@ export default class Transaction extends BaseModel {
       payId: `${Date.now()}`,
       payedAt: DateTime.now(),
       title:
-        'title' ??
+        title ??
         __('*_from_*_to_*', {
           item1: __(type),
           item2: `${__(fromType)} (${fromId})`,

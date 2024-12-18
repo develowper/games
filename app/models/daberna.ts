@@ -86,7 +86,7 @@ export default class Daberna extends BaseModel {
       return null
     }
     const info = Helper.DABERNA
-    const numbers: number[] =  shuffle( range(info.min, info.max))
+    const numbers: number[] = shuffle(range(info.min, info.max))
 
     const boards = []
     // for (let i = 0; i < 10000; i++) {
