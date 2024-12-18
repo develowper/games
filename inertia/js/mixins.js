@@ -1,6 +1,9 @@
-import { usePage } from '@inertiajs/vue3'
+import { router, usePage } from '@inertiajs/vue3'
 import { inject, ref, defineEmits } from 'vue'
-
+import mitt from 'mitt'
+import exp from 'node:constants'
+import { Dropdown } from 'tw-elements'
+export const emitter = mitt()
 export default {
   // emits: ['showToast'],
   // setup(props, ctx) {
@@ -51,9 +54,6 @@ export default {
       if ($lang == 'en') return 'ltr'
       else return 'rtl'
     },
-    log: (str) => {
-      console.log(str)
-    },
 
     getCategory(id) {
       if (id == null || usePage().props.categories == null) return ''
@@ -102,23 +102,7 @@ export default {
         if (array[idx].name == id)
           return { name: this.__(array[idx].name), color: array[idx].color || 'primary' }
     },
-    getErrors(error) {
-      if (error.response) {
-        if (error.response.status == 419)
-          // location.reload();
-          null
-        if (error.response.data && error.response.data.errors)
-          return Object.values(error.response.data.errors).join('<br/>')
-        if (error.response.data && error.response.data.message)
-          if (error.response.data.message == 'Unauthenticated.')
-            return this.__('first_login_or_register')
-        return error.response.data.message
-      } else if (error.request) {
-        return error.request
-      } else {
-        return error.message
-      }
-    },
+
     hasAccess(role) {
       return usePage().props.accesses == 'all' || usePage().props.accesses.indexOf(role) >= 0
     },
@@ -150,33 +134,7 @@ export default {
     replaceAll(str, find, replace) {
       return str.replace(new RegExp(find, 'g'), replace)
     },
-    copyToClipboard(text) {
-      var textArea = document.createElement('textarea')
-      textArea.value = text
 
-      // Avoid scrolling to bottom
-      textArea.style.top = '0'
-      textArea.style.left = '0'
-      textArea.style.position = 'fixed'
-
-      document.body.appendChild(textArea)
-      textArea.focus()
-      textArea.select()
-
-      try {
-        var successful = document.execCommand('copy')
-        this.showToast('success', this.__('copy_to_clipboard_successfully'))
-      } catch (err) {}
-
-      document.body.removeChild(textArea)
-    },
-    myMap(arr, callbackFn) {
-      var tmp = []
-      for (var i = 0; i < arr.length; i++) {
-        tmp.push(callbackFn(arr[i]))
-      }
-      return tmp
-    },
     scrollTo(el) {
       window.scroll({
         top: document.querySelector(el) ? document.querySelector(el).offsetTop : 0,
@@ -212,18 +170,7 @@ export default {
 
       return array
     },
-    initTableDropdowns() {
-      const dropdownElementList = [].slice.call(
-        document.querySelectorAll('td [data-te-dropdown-toggle-ref]')
-      )
-      window.dropdownList = dropdownElementList.map((dropdownToggleEl) => {
-        let d = new Dropdown(dropdownToggleEl)
-        dropdownToggleEl.addEventListener('click', function (event) {
-          d.toggle()
-        })
-        return d
-      })
-    },
+
     initTableModals() {
       const modalElementList = [].slice.call(document.querySelectorAll('td .modal'))
       window.modalElementList = modalElementList.map((modalElementList) => {
@@ -274,7 +221,7 @@ export function __(key, replace = {}) {
   var translation = $lang[key] ? $lang[key] : key
 
   Object.keys(replace).forEach(function (key) {
-    translation = translation.replace(':' + key, replace[key])
+    translation = translation.replace(`{${key}}`, replace[key])
   })
 
   return translation
@@ -285,10 +232,10 @@ export function isAdmin() {
 export function hasAccess(role) {
   return usePage().props.accesses == 'all' || usePage().props.accesses.indexOf(role) >= 0
 }
-export function toShamsi(day, time = false) {
+export function toShamsi(day = null, time = false) {
   var t = new Date().getTime()
   if (!day) return ''
-  else var today = new Date(day)
+  else var today = day == 'now' ? new Date() : new Date(day)
   let options = {
     hour12: false,
 
@@ -312,16 +259,16 @@ export function toShamsi(day, time = false) {
   return f2e(today.toLocaleDateString('fa-IR', options))
 }
 export function showToast(type, message) {
-  this.emitter.emit('showToast', { type, message })
+  emitter.emit('showToast', { type, message })
 }
 export function showAlert(type, message) {
-  this.emitter.emit('showAlert', { type, message })
+  emitter.emit('showAlert', { type, message })
 }
 export function showDialog(type, message, button, action, items = null) {
-  this.emitter.emit('showDialog', { type, message, button, action, items })
+  emitter.emit('showDialog', { type, message, button, action, items })
 }
 export function isLoading(loading) {
-  this.emitter.emit('loading', loading)
+  emitter.emit('loading', loading)
 }
 export function asPrice(price) {
   if (!price) return 0
@@ -336,4 +283,128 @@ export function getAgency(id) {
 }
 export function cropText(str, len, trailing = '...') {
   return str && str.length >= len ? `${str.substring(0, len)}${trailing}` : str
+}
+export function initTableDropdowns() {
+  const dropdownElementList = [].slice.call(
+    document.querySelectorAll('td [data-te-dropdown-toggle-ref]')
+  )
+  window.dropdownList = dropdownElementList.map((dropdownToggleEl) => {
+    let d = new Dropdown(dropdownToggleEl)
+    dropdownToggleEl.addEventListener('click', function (event) {
+      d.toggle()
+    })
+    return d
+  })
+}
+export function getUrlParams(url = null) {
+  const queryString = url ? new URL(url).search : window.location.search
+  const urlParams = new URLSearchParams(queryString)
+  const params = Object.fromEntries(urlParams.entries())
+  return params
+}
+export function log(str) {
+  console.log(str)
+}
+export function setUrlParams(params = {}, url = window.location.href) {
+  // Parse the provided URL or use the current window location
+  const urlObj = new URL(url)
+
+  for (let i = 0; i < Object.entries(params).length; i++) {
+    const [key, value] = Object.entries(params)[i]
+    if (value === null || value === undefined) {
+      urlObj.searchParams.delete(key)
+    } else {
+      urlObj.searchParams.set(key, value)
+    }
+  }
+  if (Object.entries(params).length == 0) {
+    urlObj.search = ''
+  }
+  if (typeof window !== 'undefined') {
+    window.history.pushState({}, '', urlObj.toString())
+    // router.visit(`${window.location.pathname}?${urlObj.searchParams.toString()}`, {
+    //   preserveState: true,
+    //   preserveScroll: true,
+    //   replace: true,
+    //   only: [],
+    // })
+  }
+
+  return urlObj.toString()
+}
+export function getError(error) {
+  if (error.response) {
+    if (error.response.status == 419)
+      // location.reload();
+      null
+    if (error.response.data && error.response.data.errors)
+      return myMap(error.response.data.errors, (item) => item.message).join('<br/>')
+    if (error.response.data && error.response.data.message)
+      if (error.response.data.message == 'Unauthenticated.')
+        return this.__('first_login_or_register')
+    return error.response.data.message
+  } else if (error.request) {
+    return error.request
+  } else {
+    return error.message
+  }
+}
+export function getErrors(error) {
+  if (error.response) {
+    if (error.response.status == 419)
+      // location.reload();
+      null
+    if (error.response.data && error.response.data.errors)
+      return error.response.data.errors.reduce((acc, item) => {
+        acc[item.field] = item.message // Set key as field, value as message
+        return acc
+      }, {})
+    if (error.response.data && error.response.data.message)
+      if (error.response.data.message == 'Unauthenticated.')
+        return this.__('first_login_or_register')
+    return error.response.data.message
+  } else if (error.request) {
+    return error.request
+  } else {
+    return error.message
+  }
+}
+export function myMap(arr, callbackFn) {
+  var tmp = []
+  for (var i = 0; i < arr.length; i++) {
+    tmp.push(callbackFn(arr[i]))
+  }
+  return tmp
+}
+export function copyToClipboard(text) {
+  if (navigator.clipboard && window.isSecureContext) {
+    // Modern asynchronous clipboard API
+    return navigator.clipboard
+      .writeText(text)
+      .then(() => {
+        this.showToast('success', this.__('copy_to_clipboard_successfully'))
+        return
+      })
+      .catch((err) => {
+        // console.error('Failed to copy text: ', err);
+      })
+  }
+  var textArea = document.createElement('textarea')
+  textArea.value = text
+
+  // Avoid scrolling to bottom
+  textArea.style.top = '0'
+  textArea.style.left = '0'
+  textArea.style.position = 'fixed'
+
+  document.body.appendChild(textArea)
+  textArea.focus()
+  textArea.select()
+
+  try {
+    var successful = document.execCommand('copy')
+    this.showToast('success', this.__('copy_to_clipboard_successfully'))
+  } catch (err) {}
+
+  document.body.removeChild(textArea)
 }

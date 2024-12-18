@@ -17,7 +17,7 @@ const inertiaConfig = defineConfig({
   sharedData: {
     auth: async (ctx) => {
       return {
-        user: ctx.auth?.user ?? {},
+        user: ctx.auth?.user,
         agencyFinancial:
           ctx?.auth?.user instanceof Admin
             ? await AgencyFinancial.findBy('agency_id', ctx?.auth?.user.agencyId)
@@ -33,10 +33,7 @@ const inertiaConfig = defineConfig({
         : { financial: {} },
 
     flash: (ctx) => {
-      return {
-        message: ctx.session?.flashMessages.get('flash_message'),
-        status: ctx.session?.flashMessages.get('flash_status'),
-      }
+      return ctx.session?.flashMessages.get('notification') ?? {}
     },
     // notification: (ctx) => ctx.session.flashMessages.get('notification'),
     errors: (ctx) => ctx.session?.flashMessages.get('errors') ?? {},

@@ -42,8 +42,17 @@ class Helper {
   }
   public static TRANSACTION = {
     gateways: ['wallet', 'zarinpal'],
-    types: ['win', 'row_win', 'withdraw', 'charge', 'commission', 'winwheel', 'cardtocard'],
+    types: ['cardtocard', 'withdraw', 'win', 'row_win', 'charge', 'commission', 'winwheel'],
     fromTypes: ['agency', 'user', 'admin', 'daberna'],
+    colors: {
+      win: 'green',
+      row_win: 'teal',
+      withdraw: 'orange',
+      charge: 'lime',
+      commission: 'indigo',
+      winwheel: 'sky',
+      cardtocard: 'blue',
+    } as { [key: string]: string },
   }
   public static SUPPORT = {
     telegram: 'https://t.me/support_paris',
@@ -64,6 +73,10 @@ class Helper {
   public static USER_ROLES = ['us', 'bo']
   public static TELEGRAM_LOGS = ['72534783']
   public static ADMIN_ROLES = ['go', 'ad']
+  public static USER_STATUSES = [
+    { name: 'active', color: 'green' },
+    { name: 'inactive', color: 'red' },
+  ]
 
   public static TRANSACTION_MODELS: Record<string, typeof User | typeof Admin | typeof Agency> = {
     user: User,
@@ -361,6 +374,7 @@ class Helper {
   public static inertiaError(data) {
     throw new errors.E_VALIDATION_ERROR(data)
   }
+  public static inertiaSuccess(data) {}
   public static pluck(arr: any[], key: string | string[]) {
     if (!Array.isArray(key)) {
       return arr.map((i: any) => i[key as string])
@@ -427,6 +441,16 @@ class Helper {
     let $lang = usePage().props.language
     if ($lang == 'en') return 'ltr'
     else return 'rtl'
+  }
+
+  static randomString(length, characters) {
+    // Generate a random string using the characters provided
+    const result = []
+    for (let i = 0; i < length; i++) {
+      const randomIndex = Math.floor(Math.random() * characters.length)
+      result.push(characters[randomIndex])
+    }
+    return result.join('')
   }
 }
 // export default Helper

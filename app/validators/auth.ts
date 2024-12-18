@@ -1,7 +1,7 @@
 import vine from '@vinejs/vine'
 
-const passwordValidatorObject = vine.string().minLength(6)
-const usernameValidatorObject = vine
+export const passwordValidatorObject = vine.string().minLength(6)
+export const usernameValidatorObject = vine
   .string()
   .maxLength(30)
   .regex(/^(?=.*[A-Za-z])[A-Za-z\d]{5,}$/)
@@ -9,12 +9,14 @@ const usernameValidatorObject = vine
     const match = await db
       .from('users')
       .select('id')
-      .whereNot('id', fields.meta.id)
+      .where((query) => {
+        if (fields?.meta?.id) query.whereNot('id', fields.meta.id)
+      })
       .where('username', value)
       .first()
     return !match
   })
-const phoneValidatorObject = vine
+export const phoneValidatorObject = vine
   .string()
   .regex(/^09[0-9]+$/)
   .fixedLength(11)

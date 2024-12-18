@@ -1,7 +1,12 @@
 import { DateTime } from 'luxon'
-import { BaseModel, column } from '@adonisjs/lucid/orm'
+import { BaseModel, belongsTo, column, hasOne } from '@adonisjs/lucid/orm'
+import type { BelongsTo, HasOne } from '@adonisjs/lucid/types/relations'
+import User from '#models/user'
 
 export default class UserFinancial extends BaseModel {
+  @belongsTo(() => User)
+  declare user: BelongsTo<typeof User>
+
   @column({ isPrimary: true })
   declare id: number
 

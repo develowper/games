@@ -18,7 +18,11 @@ import {
   Modal,
 } from 'tw-elements'
 import axios, { isCancel, AxiosError } from 'axios'
-window.axios = axios.create()
+window.axios = axios.create({
+  headers: {
+    'Accept-Language': import.meta.VITE_LOCALE,
+  },
+})
 window.axios.interceptors.response.use(undefined, function (error) {
   error.handleGlobally = (error) => {
     return () => {

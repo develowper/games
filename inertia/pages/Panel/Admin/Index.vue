@@ -109,9 +109,12 @@
 
               <div class="justify-around flex">
                 <Link
-                  :href="route('admin.panel.transaction.index', { type: t.type })"
+                  method="get"
+                  as="button"
+                  :data="{ type: t.type, payed_at: 0 }"
+                  :href="`${route('admin.panel.transaction.index')}`"
                   v-for="(t, idx) in requests"
-                  class="align-middle flex flex-col text-center hover:scale-[105%] cursor-pointer"
+                  class="align-middle items-center flex flex-col text-center p-2 hover:bg-gray-100 hover:scale-[105%] cursor-pointer"
                 >
                   <span
                     :class="

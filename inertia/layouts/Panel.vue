@@ -130,6 +130,52 @@
             </ul>
           </li>
 
+          <!-- Users links -->
+          <li v-if="hasAccess('view_user')" class="relative">
+            <a
+              :class="{ 'bg-primary-50 text-primary-500': menuIsActive('admin.panel.user.*') }"
+              class="flex cursor-pointer items-center truncate px-3 py-4 text-[0.875rem] text-gray-600 outline-none transition duration-300 ease-linear hover:bg-primary-100 hover:text-inherit hover:outline-none focus:bg-slate-50 focus:text-inherit focus:outline-none active:bg-slate-50 active:text-inherit active:outline-none data-[te-sidenav-state-active]:text-inherit data-[te-sidenav-state-focus]:outline-none motion-reduce:transition-none"
+              data-te-sidenav-link-ref
+            >
+              <UserCircleIcon class="w-5 h-5" />
+              <span class="mx-2 text-sm"> {{ __('users') }} </span>
+              <span
+                class="right-0 ml-auto mr-[0.8rem] transition-transform duration-300 ease-linear motion-reduce:transition-none [&>svg]:text-gray-600"
+                data-te-sidenav-rotate-icon-ref
+              >
+                <ChevronDownIcon class="h-5 w-5" />
+              </span>
+            </a>
+            <ul
+              v-bind="{
+                'data-te-collapse-show': menuIsActive('admin.panel.user.*') ? true : null,
+              }"
+              class="!visible relative m-0 hidden list-none data-[te-collapse-show]:block"
+              data-te-collapse-item
+              data-te-sidenav-collapse-ref
+            >
+              <li class="relative ps-7">
+                <Link
+                  :href="route('admin.panel.user.index')"
+                  role="menuitem"
+                  :class="subMenuIsActive('admin.panel.user.index')"
+                  class="flex border-s-2 hover:border-primary-500 items-center p-2 text-sm transition-all duration-200 hover:text-primary-700 hover:bg-primary-50"
+                >
+                  <Bars2Icon class="w-5 h-5 mx-1" />
+                  {{ __('list') }}
+                </Link>
+                <Link
+                  :href="route('admin.panel.user.create')"
+                  role="menuitem"
+                  :class="subMenuIsActive('admin.panel.user.create')"
+                  class="flex border-s-2 hover:border-primary-500 items-center p-2 text-sm transition-all duration-200 hover:text-primary-700 hover:bg-primary-50"
+                >
+                  <PlusSmallIcon class="w-5 h-5 mx-1" />
+                  {{ __('new') }}
+                </Link>
+              </li>
+            </ul>
+          </li>
           <!-- Admins links -->
           <li v-if="false && hasAccess('view_admin')" class="relative">
             <a
@@ -178,7 +224,7 @@
           </li>
 
           <!-- Support links -->
-          <li class="relative">
+          <li v-if="false" class="relative">
             <a
               :class="{ 'bg-primary-50 text-primary-500': menuIsActive('admin.panel.ticket.*') }"
               class="flex cursor-pointer items-center truncate px-3 py-4 text-[0.875rem] text-gray-600 outline-none transition duration-300 ease-linear hover:bg-primary-100 hover:text-inherit hover:outline-none focus:bg-slate-50 focus:text-inherit focus:outline-none active:bg-slate-50 active:text-inherit active:outline-none data-[te-sidenav-state-active]:text-inherit data-[te-sidenav-state-focus]:outline-none motion-reduce:transition-none"
@@ -237,12 +283,11 @@
           </li>
 
           <!-- Financial links -->
-          <li
-            v-if="(false && hasAccess('view_financial')) || hasAccess('view_transaction')"
-            class="relative"
-          >
+          <li v-if="hasAccess('view_financial') || hasAccess('view_transaction')" class="relative">
             <a
-              :class="{ 'bg-primary-50 text-primary-500': menuIsActive('admin.panel.financial.*') }"
+              :class="{
+                'bg-primary-50 text-primary-500': menuIsActive('admin.panel.transaction.*'),
+              }"
               class="flex cursor-pointer items-center truncate rounded-[5px] px-3 py-4 text-[0.875rem] text-gray-600 outline-none transition duration-300 ease-linear hover:bg-primary-100 hover:text-inherit hover:outline-none focus:bg-slate-50 focus:text-inherit focus:outline-none active:bg-slate-50 active:text-inherit active:outline-none data-[te-sidenav-state-active]:text-inherit data-[te-sidenav-state-focus]:outline-none motion-reduce:transition-none"
               data-te-sidenav-link-ref
             >
@@ -257,7 +302,7 @@
             </a>
             <ul
               v-bind="{
-                'data-te-collapse-show': menuIsActive('admin.panel.financial.*') ? true : null,
+                'data-te-collapse-show': menuIsActive('admin.panel.transaction.*') ? true : null,
               }"
               class="!visible relative m-0 hidden list-none data-[te-collapse-show]:block"
               data-te-collapse-item
@@ -266,19 +311,19 @@
               <li class="relative ps-7">
                 <Link
                   v-if="false && hasAccess('view_financial')"
-                  :href="route('admin.panel.financial.index')"
+                  :href="route('admin.panel.transaction.user.index')"
                   role="menuitem"
-                  :class="subMenuIsActive('admin.panel.financial.index')"
+                  :class="subMenuIsActive('admin.panel.transaction.user.index')"
                   class="flex border-s-2 hover:border-primary-500 items-center p-2 text-sm transition-all duration-200 hover:text-primary-700 hover:bg-primary-50"
                 >
                   <Bars2Icon class="w-5 h-5 mx-1" />
-                  {{ __('list') }}
+                  {{ __('users') }}
                 </Link>
                 <Link
-                  v-if="false && hasAccess('view_transaction')"
-                  :href="route('admin.panel.financial.transaction.index')"
+                  v-if="hasAccess('view_transaction')"
+                  :href="route('admin.panel.transaction.index')"
                   role="menuitem"
-                  :class="subMenuIsActive('admin.panel.financial.transaction.index')"
+                  :class="subMenuIsActive('admin.panel.transaction.index')"
                   class="flex border-s-2 hover:border-primary-500 items-center p-2 text-sm transition-all duration-200 hover:text-primary-700 hover:bg-primary-50"
                 >
                   <Bars2Icon class="w-5 h-5 mx-1" />

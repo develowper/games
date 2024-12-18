@@ -16,6 +16,7 @@ import adminWebRoutes from './routes/admin_web.js'
 import adminApiRoutes from './routes/admin_api.js'
 
 router.get('storage/admins', () => {}).as('storage.admins')
+router.get('storage/users', () => {}).as('storage.users')
 
 webRoutes()
 apiRoutes()

@@ -65,7 +65,7 @@
               <div
                 class="flex items-center justify-center m-3 px-4 py-2 w-full hover:scale-110 focus:outline-none rounded font-bold cursor-pointer hover:bg-red-700 hover:text-red-100 bg-red-100 text-red-500 border duration-200 ease-in-out border-red-600 transition"
               >
-                {{ __('signout') }}
+                {{ __('logout') }}
                 <ArrowRightOnRectangleIcon class="h-5 w-5 text-red-500" />
               </div>
             </button>
@@ -88,7 +88,7 @@ import { Link } from '@inertiajs/vue3'
 import { UserIcon, ChevronDownIcon, ArrowRightOnRectangleIcon } from '@heroicons/vue/24/outline'
 import Image from '~/components/Image.vue'
 import { route } from '@izzyjs/route/client'
-
+import { __, isAdmin } from '~/js/mixins.js'
 export default {
   data() {
     return { chevronRotate: false, chevronShow: false, user: this.$page.props.auth.user }
@@ -109,7 +109,9 @@ export default {
   },
   watch: {},
   methods: {
+    __,
     route,
+    isAdmin,
     logout() {
       axios.post(route('logout')).then(() => {
         location.reload()

@@ -2,6 +2,7 @@
 import { onMounted, ref } from 'vue'
 import InputLabel from '~/components/InputLabel.vue'
 import InputError from '~/components/InputError.vue'
+import { __ } from '../js/mixins.js'
 
 defineProps([
   'modelValue',

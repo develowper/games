@@ -52,3 +52,4 @@ export const withdrawValidator = vine.compile(
     app_version: vine.string(),
   })
 )
+

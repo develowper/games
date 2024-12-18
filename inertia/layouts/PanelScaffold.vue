@@ -20,7 +20,7 @@
         </div>
         <!--      Dynamic Colors need to be added statically-->
         <div
-          class="hidden border-success-200 border-success-300 border-danger-200 border-danger-300 border-warning-200 border-warning-300 border-orange-200 border-orange-300 border-primary-200 text-danger-500 text-success-500 text-danger-700 text-success-700 text-danger bg-success-100 bg-orange-100 bg-danger-200 bg-danger-100 hover:bg-orange-200 hover:bg-danger hover:bg-danger-200 hover:bg-success-200 text-orange-500 text-purple-500 bg-purple-100 text-sky-500 bg-sky-100 text-rose-500 bg-rose-100 bg-orange-50 bg-purple-50 bg-gray-50 bg-gray-100 bg-gray-200 bg-gray-500 text-gray-500 bg-violet-50 bg-violet-100 bg-violet-200 bg-violet-500 text-violet-500"
+          class="hidden border-success-200 border-success-300 border-danger-200 border-danger-300 border-warning-200 border-warning-300 border-orange-200 border-orange-300 border-primary-200 text-danger-500 text-success-500 text-danger-700 text-success-700 text-danger bg-success-100 bg-orange-100 bg-danger-200 bg-danger-100 hover:bg-orange-200 hover:bg-danger hover:bg-danger-200 hover:bg-success-200 text-orange-500 bg-orange-500 text-purple-500 bg-purple-100 text-sky-500 bg-sky-100 text-rose-500 bg-rose-100 bg-orange-50 bg-purple-50 bg-gray-50 bg-gray-100 bg-gray-200 bg-gray-500 text-gray-500 bg-violet-50 bg-violet-100 bg-violet-200 bg-violet-500 text-violet-500 bg-lime-500 bg-indigo-500 bg-sky-500"
         ></div>
 
         <!-- Sidebar -->
@@ -205,7 +205,7 @@
                       <button
                         class="flex items-center justify-center p-4 m-3 w-full hover:scale-110 focus:outline-none px-4 py-2 rounded font-bold cursor-pointer hover:bg-red-700 hover:text-red-100 bg-red-100 text-red-500 border duration-200 ease-in-out border-red-600"
                       >
-                        {{ __('signout') }}
+                        {{ __('logout') }}
                         <ArrowRightOnRectangleIcon class="h-5 w-5 text-red-500" />
                       </button>
                     </Link>
@@ -256,15 +256,13 @@ import {
 } from '@heroicons/vue/24/outline'
 import { provide, onMounted, getCurrentInstance } from 'vue'
 import { router } from '@inertiajs/vue3'
-import mitt from 'mitt'
 import Alert from '~/components/Alert.vue'
 import LoadingIcon from '~/components/LoadingIcon.vue'
 import NotificaionButton from '~/components/NotificaionButton.vue'
 import WalletCharge from '~/components/WalletCharge.vue'
 import favicon from '~/images/logo.png'
-import { __, dir, isAdmin, showToast } from '~/js/mixins.js'
+import { __, dir, isAdmin, showToast, emitter } from '~/js/mixins.js'
 import { route } from '@izzyjs/route/client'
-export const emitter = mitt()
 
 export default {
   components: {

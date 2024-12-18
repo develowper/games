@@ -1,5 +1,3 @@
-// import type { HttpContext } from '@adonisjs/core/http'
-
 import type { HttpContext } from '@adonisjs/core/http'
 import {
   cardToCardValidator,
@@ -8,17 +6,66 @@ import {
   withdrawValidator,
 } from '#validators/transaction'
 import Transaction from '#models/transaction'
-import Helper, { __, asPrice } from '#services/helper_service'
 import { DateTime } from 'luxon'
-import User from '#models/user'
 import Admin from '#models/admin'
 import Telegram from '#services/telegram_service'
-import Setting from '../../models/setting.js'
-import UserFinancial from '../../models/user_financial.js'
+import Setting from '#models/setting'
+import UserFinancial from '#models/user_financial'
+import AgencyFinancial from '#models/agency_financial'
+import Helper, { toShamsi, __, asPrice } from '#services/helper_service'
 import collect from 'collect.js'
-import AgencyFinancial from '../../models/agency_financial.js'
-export default class TransactionsController {
+export default class TransactionController {
   //
+
+  async index({ request, inertia }: HttpContext) {
+    return inertia.render('Panel/Admin/Transaction/Index', {
+      types: collect(Helper.TRANSACTION.types).map((item: string) => {
+        return { name: item, color: Helper.TRANSACTION.colors[item] }
+      }),
+    })
+  }
+
+  async update({ request, response, auth }: HttpContext) {
+    const id = request.input('id')
+    const cmnd = request.input('cmnd')
+    const admin = auth.user as Admin
+    const data = await Transaction.find(id)
+
+    if (!data)
+      return response.badRequest({
+        status: 'danger',
+        message: __('not_found_*', {
+          item: `${__('transaction')}`,
+        }),
+      })
+    const amount = data.amount
+    // const af = await AgencyFinancial.findBy('agency_id', admin.agencyId)
+
+    switch (cmnd) {
+      case 'settlement':
+        const uf = (await UserFinancial.findBy('user_id', data.fromId)) as UserFinancial
+
+        if (data.payedAt)
+          return response.badRequest({
+            status: 'danger',
+            message: __('transaction_payed_before'),
+          })
+        if (data.type == 'cardtocard') {
+          uf.balance += amount
+        } else if (data.type == 'withdraw') {
+          uf.balance -= amount
+        }
+        data.payedAt = DateTime.now()
+        data.save()
+        uf.save()
+        return response.send({
+          status: 'success',
+          message: __('updated_successfully'),
+          payed_at: data.payedAt,
+        })
+        break
+    }
+  }
   async create({ request, response, auth, i18n }: HttpContext) {
     const amount = request.input('amount')
     const type = request.input('type')
@@ -341,11 +388,11 @@ export default class TransactionsController {
           : new Transaction()
 
       const now = transaction.payedAt ?? DateTime.now()
-      const jalaliDate = __oShamsi(now, true)
+      const jalaliDate = toShamsi(now, true)
 
       status = paymentResponse.status
       const orderToken = paymentResponse.order_id
-      const user = await __RANSACTION_MODELS[transaction?.fromType]?.find(transaction?.fromId)
+      const user = await Helper.TRANSACTION_MODELS[transaction?.fromType]?.find(transaction?.fromId)
       const userType = user instanceof Admin ? 'admin' : 'user'
 
       const column = `${transaction.toType}Id`
@@ -405,24 +452,34 @@ export default class TransactionsController {
   }
   async search({ request, response, auth }: HttpContext) {
     const user = auth.user
-    const userId = user?.id
+    const userId = request.input('user_id') ?? null
     const page = request.input('page') ?? 1
     const search = request.input('search')
     const type = request.input('type')
     const dir = request.input('dir') ?? 'DESC'
-    const sort = request.input('sort') ?? 'created_at'
+    const payedAt = request.input('payed_at')
+    const sort = request.input('order_by') ?? 'created_at'
 
     let query = Transaction.query()
-      .whereNotNull('payed_at')
-      .where((query) => {
+    // .whereNotNull('payed_at')
+    // .where((query) => {
+    //   query.where({ fromId: userId, fromType: 'user' }).orWhere({ toId: userId, toType: 'user' })
+    // })
+
+    if (userId) {
+      query.where((query) => {
         query.where({ fromId: userId, fromType: 'user' }).orWhere({ toId: userId, toType: 'user' })
       })
+    }
 
     if (search) query.where('title', 'like', `%${search}%`)
     if (type) {
-      if (type == 'win') query.whereIn('type', ['win', 'winwheel'])
-      else if (type == 'charge') query.whereIn('type', ['charge', 'cardtocard'])
-      else query.where('type', type)
+      query.where('type', type)
+    }
+
+    if (payedAt !== undefined) {
+      if (payedAt == 1) query.whereNotNull('payed_at')
+      else query.whereNull('payed_at')
     }
 
     return response.json(await query.orderBy(sort, dir).paginate(page, Helper.PAGINATE))

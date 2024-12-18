@@ -132,6 +132,7 @@ export default class Admin extends compose(BaseModel, AuthFinder) {
         'view_shipping',
         'view_shipping-method',
         'view_finantial',
+        'edit_role',
         'view_variation',
         this.agencyLevel < 3 ? 'create_repository_order' : '',
         this.agencyLevel <= 3 ? 'create_variation' : '',

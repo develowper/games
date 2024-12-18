@@ -8,6 +8,7 @@ import type { HasMany, HasOne } from '@adonisjs/lucid/types/relations'
 import { DbAccessTokensProvider } from '@adonisjs/auth/access_tokens'
 import UserFinancial from './user_financial.js'
 import { DbRememberMeTokensProvider } from '@adonisjs/auth/session'
+import Helper from '#services/helper_service'
 
 const AuthFinder = withAuthFinder(() => hash.use('scrypt'), {
   uids: ['username'],
@@ -67,6 +68,8 @@ export default class User extends compose(BaseModel, AuthFinder) {
   declare prize: number
   @column()
   declare score: number
+  @column()
+  declare refId: number
   @column({ serialize: (value) => Boolean(value) })
   declare isActive: boolean
   @column()
@@ -104,5 +107,22 @@ export default class User extends compose(BaseModel, AuthFinder) {
 
   public getAccesses() {
     return []
+  }
+
+  static async makeRefCode(phone: any = null) {
+    const original = [...Array(10).keys()].join('') // Generate a string "0123456789"
+
+    let ref = Helper.randomString(5, original)
+
+    for (let i = 6; i <= 15; i++) {
+      const exists = await User.query().where('ref_id', ref).first()
+      if (exists) {
+        ref = Helper.randomString(i, original)
+      } else {
+        break
+      }
+    }
+
+    return ref
   }
 }

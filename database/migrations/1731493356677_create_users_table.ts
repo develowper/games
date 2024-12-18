@@ -37,6 +37,7 @@ export default class extends BaseSchema {
         .onDelete('CASCADE')
       table.tinyint('agency_level').unsigned()
       table.timestamps()
+      table.string('ref_id', 15).index()
     })
   }
 
