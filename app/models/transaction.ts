@@ -62,13 +62,11 @@ export default class Transaction extends BaseModel {
       gateway: gateway ?? 'wallet',
       payId: `${Date.now()}`,
       payedAt: DateTime.now(),
-      title:
-        title ??
-        __('*_from_*_to_*', {
-          item1: __(type),
-          item2: `${__(fromType)} (${fromId})`,
-          item3: `${__(toType)} (${toId})`,
-        }),
+      title: __('*_from_*_to_*', {
+        item1: __(type),
+        item2: `${__(fromType)} (${fromId})`,
+        item3: `${__(toType)} (${toId})`,
+      }),
     })
   }
 

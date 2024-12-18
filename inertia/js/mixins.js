@@ -227,10 +227,8 @@ export function isAdmin() {
   return usePage().props.isAdmin
 }
 export function hasAccess(role) {
-  return (
-    (usePage().props.accesses && usePage().props.accesses == 'all') ||
-    usePage().props.accesses.indexOf(role) >= 0
-  )
+  return
+  usePage().props.accesses == 'all' || usePage().props.accesses.indexOf(role) >= 0
 }
 export function toShamsi(day = null, time = false) {
   var t = new Date().getTime()
