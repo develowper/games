@@ -103,9 +103,6 @@ export default {
           return { name: this.__(array[idx].name), color: array[idx].color || 'primary' }
     },
 
-    hasAccess(role) {
-      return usePage().props.accesses == 'all' || usePage().props.accesses.indexOf(role) >= 0
-    },
     hasWallet() {
       return this.user ? this.user.wallet_active : false
     },
@@ -230,7 +227,10 @@ export function isAdmin() {
   return usePage().props.isAdmin
 }
 export function hasAccess(role) {
-  return usePage().props.accesses == 'all' || usePage().props.accesses.indexOf(role) >= 0
+  return (
+    (usePage().props.accesses && usePage().props.accesses == 'all') ||
+    usePage().props.accesses.indexOf(role) >= 0
+  )
 }
 export function toShamsi(day = null, time = false) {
   var t = new Date().getTime()

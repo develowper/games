@@ -230,7 +230,7 @@
 </template>
 
 <script>
-import Panel from '~/Layouts/Panel.vue'
+import Panel from '~/layouts/Panel.vue'
 import { Head, Link, useForm } from '@inertiajs/vue3'
 import {
   ChevronDownIcon,
