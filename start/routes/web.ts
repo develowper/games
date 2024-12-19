@@ -17,6 +17,7 @@ import db from '@adonisjs/lucid/services/db'
 
 export default function () {
   router.get('test', async () => {
+    return
     const room = await Room.first()
     room.players = JSON.stringify([
       { user_id: 2, username: 'mojraj', user_role: 'us', card_count: 1 },
