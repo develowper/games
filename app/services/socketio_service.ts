@@ -11,16 +11,17 @@ import app from '@adonisjs/core/services/app'
 const RoomController = (await import('#controllers/api/room_controller')).default
 import Room from '#models/room'
 import Daberna from '#models/daberna'
-import { storage } from '../../resources/js/storage.js'
 import i18nManager from '@adonisjs/i18n/services/main'
 import env from '#start/env'
 import Helper, { __ } from '#services/helper_service'
+import { storage } from '#start/globals'
 
 export default class SocketIo {
   private user: any
   private socket
   public static wsIo
   public static timer
+
   constructor(/*protected app: ApplicationService*/) {
     // console.log('*********   socket service created ')
     // console.log(Daberna.makeCard())
@@ -98,7 +99,7 @@ export default class SocketIo {
       SocketIo.wsIo?.emit(data.event, data)
     })
 
-    SocketIo.setTimeChecker()
+    this.setTimeChecker()
   }
   public async emitToRoom(room: string, event: string, data: any) {
     // var room = SocketIo.wsIo.sockets.adapter.rooms[room]
@@ -109,19 +110,22 @@ export default class SocketIo {
     emitter.emit('custom', { ...data, event: event })
   }
 
-  public static async setTimeChecker() {
+  public async setTimeChecker() {
     // SocketIo.timer = setInterval(async function () {
     //   RoomController.startGame(await Room.query().where('is_active', true))
     //   // clearInterval(SocketIo.timer)
     // }, 5000)
+
     const state = {
       i18n: i18nManager.locale(env.get('LOCALE', '')),
     } as HttpContext
 
     storage.run(state, async () => {
+      Helper.getFakeHttpCtx()
       setInterval(async () => {
         for (let room of await Room.query().where('is_active', true)) {
           // console.log(`players ${room.playerCount}`, `time ${room.secondsRemaining}`)
+          // console.log(__('transactions'))
           if (room.playerCount > 1 && room.secondsRemaining == room.maxSeconds) {
             const game = await Daberna.makeGame(room)
             SocketIo.wsIo?.to(`room-${room.type}`).emit('game-start', game)

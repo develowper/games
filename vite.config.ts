@@ -9,7 +9,9 @@ import Components from 'unplugin-vue-components/vite'
 import { nodePolyfills } from 'vite-plugin-node-polyfills'
 export default defineConfig({
   plugins: [
-    nodePolyfills(),
+    // nodePolyfills({
+    //   // protocolImports: true,
+    // }),
     inertia({
       ssr: {
         enabled: false,
@@ -26,6 +28,9 @@ export default defineConfig({
       dts: true,
     }),
   ],
+  ssr: {
+    noExternal: ['async_hooks'],
+  },
   // build: {
   //   lib: {
   //     entry: 'resources/js/storage.js',

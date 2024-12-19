@@ -4,7 +4,6 @@ import fs from 'node:fs'
 import Setting from '#models/setting'
 import collect from 'collect.js'
 import { HttpContext } from '@adonisjs/core/http'
-import { inject } from '@adonisjs/core'
 import logger from '@adonisjs/core/services/logger'
 import User from '#models/user'
 import Agency from '#models/agency'
@@ -15,8 +14,9 @@ import Admin from '#models/admin'
 import Room from '#models/room'
 import { usePage } from '@inertiajs/vue3'
 import { errors } from '@vinejs/vine'
-import { storage } from '../../resources/js/storage.js'
 import i18nManager from '@adonisjs/i18n/services/main'
+import { storage } from '#start/globals'
+
 class Helper {
   static socket: any
   public static DABERNA: any = {
@@ -69,10 +69,7 @@ class Helper {
   ]
 
   constructor() {}
-  public static getFakeHttpCtx() {
-    const ctx = storage.getStore()
-    return ctx as HttpContext
-  }
+
   public static TRANSACTION_MODELS: Record<string, typeof User | typeof Admin | typeof Agency> = {
     user: User,
     admin: Admin,
@@ -151,8 +148,11 @@ class Helper {
     playstore: '',
     bank: '',
   }
-
   public static BOT: string = 'dabernabot'
+
+  public static getFakeHttpCtx() {
+    return storage?.getStore() as HttpContext
+  }
   static asPrice(price: any) {
     if (!price) return '0'
     // return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -448,6 +448,7 @@ class Helper {
     return result.join('')
   }
 }
+
 // export default Helper
 export const {
   dir,

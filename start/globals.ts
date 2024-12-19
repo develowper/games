@@ -21,3 +21,7 @@
 // export const emitter = new Emitter()
 // const mySocket = await app.container.make('MySocket')
 // mySocket.emitToRoom('room-d5000', 'game-start', { 'room_type': 'd5000' })
+
+import { AsyncLocalStorage } from 'node:async_hooks'
+
+export const storage = new AsyncLocalStorage()

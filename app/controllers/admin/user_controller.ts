@@ -41,7 +41,6 @@ export default class UserController {
     const admin = auth.user
     await request.validateUsing(createUserValidator)
 
-    console.log(await User.makeRefCode())
     const user = await User.create({
       fullName: request.input('full_name'),
       username: request.input('username'),
