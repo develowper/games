@@ -6,9 +6,10 @@ import adonisjs from '@adonisjs/vite/client'
 import tailwindcss from 'tailwindcss'
 import autoprefixer from 'autoprefixer'
 import Components from 'unplugin-vue-components/vite'
-
+import { nodePolyfills } from 'vite-plugin-node-polyfills'
 export default defineConfig({
   plugins: [
+    nodePolyfills(),
     inertia({
       ssr: {
         enabled: false,
@@ -17,12 +18,7 @@ export default defineConfig({
     }),
     vue(),
     adonisjs({
-      entrypoints: [
-        'inertia/app/app.ts',
-        'inertia/css/app.css',
-        'inertia/js/scripts.js',
-        'resources/js/storage.js',
-      ],
+      entrypoints: ['inertia/app/app.ts', 'inertia/css/app.css', 'inertia/js/scripts.js'],
       reload: ['resources/views/**/*.edge', 'resources/lang/**'],
     }),
     Components({
@@ -30,6 +26,14 @@ export default defineConfig({
       dts: true,
     }),
   ],
+  // build: {
+  //   lib: {
+  //     entry: 'resources/js/storage.js',
+  //     name: 'MyStorage',
+  //     fileName: 'my-storage',
+  //   },
+  //   cssCodeSplit: true,
+  // },
 
   /**
    * Define aliases for importing modules from
