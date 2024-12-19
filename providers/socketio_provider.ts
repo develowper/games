@@ -1,5 +1,6 @@
 import SocketIo from '#services/socketio_service'
 import type { ApplicationService } from '@adonisjs/core/types'
+import Helper from '#services/helper_service'
 
 export default class SocketioProvider {
   socket: any
@@ -12,6 +13,7 @@ export default class SocketioProvider {
     this.app.container.singleton('MySocket', async () => {
       return new SocketIo()
     })
+
     // this.app.container.alias('MySocket', SocketIo)
   }
 

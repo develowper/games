@@ -2,7 +2,7 @@
 
 import type { HttpContext } from '@adonisjs/core/http'
 import Room from '#models/room'
-import __, { asPrice, sendError } from '#services/helper_service'
+import { asPrice, sendError, __ } from '#services/helper_service'
 import UserFinancial from '#models/user_financial'
 import { inject } from '@adonisjs/core'
 import Helper from '#services/helper_service'
@@ -17,6 +17,9 @@ import { DateTime } from 'luxon'
 import app from '@adonisjs/core/services/app'
 import mserver from '@adonisjs/core/services/server'
 import Daberna from '#models/daberna'
+import i18nManager from '@adonisjs/i18n/services/main'
+import env from '#start/env'
+import { storage } from '../../../resources/js/storage.js'
 
 @inject()
 export default class RoomController {
@@ -132,8 +135,10 @@ export default class RoomController {
 
     rooms.forEach(async (room) => {
       // console.log(`players ${room.playerCount}`, `time ${room.secondsRemaining}`)
+
       if (room.playerCount > 1 && room.secondsRemaining == room.maxSeconds) {
         //create game and empty room
+
         const game = await Daberna.makeGame(room)
         // const tmp = await Daberna.query().orderBy('id', 'DESC').first()
 

@@ -5,7 +5,6 @@ import Setting from '#models/setting'
 import collect from 'collect.js'
 import { HttpContext } from '@adonisjs/core/http'
 import { inject } from '@adonisjs/core'
-const i18nManager = await import('@adonisjs/i18n/services/main')
 import logger from '@adonisjs/core/services/logger'
 import User from '#models/user'
 import Agency from '#models/agency'
@@ -16,18 +15,9 @@ import Admin from '#models/admin'
 import Room from '#models/room'
 import { usePage } from '@inertiajs/vue3'
 import { errors } from '@vinejs/vine'
-@inject()
+import { storage } from '../../resources/js/storage.js'
+import i18nManager from '@adonisjs/i18n/services/main'
 class Helper {
-  constructor(protected ctx: HttpContext | null) {
-    if (Helper.instance) {
-      return Helper.instance
-    }
-    this.ctx = ctx
-
-    Helper.instance = this
-  }
-  private static instance: Helper
-
   static socket: any
   public static DABERNA: any = {
     row: 3,
@@ -163,9 +153,9 @@ class Helper {
     // return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     return price.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ',')
   }
-  static __(key: string, data: any = {}) {
-    const _ = HttpContext.get()?.i18n ?? i18nManager?.defaultLocale
-    return _?.t(`messages.${key}`, data)
+  public static __(key: string, data: any = {}, i18n = null) {
+    const ctx = HttpContext.get()?.i18n ?? i18n
+    return ctx?.t(`messages.${key}`, data)
   }
 
   public static async getSetting(key: string) {

@@ -1,6 +1,6 @@
 import { DateTime } from 'luxon'
 import { BaseModel, column } from '@adonisjs/lucid/orm'
-import Helper, { range, shuffle } from '#services/helper_service'
+import Helper, { __, range, shuffle } from '#services/helper_service'
 import Room from '#models/room'
 import AgencyFinancial from '#models/agency_financial'
 import Transaction from '#models/transaction'
@@ -193,7 +193,26 @@ export default class Daberna extends BaseModel {
     const af = await AgencyFinancial.find(1)
     af.balance += commissionPrice
     af.save()
-    Transaction.add(
+    /*
+    await Transaction.create({
+      agencyId: af.agencyId,
+      type: 'commission',
+      fromType: 'daberna',
+      fromId: game.id,
+      toType: 'agency',
+      toId: af.agencyId,
+      amount: commissionPrice,
+      gateway: 'wallet',
+      payId: `${Date.now()}`,
+      payedAt: DateTime.now(),
+      title: __('*_from_*_to_*', {
+        item1: __('commission'),
+        item2: `${__('daberna')} (${game.id})`,
+        item3: `${__('agency')} (${af.agencyId})`,
+      }),
+    })*/
+
+    await Transaction.add(
       'commission',
       'daberna',
       game.id,
@@ -212,7 +231,7 @@ export default class Daberna extends BaseModel {
       financial.balance += rowWinnerPrize
       user.save()
       financial.save()
-      Transaction.add(
+      await Transaction.add(
         'row_win',
         'daberna',
         game.id,
@@ -232,7 +251,7 @@ export default class Daberna extends BaseModel {
       financial.balance += winnerPrize
       user.save()
       financial.save()
-      Transaction.add('win', 'daberna', game.id, 'user', user.id, winnerPrize, user?.agencyId)
+      await Transaction.add('win', 'daberna', game.id, 'user', user.id, winnerPrize, user?.agencyId)
     })
 
     room.clearCount++

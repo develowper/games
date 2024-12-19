@@ -5,18 +5,20 @@ import { HttpContext } from '@adonisjs/core/http'
 import authConfig from '#config/auth'
 import User from '../models/user.js'
 import logger from '@adonisjs/core/services/logger'
-import Helper from './helper_service.js'
 import emitter from '@adonisjs/core/services/emitter'
 // import { emitter } from '#start/globals'
 import app from '@adonisjs/core/services/app'
 const RoomController = (await import('#controllers/api/room_controller')).default
 import Room from '#models/room'
 import Daberna from '#models/daberna'
+import { storage } from '../../resources/js/storage.js'
+import i18nManager from '@adonisjs/i18n/services/main'
+import env from '#start/env'
 
 export default class SocketIo {
   private user: any
   private socket
-  public wsIo
+  public static wsIo
   public static timer
   constructor(/*protected app: ApplicationService*/) {
     // console.log('*********   socket service created ')
@@ -25,7 +27,7 @@ export default class SocketIo {
 
   public async init() {
     // console.log('*********   socket service inited ')
-    this.wsIo = new Server(server.getNodeServer(), {
+    SocketIo.wsIo = new Server(server.getNodeServer(), {
       cors: {
         origin: ['*'],
       },
@@ -33,7 +35,7 @@ export default class SocketIo {
 
     //TODO: remove this new server to use adonis server
 
-    this.wsIo.on('connection', async (socket) => {
+    SocketIo.wsIo.on('connection', async (socket) => {
       this.socket = socket
       console.log('*****  ws server service connected')
       const token = socket.handshake.auth.token ?? socket.handshake.headers.token
@@ -70,7 +72,7 @@ export default class SocketIo {
         })
 
       emitter.on('room-update', (data: any) => {
-        this.wsIo.to(`room-${data.type}`).emit(`room-update`, data)
+        SocketIo.wsIo.to(`room-${data.type}`).emit(`room-update`, data)
         // logger.info(data)
       })
 
@@ -83,34 +85,51 @@ export default class SocketIo {
 
     // emitter.on('game-start', (data: any) => {
     //   console.log('*********outer game start')
-    //   console.log(this.wsIo)
+    //   console.log(SocketIo.wsIo)
 
-    //   this.wsIo.emit(`game-start`, data)
-    //   this.wsIo.to(`room-${data.room_type}`).emit(`game-start`, data)
+    //   SocketIo.wsIo.emit(`game-start`, data)
+    //   SocketIo.wsIo.to(`room-${data.room_type}`).emit(`game-start`, data)
     //   // logger.info(socket.id)
     // })
 
     emitter.on('custom', (data: any) => {
       console.log('*********custom emit')
-      this.wsIo?.emit(data.event, data)
+      SocketIo.wsIo?.emit(data.event, data)
     })
 
     SocketIo.setTimeChecker()
   }
   public async emitToRoom(room: string, event: string, data: any) {
-    // var room = this.wsIo.sockets.adapter.rooms[room]
+    // var room = SocketIo.wsIo.sockets.adapter.rooms[room]
 
-    this.wsIo?.to(`${room}`).emit(event, data)
+    SocketIo.wsIo?.to(`${room}`).emit(event, data)
   }
   public async emit(event: string, data: any) {
     emitter.emit('custom', { ...data, event: event })
   }
 
-  public static setTimeChecker() {
-    SocketIo.timer = setInterval(async function () {
-      RoomController.startGame(await Room.query().where('is_active', true))
+  public static async setTimeChecker() {
+    // SocketIo.timer = setInterval(async function () {
+    //   RoomController.startGame(await Room.query().where('is_active', true))
+    //   // clearInterval(SocketIo.timer)
+    // }, 5000)
+    // const state = {
+    //   i18n: i18nManager.locale(env.get('LOCALE', '')),
+    // } as HttpContext
+
+    // storage.run(state, async () => {
+    setInterval(async () => {
+      for (let room of await Room.query().where('is_active', true)) {
+        console.log(`players ${room.playerCount}`, `time ${room.secondsRemaining}`)
+
+        if (room.playerCount > 1 && room.secondsRemaining == room.maxSeconds) {
+          const game = await Daberna.makeGame(room)
+          SocketIo.wsIo?.to(`room-${room.type}`).emit('game-start', game)
+        }
+      }
       // clearInterval(SocketIo.timer)
     }, 5000)
+    // })
   }
 
   private async authenticateUser({ socket, token }: { socket: Socket; token: string }) {
@@ -133,5 +152,4 @@ export default class SocketIo {
     }
   }
 }
-
 // export default new SocketIo()

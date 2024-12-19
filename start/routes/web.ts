@@ -25,6 +25,7 @@ export default function () {
     room.cardCount = 2
     room.playerCount = 2
     room.save()
+    return room
     return Daberna.makeGame(room)
 
     return await Setting.findBy({ key: 'policy' })
