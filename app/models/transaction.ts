@@ -1,6 +1,6 @@
 import { DateTime } from 'luxon'
 import { BaseModel, column } from '@adonisjs/lucid/orm'
-import Helper from '#services/helper_service'
+import Helper, { __ } from '#services/helper_service'
 import Env from '#start/env'
 import axios from 'axios'
 import i18nManager from '@adonisjs/i18n/services/main'
@@ -53,14 +53,21 @@ export default class Transaction extends BaseModel {
     gateway = null,
     title = null
   ): Promise<Transaction> {
-    const i18n = i18nManager.locale(env.get('LOCALE', ''))
-
+    // const i18n = i18nManager.locale(env.get('LOCALE', ''))
+    //
+    // const t =
+    //   title ??
+    //   i18n.t(`messages.*_from_*_to_*`, {
+    //     item1: i18n.t(`messages.${type}`),
+    //     item2: `${i18n.t(`messages.${fromType}`)} (${fromId})`,
+    //     item3: `${i18n.t(`messages.${toType}`)} (${toId})`,
+    //   })
     const t =
       title ??
-      i18n.t(`messages.*_from_*_to_*`, {
-        item1: i18n.t(`messages.${type}`),
-        item2: `${i18n.t(`messages.${fromType}`)} (${fromId})`,
-        item3: `${i18n.t(`messages.${toType}`)} (${toId})`,
+      __(`*_from_*_to_*`, {
+        item1: __(`${type}`),
+        item2: `${__(`${fromType}`)} (${fromId})`,
+        item3: `${__(`${toType}`)} (${toId})`,
       })
 
     return await Transaction.create({

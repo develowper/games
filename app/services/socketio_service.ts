@@ -14,6 +14,7 @@ import Daberna from '#models/daberna'
 import { storage } from '../../resources/js/storage.js'
 import i18nManager from '@adonisjs/i18n/services/main'
 import env from '#start/env'
+import Helper, { __ } from '#services/helper_service'
 
 export default class SocketIo {
   private user: any
@@ -113,23 +114,22 @@ export default class SocketIo {
     //   RoomController.startGame(await Room.query().where('is_active', true))
     //   // clearInterval(SocketIo.timer)
     // }, 5000)
-    // const state = {
-    //   i18n: i18nManager.locale(env.get('LOCALE', '')),
-    // } as HttpContext
+    const state = {
+      i18n: i18nManager.locale(env.get('LOCALE', '')),
+    } as HttpContext
 
-    // storage.run(state, async () => {
-    setInterval(async () => {
-      for (let room of await Room.query().where('is_active', true)) {
-        console.log(`players ${room.playerCount}`, `time ${room.secondsRemaining}`)
-
-        if (room.playerCount > 1 && room.secondsRemaining == room.maxSeconds) {
-          const game = await Daberna.makeGame(room)
-          SocketIo.wsIo?.to(`room-${room.type}`).emit('game-start', game)
+    storage.run(state, async () => {
+      setInterval(async () => {
+        for (let room of await Room.query().where('is_active', true)) {
+          // console.log(`players ${room.playerCount}`, `time ${room.secondsRemaining}`)
+          if (room.playerCount > 1 && room.secondsRemaining == room.maxSeconds) {
+            const game = await Daberna.makeGame(room)
+            SocketIo.wsIo?.to(`room-${room.type}`).emit('game-start', game)
+          }
         }
-      }
-      // clearInterval(SocketIo.timer)
-    }, 5000)
-    // })
+        // clearInterval(SocketIo.timer)
+      }, 5000)
+    })
   }
 
   private async authenticateUser({ socket, token }: { socket: Socket; token: string }) {

@@ -68,6 +68,11 @@ class Helper {
     { name: 'inactive', color: 'red' },
   ]
 
+  constructor() {}
+  public static getFakeHttpCtx() {
+    const ctx = storage.getStore()
+    return ctx as HttpContext
+  }
   public static TRANSACTION_MODELS: Record<string, typeof User | typeof Admin | typeof Agency> = {
     user: User,
     admin: Admin,
@@ -154,7 +159,7 @@ class Helper {
     return price.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ',')
   }
   public static __(key: string, data: any = {}, i18n = null) {
-    const ctx = HttpContext.get()?.i18n ?? i18n
+    const ctx = HttpContext.get()?.i18n ?? Helper.getFakeHttpCtx()?.i18n
     return ctx?.t(`messages.${key}`, data)
   }
 
