@@ -5,18 +5,18 @@ import InputError from '~/components/InputError.vue'
 import InputLabel from '~/components/InputLabel.vue'
 import PrimaryButton from '~/components/PrimaryButton.vue'
 import TextInput from '~/components/TextInput.vue'
-import { Head, Link, useForm } from '@inertiajs/vue3'
+import { Head, Link, useForm, usePage } from '@inertiajs/vue3'
 import { UserIcon, EyeIcon, EyeSlashIcon } from '@heroicons/vue/24/outline'
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
 import { route } from '@izzyjs/route/client'
-import { __, dir } from '~/js/mixins.js'
+import { __, dir, showAlert, showToast } from '~/js/mixins.js'
 
 defineProps({
   canResetPassword: Boolean,
   status: String,
 })
 let showPassword = ref(false)
-
+const $page = usePage()
 const form = useForm({
   username: '',
   password: '',
@@ -27,7 +27,14 @@ const submit = () => {
   form.post(
     route().current('admin.login-form') ? route('admin.auth.login') : route('user.auth.login'),
     {
-      onFinish: () => form.reset('password'),
+      onSuccess: (response) => {},
+      onFinish: (response) => {
+        form.reset('password')
+      },
+      onError: (err) => {
+        // console.log(err)
+        // showToast({ status: 'danger', message: err })
+      },
     }
   )
 }

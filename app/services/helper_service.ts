@@ -67,6 +67,10 @@ class Helper {
     { name: 'active', color: 'green' },
     { name: 'inactive', color: 'red' },
   ]
+  public static ROOM_STATUSES = [
+    { name: 'active', color: 'green' },
+    { name: 'inactive', color: 'red' },
+  ]
 
   constructor() {}
 

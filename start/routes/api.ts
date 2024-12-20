@@ -43,6 +43,7 @@ export default () => {
         guards: ['api'],
       })
     )
+
     .as('api.user')
     .prefix('api')
 }

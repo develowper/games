@@ -4,6 +4,7 @@ import User from '#models/user'
 import Admin from '#models/admin'
 import UserRegistered from '#events/user_registered'
 import { log } from '#services/helper_service'
+import { isAdmin } from '../../inertia/js/mixins.js'
 
 export default class AuthController {
   async register({ request, response, auth }: HttpContext) {
@@ -33,8 +34,8 @@ export default class AuthController {
     else guard = auth.use('web')
 
     guard.logout()
-
-    return response.json({ message: 'Success' })
+    if (request.url().indexOf('api') >= 0) return response.json({ message: 'Success' })
+    else return response.redirect().toRoute('/')
   }
 
   async me({ auth }: HttpContext) {

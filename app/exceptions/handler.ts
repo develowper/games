@@ -2,6 +2,7 @@ import app from '@adonisjs/core/services/app'
 import { HttpContext, ExceptionHandler } from '@adonisjs/core/http'
 import type { StatusPageRange, StatusPageRenderer } from '@adonisjs/core/types/http'
 import { errors as authErrors } from '@adonisjs/auth'
+import { errors as limiterErrors } from '@adonisjs/limiter'
 
 export default class HttpExceptionHandler extends ExceptionHandler {
   /**
@@ -46,6 +47,31 @@ export default class HttpExceptionHandler extends ExceptionHandler {
           ],
         })
         return
+      }
+    } else if (error instanceof limiterErrors.E_TOO_MANY_REQUESTS) {
+      const err = ctx.i18n.t('messages.too_many_try_after_*', {
+        // limit: error.response.limit,
+        // remaining: error.response.remaining,
+        seconds: error.response.availableIn,
+      })
+      if (ctx.request.url().includes('api')) {
+        ctx.response.status(400).send({
+          errors: [{ message: err }],
+        })
+        return
+      } else {
+        // const message = error.getResponseMessage(ctx)
+        // const headers = error.getDefaultHeaders()
+        ctx.session.flash('notification', { message: err, status: 'danger' })
+
+        // Object.keys(headers).forEach((header) => {
+        //   ctx.response.header(header, headers[header])
+        // })
+        // error.setMessage(err)
+        // ctx.response.status(419)
+        return ctx.response.redirect().back()
+        // return ctx.response.abort({ status: 'danger', message: err })
+        // return
       }
     }
 

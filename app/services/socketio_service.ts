@@ -121,7 +121,6 @@ export default class SocketIo {
     } as HttpContext
 
     storage.run(state, async () => {
-      Helper.getFakeHttpCtx()
       setInterval(async () => {
         for (let room of await Room.query().where('is_active', true)) {
           // console.log(`players ${room.playerCount}`, `time ${room.secondsRemaining}`)

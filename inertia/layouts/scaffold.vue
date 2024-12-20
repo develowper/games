@@ -75,9 +75,8 @@ import LoadingIcon from '~/components/LoadingIcon.vue'
 import mitt from 'mitt'
 import favicon from '~/images/logo.png'
 import { Dropdown, initTE, Modal } from 'tw-elements'
-import { __, dir } from '~/js/mixins.js'
+import { __, dir, emitter, showAlert, showToast } from '~/js/mixins.js'
 // import {Server} from "socket.io";
-export const emitter = mitt()
 export default {
   data() {
     return {
@@ -97,6 +96,11 @@ export default {
     LoadingIcon,
     App,
   },
+  watch: {
+    '$page.props.flash'(newVal, oldVal) {
+      if (newVal.status) showAlert(newVal.status, newVal.message)
+    },
+  },
   mounted() {
     // window.tailwindElements();
     //
@@ -110,6 +114,7 @@ export default {
     })
 
     emitter.on('showAlert', (e) => {
+      console.log(this.$refs.alert)
       if (this.$refs.alert) this.$refs.alert.show(e.type, e.message)
     })
 
@@ -128,6 +133,7 @@ export default {
   methods: {
     __,
     dir,
+    showToast,
     initSocket() {
       window.Echo.join(`ROOM`)
         .here((data) => {

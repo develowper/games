@@ -9,12 +9,12 @@ import Components from 'unplugin-vue-components/vite'
 import { nodePolyfills } from 'vite-plugin-node-polyfills'
 export default defineConfig({
   plugins: [
-    // nodePolyfills({
-    //   // protocolImports: true,
-    // }),
+    nodePolyfills({
+      // protocolImports: true,
+    }),
     inertia({
       ssr: {
-        enabled: false,
+        enabled: true,
         entrypoint: 'inertia/app/ssr.ts',
       },
     }),

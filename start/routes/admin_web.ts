@@ -3,6 +3,8 @@
 import router from '@adonisjs/core/services/router'
 import { middleware } from '#start/kernel'
 import { HttpContext } from '@adonisjs/core/http'
+import { throttleWebGuest } from '#start/limiter'
+const RoomController = () => import('#controllers/admin/room_controller')
 const UserFinancialController = () => import('#controllers/admin/user_financial_controller')
 const UserController = () => import('#controllers/admin/user_controller')
 const TransactionController = () => import('#controllers/admin/transaction_controller')
@@ -13,7 +15,7 @@ const PanelController = () => import('#controllers/panel_controller')
 export default () => {
   router
     .group(() => {
-      router.post('login', [AuthController, 'login']).as('auth.login')
+      router.post('login', [AuthController, 'login']).as('auth.login').use(throttleWebGuest)
       router.on('login').renderInertia('Auth/Login', {}).as('login-form')
     })
     .use(
@@ -21,6 +23,7 @@ export default () => {
         guards: ['web' /*, 'api'*/],
       })
     )
+
     .as('admin')
     .prefix('admin')
 
@@ -54,10 +57,16 @@ export default () => {
             .get('user/financial-search', [UserFinancialController, 'search'])
             .as('user.financial.search')
           router.get('user/create', [UserController, 'create']).as('user.create')
-          router.post('user/create', [UserController, 'store']).as('user.store')
-
+          router.post('user/store', [UserController, 'store']).as('user.store')
           router.patch('user/update', [UserController, 'update']).as('user.update')
           router.get('user/:id', [UserController, 'edit']).as('user.edit')
+
+          router.get('room/search', [RoomController, 'search']).as('room.search')
+          router.get('room/index', [RoomController, 'index']).as('room.index')
+          router.get('room/create', [RoomController, 'create']).as('room.create')
+          router.post('room/store', [RoomController, 'store']).as('room.store')
+          router.patch('room/update', [RoomController, 'update']).as('room.update')
+          router.get('room/:id', [RoomController, 'edit']).as('room.edit')
         })
         .prefix('panel')
         .as('panel')
@@ -69,6 +78,7 @@ export default () => {
         guards: ['admin_web' /*, 'api'*/],
       })
     )
+
     .as('admin')
     .prefix('admin')
 }

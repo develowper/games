@@ -52,6 +52,7 @@ export default defineConfig({
       file: () => import('adonisjs-scheduler/scheduler_provider'),
       environment: ['web', 'console'],
     },
+    () => import('@adonisjs/limiter/limiter_provider'),
   ],
 
   /*
@@ -129,6 +130,6 @@ export default defineConfig({
   assetsBundler: false,
   hooks: {
     onBuildStarting: [() => import('@adonisjs/vite/build_hook')],
-    onDevServerStarted: [() => import('@izzyjs/route/dev_hook')],
+    // onDevServerStarted: [() => import('@izzyjs/route/dev_hook')],
   },
 })

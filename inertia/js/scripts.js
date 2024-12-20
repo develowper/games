@@ -18,6 +18,8 @@ import {
   Modal,
 } from 'tw-elements'
 import axios, { isCancel, AxiosError } from 'axios'
+import { usePage } from '@inertiajs/vue3'
+import { showToast } from './mixins.js'
 window.axios = axios.create({
   headers: {
     'Accept-Language': import.meta.VITE_LOCALE,
@@ -38,6 +40,7 @@ window.axios.interceptors.response.use(undefined, function (error) {
 window.onload = (event) => {
   // console.log('***************')
   // window.tailwindElements();
+
   try {
     if (
       localStorage.theme === 'dark' ||
@@ -106,6 +109,7 @@ window.tailwindElements = () => {
   const modalEl = document.getElementById('modal')
   const sideNavEl = document.getElementById('sidenav-1')
   if (alertEl) window.Alert = new Alert(alertEl)
+
   // window.Alert = Alert.getInstance(alertEl);
   if (toastEl) window.Toast = new Toast(toastEl)
   // window.Toast = Toast.getInstance(toastEl);

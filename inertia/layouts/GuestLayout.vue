@@ -7,10 +7,9 @@ import Dialog from '~/components/Dialog.vue'
 import Toast from '~/components/Toast.vue'
 import LoadingIcon from '~/components/LoadingIcon.vue'
 import { route } from '@izzyjs/route/client'
-import { __ } from '../js/mixins.js'
-
-export const emitter = mitt()
-
+import { __, showAlert, emitter } from '../js/mixins.js'
+import { Toast as mToast, Alert as mAlert } from 'tw-elements'
+import { onMounted } from 'vue'
 export default {
   methods: { __, route },
   // emits: ['showToast'],
@@ -23,8 +22,21 @@ export default {
     Toast,
     LoadingIcon,
   },
+  data() {
+    return {}
+  },
+  watch: {
+    '$page.props.flash'(newVal, oldVal) {
+      if (newVal.status) {
+        showAlert(newVal.status, newVal.message)
+      }
+      // this.$refs.alert.show(this.$page.props.flash.status, this.$page.props.flash.message)
+    },
+  },
+
   mounted() {
     window.tailwindElements()
+
     emitter.on('showToast', (e) => {
       if (this.$refs.toast) this.$refs.toast.show(e.type, e.message)
     })

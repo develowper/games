@@ -56,7 +56,7 @@ export default class Room extends BaseModel {
   declare commissionPercent: number
   @column()
   declare winPercent: number
-  @column({ serializeAs: 'row_win_percent' })
+  @column({ serializeAs: 'rowWinPercent', columnName: 'row_win_percent' })
   declare rowWinPercent: number
   @column({
     serialize: (value: any) => value == 1,

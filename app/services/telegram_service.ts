@@ -5,6 +5,7 @@ import User from '../models/user.js'
 import Admin from '../models/admin.js'
 import Helper from '#services/helper_service'
 import { HttpContext } from '@adonisjs/core/http'
+import TelegramEvent from '#events/telegram_event'
 
 export default class Telegram {
   ///
@@ -13,7 +14,11 @@ export default class Telegram {
   public static TOPIC_BUGS: any = 'BUGS'
   public static topic: any = null
 
-  public static async log(to: any, type: string, data: any) {
+  public static log(to: any, type: string, data: any) {
+    TelegramEvent.dispatch(to, type, data)
+  }
+
+  public static async logEvent(to: any, type: string, data: any) {
     const ctx = HttpContext.get()
     const op = ctx?.auth?.user
     const isAdmin = op instanceof Admin
@@ -171,12 +176,12 @@ export default class Telegram {
       // console.log(res)
 
       if (res.status !== 200) {
-        await this.sendMessage(Helper.TELEGRAM_LOGS[0], `${res.data}\n${JSON.stringify(datas)}`)
+        this.sendMessage(Helper.TELEGRAM_LOGS[0], `${res.data}\n${JSON.stringify(datas)}`)
       }
       return res.data
     } catch (error) {
-      console.log(error)
-      await this.sendMessage(Helper.TELEGRAM_LOGS[0], `${error.message}\n${JSON.stringify(datas)}`)
+      // console.log(error)
+      this.sendMessage(Helper.TELEGRAM_LOGS[0], `${error.message}\n${JSON.stringify(datas)}`)
       return null
     }
   }

@@ -261,7 +261,7 @@ import LoadingIcon from '~/components/LoadingIcon.vue'
 import NotificaionButton from '~/components/NotificaionButton.vue'
 import WalletCharge from '~/components/WalletCharge.vue'
 import favicon from '~/images/logo.png'
-import { __, dir, isAdmin, showToast, emitter } from '~/js/mixins.js'
+import { __, dir, isAdmin, showToast, emitter, showAlert } from '~/js/mixins.js'
 import { route } from '@izzyjs/route/client'
 
 export default {
@@ -332,17 +332,16 @@ export default {
       this.loading = e
       this.percentage = percentage
     })
-    if (this.$page.props.flash.message && this.$page.props.flash.message != undefined) {
-      this.$nextTick(() => {
-        this.showAlert(this.$page.props.flash.status, this.$page.props.flash.message)
-      })
-    }
 
     // document.addEventListener('hidden.te.sidenav', function () {
     //   console.log('hi');
     // });
   },
-
+  watch: {
+    '$page.props.flash'(newVal, oldVal) {
+      if (newVal.status) showAlert(newVal.status, newVal.message)
+    },
+  },
   methods: {
     showToast,
     __,
