@@ -1,7 +1,5 @@
 import vine from '@vinejs/vine'
 import Helper from '#services/helper_service'
-import { request } from 'http'
-import { HttpContext } from '@adonisjs/core/http'
 
 export const chargeValidator = vine.compile(
   vine.object({
@@ -52,4 +50,3 @@ export const withdrawValidator = vine.compile(
     app_version: vine.string(),
   })
 )
-

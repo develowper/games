@@ -38,6 +38,8 @@ export default class extends BaseSchema {
       table.tinyint('agency_level').unsigned()
       table.timestamps()
       table.string('ref_id', 15).index()
+      table.datetime('last_charge').nullable()
+      table.datetime('last_win').nullable()
     })
   }
 

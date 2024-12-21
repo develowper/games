@@ -341,11 +341,11 @@ export default class TransactionsController {
           : new Transaction()
 
       const now = transaction.payedAt ?? DateTime.now()
-      const jalaliDate = __oShamsi(now, true)
+      const jalaliDate = Helper.toShamsi(now, true)
 
       status = paymentResponse.status
       const orderToken = paymentResponse.order_id
-      const user = await __RANSACTION_MODELS[transaction?.fromType]?.find(transaction?.fromId)
+      const user = await Helper.TRANSACTION_MODELS[transaction?.fromType]?.find(transaction?.fromId)
       const userType = user instanceof Admin ? 'admin' : 'user'
 
       const column = `${transaction.toType}Id`
@@ -365,6 +365,8 @@ export default class TransactionsController {
           payedAt: now,
         })
         await transaction.save()
+        user.lastTransaction = now
+        await user.save()
       }
 
       transaction.user = user

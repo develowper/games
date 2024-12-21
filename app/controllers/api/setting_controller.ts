@@ -22,12 +22,14 @@ export default class SettingController {
         'charge_title',
         'card_to_card_title',
         'withdraw_title',
+        'telegram_bot',
       ])
     )
     const cards: { active: number; number: string; name: string }[] = JSON.parse(
       settings.first((item) => item.key === 'card_to_card')?.value ?? '[]'
     )
 
+    const telegramBot = settings.first((item: any) => item && item.key == 'telegram_bot')?.value
     const supportTelegram = settings.first((item: any) => item && item.key == 'support_telegram')
     const supportEmail = settings.first((item: any) => item && item.key == 'support_email')
     const policy = settings.first((item: any) => item && item.key == 'policy')?.value
@@ -56,7 +58,7 @@ export default class SettingController {
         contact_us: supportTelegram,
         // 'policy': policy,
         telegram: supportTelegram,
-        telegram_bot: Helper.BOT,
+        telegram_bot: telegramBot,
         instagram: '',
         eitaa: '',
         email: supportEmail,

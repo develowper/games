@@ -229,6 +229,7 @@ export default class Daberna extends BaseModel {
       user.prize += rowWinnerPrize
       user.todayPrize += rowWinnerPrize
       financial.balance += rowWinnerPrize
+      user.lastWin = DateTime.now()
       user.save()
       financial.save()
       await Transaction.add(
@@ -249,6 +250,7 @@ export default class Daberna extends BaseModel {
       user.score += room.winScore
       user.todayPrize += winnerPrize
       financial.balance += winnerPrize
+      user.lastWin = DateTime.now()
       user.save()
       financial.save()
       await Transaction.add('win', 'daberna', game.id, 'user', user.id, winnerPrize, user?.agencyId)

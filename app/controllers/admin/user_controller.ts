@@ -11,6 +11,7 @@ import collect from 'collect.js'
 import { createUserValidator, updateUserValidator } from '#validators/user'
 import Telegram from '#services/telegram_service'
 import hash from '@adonisjs/core/services/hash'
+import db from '@adonisjs/lucid/services/db'
 
 export default class UserController {
   //
@@ -107,6 +108,7 @@ export default class UserController {
     switch (cmnd) {
       case 'status':
         data.isActive = isActive
+        if (!isActive) await db.from('auth_access_tokens').where('tokenable_id', data.id).delete()
         data.save()
         Telegram.log(null, 'user_edited', data)
         return response.send({

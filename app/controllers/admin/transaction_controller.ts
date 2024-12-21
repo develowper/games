@@ -14,6 +14,7 @@ import UserFinancial from '#models/user_financial'
 import AgencyFinancial from '#models/agency_financial'
 import Helper, { toShamsi, __, asPrice } from '#services/helper_service'
 import collect from 'collect.js'
+import User from '#models/user'
 export default class TransactionController {
   //
 
@@ -56,8 +57,10 @@ export default class TransactionController {
           uf.balance -= amount
         }
         data.payedAt = DateTime.now()
-        data.save()
-        uf.save()
+        await data.save()
+        await uf.save()
+        await User.query().where('user_id', uf.userId).update({ lastTransaction: data.payedAt })
+
         return response.send({
           status: 'success',
           message: __('updated_successfully'),

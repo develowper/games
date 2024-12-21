@@ -1,9 +1,10 @@
 import { HttpContext, Route } from '@adonisjs/core/http'
 import { loginValidator, registerValidator, updateValidator } from '#validators/auth'
 import User from '#models/user'
-import Helper, {__} from '../../services/helper_service.js'
+import Helper, { __ } from '../../services/helper_service.js'
 import UserFinancial from '../../models/user_financial.js'
 import hash from '@adonisjs/core/services/hash'
+import Setting from '#models/setting'
 
 export default class UserController {
   async update({ response, request, auth }) {
@@ -57,7 +58,8 @@ export default class UserController {
   }
 
   async forget({ response }: HttpContext) {
-    return response.json({ url: `https://t.me/${Helper.BOT}?start=recover_password` })
+    const telegram = await Setting.findBy('key', 'telegram_bot')
+    return response.json({ url: `https://t.me/${telegram?.value}?start=recover_password` })
   }
 
   async register({ request, response, i18n }: HttpContext) {
@@ -76,6 +78,12 @@ export default class UserController {
     const { username, password } = await request.validateUsing(loginValidator)
 
     const user = await User.verifyCredentials(username, password)
+
+    if (!user.isActive)
+      return response.status(Helper.ERROR_STATUS).json({
+        status: 'danger',
+        message: i18n.t('is_inactive_*', { item: i18n.t('user') }),
+      })
     // auth.authenticateUsing(['api'])
     const tokenData = await User.accessTokens.create(user)
 

@@ -99,7 +99,7 @@ export default class SocketIo {
       SocketIo.wsIo?.emit(data.event, data)
     })
 
-    this.setTimeChecker()
+    // this.setTimeChecker()
   }
   public async emitToRoom(room: string, event: string, data: any) {
     // var room = SocketIo.wsIo.sockets.adapter.rooms[room]
@@ -148,6 +148,7 @@ export default class SocketIo {
 
       const auth = authResolver.guards.api(ctx)
       const user = await auth.authenticate()
+
       return user
     } catch (error) {
       // console.log(error)

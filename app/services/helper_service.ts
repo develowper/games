@@ -57,6 +57,8 @@ class Helper {
   public static PAGINATE = 24
   public static MIN_CHARGE = 50000
   public static MIN_WITHDRAW = 100000
+  public static CLEAR_TRANSACTION_DAY = 0
+  public static CLEAR_INACTIVE_USERS_DAY = 0
   public static CARDTOCARD_MINUTE_LIMIT = 5
   public static WINWHEEL_HOUR_LIMIT = 24
   public static WITHDRAW_HOUR_LIMIT = 24
@@ -152,10 +154,13 @@ class Helper {
     playstore: '',
     bank: '',
   }
-  public static BOT: string = 'dabernabot'
+  public static TELEGRAM_BOT: string = 'dabernabot'
+  public static TELEGRAM_CHANNEL: string = 'dabernaparis'
 
-  public static getFakeHttpCtx() {
-    return storage?.getStore() as HttpContext
+  public static getFakeHttpCtx(): HttpContext {
+    return (
+      storage?.getStore() ?? ({ i18n: i18nManager?.locale(env.get('LOCALE', '')) } as HttpContext)
+    )
   }
   static asPrice(price: any) {
     if (!price) return '0'
@@ -164,6 +169,7 @@ class Helper {
   }
   public static __(key: string, data: any = {}, i18n = null) {
     const ctx = HttpContext.get()?.i18n ?? Helper.getFakeHttpCtx()?.i18n
+
     return ctx?.t(`messages.${key}`, data)
   }
 
@@ -226,9 +232,10 @@ class Helper {
   }
   static createSettings() {
     Setting.createMany([
-      { key: 'min_charge', value: Helper.MIN_CHARGE },
+      { key: 'min_charge', value: Helper.MIN_CHARGE, title: __('min_charge') },
       {
         key: 'card_to_card',
+        title: __('bank_cards'),
         value: JSON.stringify([
           { active: 1, card: '1234123412341234', name: 'test' },
           { active: 0, card: '1111222233334444', name: 'test2' },
@@ -236,6 +243,7 @@ class Helper {
       },
       {
         key: 'winwheel',
+        title: __('winwheel'),
         value: JSON.stringify({
           active: 1,
           labels: [5000, 0, 0, 10000, 0, 0, 5000, 0, 0, 5000, 0, 0, 20000, 0],
@@ -243,6 +251,7 @@ class Helper {
       },
       {
         key: 'charge_title',
+        title: __('charge_page_title'),
         value: __('validate.min', {
           item: __('charge'),
           value: `${asPrice(`${Helper.MIN_CHARGE}`)} ${__('currency')}`,
@@ -250,6 +259,7 @@ class Helper {
       },
       {
         key: 'card_to_card_title',
+        title: __('cardtocard_page_title'),
         value: __('validate.min', {
           item: __('charge'),
           value: `${asPrice(`${Helper.MIN_CHARGE}`)} ${__('currency')}`,
@@ -257,6 +267,7 @@ class Helper {
       },
       {
         key: 'withdraw_title',
+        title: __('withdraw_page_title'),
         value: __('withdraw_title', {
           item1: asPrice(`${Helper.MIN_WITHDRAW}`),
           item2: `${Helper.WITHDRAW_HOUR_LIMIT} ${__('hour')}`,
@@ -264,11 +275,32 @@ class Helper {
       },
       {
         key: 'support_links',
+        title: __('support_links'),
         value: JSON.stringify([
-          { name: __('telegram'), color: 0x0000ff, url: `${Helper.SUPPORT.telegram}` },
+          { name: __('telegram'), /* color: 0x0000ff,*/ url: `${Helper.SUPPORT.telegram}` },
         ]),
       },
-      { key: 'policy', value: __('policy_content') },
+      {
+        key: 'clear_transactions_day',
+        value: Helper.CLEAR_TRANSACTION_DAY,
+        title: __('clear_transactions_day'),
+      },
+      {
+        key: 'clear_inactive_users_day',
+        value: Helper.CLEAR_INACTIVE_USERS_DAY,
+        title: __('clear_inactive_users_day'),
+      },
+      {
+        key: 'telegram_bot',
+        value: Helper.TELEGRAM_BOT,
+        title: __('telegram_bot_without_@'),
+      },
+      {
+        key: 'telegram_channel',
+        value: Helper.TELEGRAM_CHANNEL,
+        title: __('telegram_channel_without_@'),
+      },
+      { key: 'policy', value: __('policy_content'), title: __('rules_text') },
     ])
   }
   static createUsers() {

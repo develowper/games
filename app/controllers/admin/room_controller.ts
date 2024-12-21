@@ -82,7 +82,7 @@ export default class RoomController {
       return response.badRequest({
         status: 'danger',
         message: __('not_found_*', {
-          item: `${__('user')}`,
+          item: `${__('room')}`,
         }),
       })
     switch (cmnd) {

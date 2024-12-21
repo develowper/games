@@ -382,6 +382,53 @@
             </ul>
           </li>
 
+          <!-- Users links -->
+          <li v-if="hasAccess('view_setting')" class="relative">
+            <a
+              :class="{ 'bg-primary-50 text-primary-500': menuIsActive('admin.panel.setting.*') }"
+              class="flex cursor-pointer items-center truncate px-3 py-4 text-[0.875rem] text-gray-600 outline-none transition duration-300 ease-linear hover:bg-primary-100 hover:text-inherit hover:outline-none focus:bg-slate-50 focus:text-inherit focus:outline-none active:bg-slate-50 active:text-inherit active:outline-none data-[te-sidenav-state-active]:text-inherit data-[te-sidenav-state-focus]:outline-none motion-reduce:transition-none"
+              data-te-sidenav-link-ref
+            >
+              <Cog6ToothIcon class="w-5 h-5" />
+              <span class="mx-2 text-sm"> {{ __('settings') }} </span>
+              <span
+                class="right-0 ml-auto mr-[0.8rem] transition-transform duration-300 ease-linear motion-reduce:transition-none [&>svg]:text-gray-600"
+                data-te-sidenav-rotate-icon-ref
+              >
+                <ChevronDownIcon class="h-5 w-5" />
+              </span>
+            </a>
+            <ul
+              v-bind="{
+                'data-te-collapse-show': menuIsActive('admin.panel.setting.*') ? true : null,
+              }"
+              class="!visible relative m-0 hidden list-none data-[te-collapse-show]:block"
+              data-te-collapse-item
+              data-te-sidenav-collapse-ref
+            >
+              <li class="relative ps-7">
+                <Link
+                  :href="route('admin.panel.setting.index')"
+                  role="menuitem"
+                  :class="subMenuIsActive('admin.panel.setting.index')"
+                  class="flex border-s-2 hover:border-primary-500 items-center p-2 text-sm transition-all duration-200 hover:text-primary-700 hover:bg-primary-50"
+                >
+                  <Bars2Icon class="w-5 h-5 mx-1" />
+                  {{ __('list') }}
+                </Link>
+                <Link
+                  v-if="false"
+                  :href="route('admin.panel.user.create')"
+                  role="menuitem"
+                  :class="subMenuIsActive('admin.panel.user.create')"
+                  class="flex border-s-2 hover:border-primary-500 items-center p-2 text-sm transition-all duration-200 hover:text-primary-700 hover:bg-primary-50"
+                >
+                  <PlusSmallIcon class="w-5 h-5 mx-1" />
+                  {{ __('new') }}
+                </Link>
+              </li>
+            </ul>
+          </li>
           <li>
             <div class="py-4"></div>
           </li>

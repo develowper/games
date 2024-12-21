@@ -10,6 +10,8 @@ export default class Setting extends BaseModel {
 
   @column()
   declare value: any
+  @column()
+  declare title: string
 
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime

@@ -103,6 +103,11 @@ export default class User extends compose(BaseModel, AuthFinder) {
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   declare updatedAt: DateTime | null
 
+  @column.dateTime()
+  declare lastCharge: DateTime | null
+  @column.dateTime()
+  declare lastWin: DateTime | null
+
   static accessTokens = DbAccessTokensProvider.forModel(User)
 
   public getAccesses() {

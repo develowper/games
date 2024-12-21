@@ -11,6 +11,7 @@ const TransactionController = () => import('#controllers/admin/transaction_contr
 const AdminController = () => import('#controllers/admin_controller')
 const AuthController = () => import('#controllers/auth_controller')
 const PanelController = () => import('#controllers/panel_controller')
+const SettingController = () => import('#controllers/admin/setting_controller')
 
 export default () => {
   router
@@ -33,7 +34,6 @@ export default () => {
       router
         .group(() => {
           router.get('', [PanelController, 'index']).as('index')
-          router.on('setting/index').renderInertia('Panel/Admin/Setting/Index').as('setting.index')
           router.on('ticket/index').renderInertia('Panel/Admin/Ticket/Index').as('ticket.index')
           router
             .on('notification/index')
@@ -67,6 +67,10 @@ export default () => {
           router.post('room/store', [RoomController, 'store']).as('room.store')
           router.patch('room/update', [RoomController, 'update']).as('room.update')
           router.get('room/:id', [RoomController, 'edit']).as('room.edit')
+
+          router.get('setting/index', [SettingController, 'index']).as('setting.index')
+          router.get('setting/search', [SettingController, 'search']).as('setting.search')
+          router.patch('setting/update', [SettingController, 'update']).as('setting.update')
         })
         .prefix('panel')
         .as('panel')
