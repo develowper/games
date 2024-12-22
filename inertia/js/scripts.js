@@ -18,6 +18,7 @@ import {
   Modal,
 } from 'tw-elements'
 import axios, { isCancel, AxiosError } from 'axios'
+
 import { usePage } from '@inertiajs/vue3'
 import { showToast } from './mixins.js'
 window.axios = axios.create({

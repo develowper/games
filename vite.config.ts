@@ -14,7 +14,7 @@ export default defineConfig({
     }),
     inertia({
       ssr: {
-        enabled: true,
+        enabled: false,
         entrypoint: 'inertia/app/ssr.ts',
       },
     }),

@@ -224,7 +224,7 @@ export function __(key, replace = {}) {
   return translation
 }
 export function isAdmin() {
-  return usePage().props.isAdmin
+  return !!usePage().props.isAdmin
 }
 export function hasAccess(role) {
   return usePage().props.accesses == 'all' || usePage().props.accesses.indexOf(role) >= 0

@@ -382,7 +382,7 @@
             </ul>
           </li>
 
-          <!-- Users links -->
+          <!-- Settings links -->
           <li v-if="hasAccess('view_setting')" class="relative">
             <a
               :class="{ 'bg-primary-50 text-primary-500': menuIsActive('admin.panel.setting.*') }"
@@ -509,7 +509,7 @@ import Tooltip from '~/components/Tooltip.vue'
 import { useRemember } from '@inertiajs/vue3'
 import PanelScaffold from '~/layouts/PanelScaffold.vue'
 import { provide, ref } from 'vue'
-import { isAdmin, hasAccess, __ } from '~/js/mixins.js'
+import { isAdmin, hasAccess, __, log } from '../../inertia/js/mixins.js'
 import { route } from '@izzyjs/route/client'
 
 export default {
@@ -534,6 +534,7 @@ export default {
   props: [],
   created() {},
   mounted() {
+    // console.log('***************')
     // initSidenav();
     // this.$nextTick(function () {
     //     console.log(this.$parent.toast);
@@ -604,6 +605,7 @@ export default {
     route,
     isAdmin,
     hasAccess,
+    log,
     delay(time) {
       return new Promise((resolve) => setTimeout(resolve, time))
     },
