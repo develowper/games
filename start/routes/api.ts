@@ -6,9 +6,11 @@ const UserController = () => import('../../app/controllers/api/user_controller.j
 const SettingController = () => import('../../app/controllers/api/setting_controller.js')
 const RoomController = () => import('../../app/controllers/api/room_controller.js')
 const TransactionController = () => import('../../app/controllers/api/transaction_controller.js')
+const BotController = () => import('../../app/controllers/bot_controller.js')
 
 export default () => {
   router.any('api/transaction/done', [TransactionController, 'done']).as('api.transaction.done')
+  router.any('api/bot/telegram/update', [BotController, 'getUpdates']).as('api.bot.telegram.update')
 
   //auth
   router

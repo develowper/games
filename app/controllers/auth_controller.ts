@@ -3,8 +3,6 @@ import { loginValidator, registerValidator } from '#validators/auth'
 import User from '#models/user'
 import Admin from '#models/admin'
 import UserRegistered from '#events/user_registered'
-import { log } from '#services/helper_service'
-import { isAdmin } from '../../inertia/js/mixins.js'
 
 export default class AuthController {
   async register({ request, response, auth }: HttpContext) {
