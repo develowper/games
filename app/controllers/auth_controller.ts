@@ -22,6 +22,7 @@ export default class AuthController {
     const isAdmin = request.matchesRoute('admin.auth.login')
 
     const user = await (isAdmin ? Admin : User).verifyCredentials(username, password)
+
     if (isAdmin) await auth.use('admin_web').login(user as Admin, !!request.input('remember'))
     else await auth.use('web').login(user as User, !!request.input('remember'))
 

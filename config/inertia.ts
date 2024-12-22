@@ -16,8 +16,13 @@ const inertiaConfig = defineConfig({
    */
   sharedData: {
     auth: async (ctx) => {
+      // ;(await ctx.auth?.use('admin_web').check()) ?? ctx.auth?.use('web').check()
+      const user = ctx.auth.use('admin_web')?.user ?? ctx.auth.use('web')?.user
+      // console.log(user)
       return {
-        user: ctx.auth?.user,
+        user: user,
+        isAdmin: user instanceof Admin,
+        accesses: user?.getAccesses(),
         agencyFinancial:
           ctx?.auth?.user instanceof Admin
             ? await AgencyFinancial.findBy('agency_id', ctx?.auth?.user.agencyId)
@@ -38,8 +43,6 @@ const inertiaConfig = defineConfig({
     // notification: (ctx) => ctx.session.flashMessages.get('notification'),
     errors: (ctx) => ctx.session?.flashMessages.get('errors') ?? {},
     language: (ctx) => getLangFile(ctx),
-    isAdmin: (ctx) => ctx?.auth?.user instanceof Admin,
-    accesses: (ctx) => ctx?.auth?.user?.getAccesses(),
     pageItems: [24, 50, 100],
     // __: (ctx) => {
     //   return {

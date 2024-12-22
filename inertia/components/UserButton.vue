@@ -118,8 +118,10 @@ export default {
       })
     },
     profileLink() {
-      if (this.$page.props.auth.user) return this.route('user.panel.index')
-      else return this.route('user.login-form')
+      console.log('********')
+      isAdmin()
+      if (this.user) return this.route(`${isAdmin() ? 'admin' : 'user'}.panel.index`)
+      return this.route(`user.login-form`)
     },
   },
 }

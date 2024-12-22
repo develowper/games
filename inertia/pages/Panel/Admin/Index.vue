@@ -21,9 +21,9 @@
             class="flex hover:scale-[101%] transition duration-300 cursor-pointer items-center justify-between p-4 bg-white rounded-lg"
           >
             <div class="flex flex-col">
-              <h6 class="text-md font-bold border-b py-3 tracking-wider text-gray-500 uppercase">
+              <h6 class="text-md font-bold border-b py-3 tracking-wider text-gray-500">
                 {{ agency.name }}
-                <span class="text-xs">{{ `(${getAgency(agency.level)})` }}</span>
+                <span class="text-xs">{{ `(${$page.props.auth.user.username})` }}</span>
               </h6>
               <div class="flex flex-wrap text-gray-700 my-2">
                 <div class="flex text-sm mx-2">

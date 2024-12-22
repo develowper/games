@@ -224,10 +224,11 @@ export function __(key, replace = {}) {
   return translation
 }
 export function isAdmin() {
-  return !!usePage().props.isAdmin
+  return !!usePage().props.auth.isAdmin
 }
 export function hasAccess(role) {
-  return usePage().props.accesses == 'all' || usePage().props.accesses.indexOf(role) >= 0
+  const auth = usePage().props.auth
+  return auth.accesses && (auth.accesses == 'all' || auth.accesses.indexOf(role) >= 0)
 }
 export function toShamsi(day = null, time = false) {
   var t = new Date().getTime()
