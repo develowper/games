@@ -176,7 +176,7 @@ export default class BotController {
         const refCommissionPercent = (await Setting.findBy('key', 'ref_commission_percent'))?.value
         if (refCommissionPercent && Number.parseInt(refCommissionPercent)) {
           msg += i18n.t('messages.ref_commission_text', { item: refCommissionPercent }) + '\n'
-          res = await Telegram.sendMessage(fromId, msg, this.MODE_MARKDOWN, null, null)
+          // res = await Telegram.sendMessage(fromId, msg, this.MODE_MARKDOWN, null, null)
         } else return
 
         if (!this.user) {
