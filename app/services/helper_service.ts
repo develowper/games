@@ -53,7 +53,8 @@ class Helper {
     /*'http://172.16.6.2:9204' ??*/ `${env.get('APP_URL')}:${env.get('PORT')}`
   public static ERROR_STATUS = 400
   public static BANK = 'zarinpal'
-  public static APP_URL = '/download/daberna.apk'
+  public static APP_DOWNLOAD_URL =
+    'BQACAgQAAxkBAAIBc2dpi3RyNuYZ1PKaZO6L0Rh0gQyQAAIpFQACyetQUzf-QIGKBw6bNgQ'
   public static APP_VERSION = 1
   public static PAGINATE = 24
   public static MIN_CHARGE = 50000
@@ -226,6 +227,7 @@ class Helper {
           return item
         })
         .pluck('value', 'key')
+        .all()
     }
   }
   public static sendError(message: string) {
@@ -310,7 +312,7 @@ class Helper {
       },
       {
         key: 'app_url',
-        value: env.get('APP_URL') + Helper.APP_URL,
+        value: Helper.APP_DOWNLOAD_URL,
         title: __('app_url'),
       },
       {

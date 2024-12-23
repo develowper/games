@@ -9,6 +9,8 @@ import Referral from '#models/referral'
 import hash from '@adonisjs/core/services/hash'
 import { usernameValidatorObject } from '#validators/auth'
 import UserFinancial from '#models/user_financial'
+import drive from '@adonisjs/drive/services/main'
+
 export default class BotController {
   public user: User | Admin | null
   public isAdmin = false
@@ -124,6 +126,7 @@ export default class BotController {
           )
         }
       } else if (text === 'لغو ❌') {
+        //
         msg = 'عملیات لغو شد'
         this.updateUserStorage(null)
 
@@ -135,6 +138,7 @@ export default class BotController {
           await this.getKeyboard('user_main')
         )
       } else if (text === '🤖تماس با ما🤖') {
+        //
         msg = '✏️ *جهت ارتباط با پشتیبانی از لینک های زیر استفاده نمایید*'
         res = await Telegram.sendMessage(
           fromId,
@@ -144,22 +148,26 @@ export default class BotController {
           await this.getKeyboard('support_links')
         )
       } else if (text === '📱 دریافت اپلیکیشن 📱') {
+        //
         const settings = await Helper.getSettings(['app_url', 'app_version'])
-        const appUrl = settings.firstWhere('key', 'app_url')?.value
-        const appVersion = settings.firstWhere('key', 'app_version')?.value
+        const appUrl = settings['app_url']
+        const appVersion = settings.app_version
         if (!appUrl) {
           msg = '*لطفا از قسمت پشتیبانی دریافت نمایید*'
           await Telegram.sendMessage(fromId, msg, this.MODE_MARKDOWN, null, null)
           return
         }
+        // const disk = drive.use()
+        // await disk.get('download/daberna.apk')
         res = await Telegram.send(
           fromId,
           JSON.stringify({
-            document: appUrl,
+            document: { file_id: appUrl },
             caption: `${i18n.t('messages.app_name')} ${i18n.t('messages.version')} ${appVersion}`,
           })
         )
       } else if (text === '💶 کسب درآمد 💶') {
+        //
         msg = ''
         const refCommissionPercent = (await Setting.findBy('key', 'ref_commission_percent'))?.value
         if (refCommissionPercent && Number.parseInt(refCommissionPercent)) {
@@ -183,6 +191,7 @@ export default class BotController {
           await this.getKeyboard('user_main')
         )
       } else if (text === '🔑 فراموشی رمز 🔑') {
+        //
         msg =
           'لطفا دکمه 📱 ارسال شماره تماس 📱 را بزنید. در صورتی که شماره ثبت شده باشد از شما درخواست رمز جدید می شود'
         this.updateUserStorage('send-contact')
@@ -194,6 +203,7 @@ export default class BotController {
           await this.getKeyboard('contact')
         )
       } else if (text === '📱 ارسال شماره تماس 📱') {
+        //
         res = await Telegram.sendMessage(
           fromId,
           message,
@@ -235,6 +245,7 @@ export default class BotController {
           res?.keyboard
         )
       } else if (text === 'ثبت نام✅') {
+        //
         if (this.user) return
         this.user = new User()
         const ref = await Referral.findBy('invited_id', fromId)
@@ -262,6 +273,7 @@ export default class BotController {
           (keyboard = await this.getKeyboard('cancel'))
         )
       } else if (this.storage === 'register-username') {
+        //
         if (!this.user) return
         res = await this.validate(this.storage, { username: text })
         if (res.status == 'success') {
@@ -276,6 +288,7 @@ export default class BotController {
           await this.getKeyboard('cancel')
         )
       } else if (text === '👤حساب کاربری👤') {
+        //
         if (!this.user) return
         const financial = await UserFinancial.findBy('user_id', this.user.id)
         msg = '*نام کاربری*: ' + (this.user.username ?? '➖') + '\n'
@@ -294,8 +307,8 @@ export default class BotController {
       }
     }
 
-    console.log('**************')
-    console.log(res)
+    // console.log('**************')
+    // console.log(res)
     // console.log(request.body())
     return request.body()
   }

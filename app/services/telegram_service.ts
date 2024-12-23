@@ -272,15 +272,15 @@ export default class Telegram {
     }
 
     if (processedText) {
-      await Telegram.creator('sendMessage', { ...basePayload, text: processedText })
+      return await Telegram.creator('sendMessage', { ...basePayload, text: processedText })
     } else if (photo) {
-      await Telegram.creator('sendPhoto', {
+      return await Telegram.creator('sendPhoto', {
         ...basePayload,
         photo: photo[photo.length - 1].file_id,
         caption: processedCaption,
       })
     } else if (audio) {
-      await Telegram.creator('sendAudio', {
+      return await Telegram.creator('sendAudio', {
         ...basePayload,
         audio: audio.file_id,
         caption: processedCaption,
@@ -290,14 +290,14 @@ export default class Telegram {
         thumb: audio.thumb,
       })
     } else if (document) {
-      await Telegram.creator('sendDocument', {
+      return await Telegram.creator('sendDocument', {
         ...basePayload,
         document: document.file_id,
         caption: processedCaption,
         thumb: document.thumb,
       })
     } else if (video) {
-      await Telegram.creator('sendVideo', {
+      return await Telegram.creator('sendVideo', {
         ...basePayload,
         video: video.file_id,
         duration: video.duration,
@@ -307,7 +307,7 @@ export default class Telegram {
         thumb: video.thumb,
       })
     } else if (animation) {
-      await Telegram.creator('sendAnimation', {
+      return await Telegram.creator('sendAnimation', {
         ...basePayload,
         animation: animation.file_id,
         duration: animation.duration,
@@ -317,14 +317,14 @@ export default class Telegram {
         thumb: animation.thumb,
       })
     } else if (voice) {
-      await Telegram.creator('sendVoice', {
+      return await Telegram.creator('sendVoice', {
         ...basePayload,
         voice: voice.file_id,
         duration: voice.duration,
         caption: processedCaption,
       })
     } else if (video_note) {
-      await Telegram.creator('sendVideoNote', {
+      return await Telegram.creator('sendVideoNote', {
         ...basePayload,
         video_note: video_note.file_id,
         duration: video_note.duration,
@@ -332,13 +332,13 @@ export default class Telegram {
         thumb: video_note.thumb,
       })
     } else if (sticker) {
-      await Telegram.creator('sendSticker', {
+      return await Telegram.creator('sendSticker', {
         ...basePayload,
         sticker: sticker.file_id,
         set_name: 'DaisyRomashka',
       })
     } else if (poll) {
-      await Telegram.creator('sendPoll', {
+      return await Telegram.creator('sendPoll', {
         ...basePayload,
         question: '',
         options: JSON.stringify(['1', '2', '3']),

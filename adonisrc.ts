@@ -53,6 +53,7 @@ export default defineConfig({
       environment: ['web', 'console'],
     },
     () => import('@adonisjs/limiter/limiter_provider'),
+    () => import('@adonisjs/drive/drive_provider')
   ],
 
   /*
