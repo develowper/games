@@ -115,7 +115,7 @@ export default class BotController {
           res = await Telegram.sendMessage(
             chatId,
             msg,
-            this.MODE_MARKDOWN,
+            null,
             messageId,
             await this.getKeyboard('user_main')
           )
@@ -124,7 +124,7 @@ export default class BotController {
           res = await Telegram.sendMessage(
             chatId,
             msg,
-            this.MODE_MARKDOWN,
+            null,
             messageId,
             await this.getKeyboard('user_main')
           )

@@ -388,6 +388,7 @@ class Helper {
         role: 'go',
         agencyId: 1,
         agencyLevel: 0,
+        telegramId: '6270272894',
       },
       {
         username: 'mojraj',
@@ -396,6 +397,7 @@ class Helper {
         role: 'go',
         agencyId: 1,
         agencyLevel: 0,
+        telegramId: '72534783',
       },
     ])
     AdminFinancial.createMany([{ id: 1, adminId: 1, balance: 0 }])
