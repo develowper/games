@@ -389,11 +389,33 @@
                         v-for="(row, ix) in params.value"
                         class="border rounded-lg my-2 p-2"
                       >
-                        <div v-if="row && isObject(row)" v-for="(col, idx) in row">
+                        <div
+                          v-if="row && isObject(row)"
+                          v-for="(col, idx) in row"
+                          class="border rounded p-1 m-1"
+                        >
+                          <div v-if="col && isObject(col)" v-for="(icol, idxx) in col">
+                            <TextInput
+                              :id="idx"
+                              type="text"
+                              :placeholder="idxx"
+                              classes="  "
+                              v-model="params.value[ix][idx][idxx]"
+                              autocomplete="key"
+                              :error="params.errors.value"
+                            >
+                              <template v-slot:prepend>
+                                <div class="p-3">
+                                  <Bars2Icon class="h-5 w-5" />
+                                </div>
+                              </template>
+                            </TextInput>
+                          </div>
                           <TextInput
+                            v-else
                             :id="idx"
                             type="text"
-                            :placeholder="__(idx)"
+                            :placeholder="idx"
                             classes="  "
                             v-model="params.value[ix][idx]"
                             autocomplete="key"
