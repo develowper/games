@@ -63,6 +63,10 @@ export default class UserController {
   }
 
   async register({ request, response, i18n }: HttpContext) {
+const isActive=await Helper.getSettings('register_is_active')
+    if (! isActive) {
+      return response.badRequest({ message: __('is_inactive_*',{item:__('register')}),status: 'danger' })
+
     const data = await request.validateUsing(registerValidator)
     const user = await User.create(data)
     const tokenData = await User.accessTokens.create(user)
