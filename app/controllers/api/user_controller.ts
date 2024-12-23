@@ -127,7 +127,7 @@ export default class UserController {
   async getTelegramLink({ auth, response }: HttpContext) {
     const telegramBot = await Helper.getSettings('telegram_bot')
     const user = auth.user
-    user?.storage = DateTime.now().toMillis()
+    user.storage = DateTime.now().toMillis()
     user?.save()
     const url = `https://t.me/${telegramBot ?? ''}?start=c${user?.storage}`
     return response.json({ status: 'success', url: url })
