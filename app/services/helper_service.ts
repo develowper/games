@@ -217,7 +217,7 @@ class Helper {
   static async getSettings(items: any) {
     let res
     if (!Array.isArray(items)) {
-      res = await Setting.firstOrNew('key', items)
+      res = await Setting.firstOrNew({ key: items }, { key: items })
       if (res.value && !Number.isNaN(res.value * 1)) res.value = res.value * 1
       return res.value
     } else {
