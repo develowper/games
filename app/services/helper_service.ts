@@ -251,7 +251,13 @@ class Helper {
         value: JSON.stringify({
           active: 1,
           limit_hour: Helper.WINWHEEL_HOUR_LIMIT,
-          labels: [5000, 0, 0, 10000, 0, 0, 5000, 0, 0, 5000, 0, 0, 20000, 0],
+          labels: myMap(
+            [5000, 0, 0, 10000, 0, 0, 5000, 0, 0, 5000, 0, 0, 20000, 0],
+            (item: number) => {
+              const data = { name: __(`${item}`), value: item }
+              return data
+            }
+          ),
         }),
       },
       {
@@ -320,6 +326,16 @@ class Helper {
         key: 'app_version',
         value: Helper.APP_VERSION,
         title: __('app_version'),
+      },
+      {
+        key: 'register_is_active',
+        value: 1,
+        title: __('register_status'),
+      },
+      {
+        key: 'robot_is_active',
+        value: 1,
+        title: __('robot_status'),
       },
     ])
   }
