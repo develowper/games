@@ -55,6 +55,7 @@ class Helper {
   public static BANK = 'zarinpal'
   public static APP_DOWNLOAD_URL =
     'BQACAgQAAxkBAAIBc2dpi3RyNuYZ1PKaZO6L0Rh0gQyQAAIpFQACyetQUzf-QIGKBw6bNgQ'
+
   public static APP_VERSION = 1
   public static PAGINATE = 24
   public static MIN_CHARGE = 50000

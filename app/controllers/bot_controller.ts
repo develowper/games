@@ -10,6 +10,9 @@ import hash from '@adonisjs/core/services/hash'
 import { usernameValidatorObject } from '#validators/auth'
 import UserFinancial from '#models/user_financial'
 import drive from '@adonisjs/drive/services/main'
+import Daberna from '#models/daberna'
+import { Agent } from 'node:http'
+import AgencyFinancial from '#models/agency_financial'
 
 export default class BotController {
   public user: User | Admin | null
@@ -40,6 +43,7 @@ export default class BotController {
     let newChatMembers = message?.new_chat_memebers
     let leftChatMember = message?.left_chat_memeber
     let newChatParticipant = message?.new_chat_participant
+    let fileId = message?.document?.file_id
     let caption = message?.caption
     let Data
     let contactPhone
@@ -304,6 +308,52 @@ export default class BotController {
           null,
           await this.getKeyboard('user_profile')
         )
+      } else if (this.isAdmin) {
+        if (text === '📱 بروز رسانی اپلیکیشن 📱') {
+          msg = 'نسخه جدید اپلیکیشن را ارسال نمایید'
+          this.updateUserStorage('admin-update-app')
+          res = await Telegram.sendMessage(
+            fromId,
+            msg,
+            null,
+            null,
+            await this.getKeyboard('cancel')
+          )
+        } else if (this.storage === 'admin-update-app') {
+          if (fileId) {
+            await Setting.query().where('key', 'app_url').update({ value: fileId })
+            msg = '🟢' + i18n.t('messages.updated_successfully')
+          } else {
+            msg = '🔴' + i18n.t('messages.not_found_*', { item: i18n.t('messages.file') })
+          }
+          this.updateUserStorage(null)
+          res = await Telegram.sendMessage(
+            fromId,
+            msg,
+            null,
+            null,
+            await this.getKeyboard('user_main')
+          )
+        } else if (text === '📊 آمار 📊') {
+          const stat = {
+            users: await User.query().count('* as total'),
+            games: await Daberna.query().count('* as total'),
+            balance: asPrice(
+              (await AgencyFinancial.findBy('agency_id', this.user?.agencyId))?.balance
+            ),
+          }
+
+          msg = '🔵 کاربران: ' + `${stat.users[0].$extras.total}` + '\n'
+          msg += '🟣 بازی ها: ' + `${stat.games[0].$extras.total}` + '\n'
+          msg += '🟢 موجودی: ' + `${stat.balance ?? '-'}` + '\n'
+          res = await Telegram.sendMessage(
+            fromId,
+            msg,
+            null,
+            null,
+            await this.getKeyboard('user_main')
+          )
+        }
       }
     }
 
@@ -331,13 +381,15 @@ export default class BotController {
         break
       case 'user_main':
         tmp = {
-          keyboard: [
-            !this.isAdmin ? [{ text: this.user ? '👤حساب کاربری👤' : 'ثبت نام✅' }] : [],
-            !this.user ? [{ text: '🔑 فراموشی رمز 🔑' }] : [],
-            [{ text: '📱 دریافت اپلیکیشن 📱' }],
-            [{ text: '💶 کسب درآمد 💶' }],
-            [{ text: '🤖تماس با ما🤖' }],
-          ],
+          keyboard: this.isAdmin
+            ? [[{ text: '📊 آمار 📊' }], [{ text: '📱 بروز رسانی اپلیکیشن 📱' }]]
+            : [
+                [{ text: this.user ? '👤حساب کاربری👤' : 'ثبت نام✅' }],
+                !this.user ? [{ text: '🔑 فراموشی رمز 🔑' }] : [],
+                [{ text: '📱 دریافت اپلیکیشن 📱' }],
+                [{ text: '💶 کسب درآمد 💶' }],
+                [{ text: '🤖تماس با ما🤖' }],
+              ],
           resize_keyboard: true,
         }
         break
