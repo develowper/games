@@ -86,6 +86,8 @@ export default class Admin extends compose(BaseModel, AuthFinder) {
     }
     inertiaError(errIncorrect)
   }
+  public score
+
   @column({ isPrimary: true })
   declare id: number
 
@@ -93,6 +95,8 @@ export default class Admin extends compose(BaseModel, AuthFinder) {
   declare isActive: boolean
   @column()
   declare agencyId: number
+  @column()
+  declare telegramId: string
   @column()
   declare agencyLevel: number
   @column()
@@ -105,7 +109,8 @@ export default class Admin extends compose(BaseModel, AuthFinder) {
   declare role: string
   @column()
   declare access: object
-
+  @column()
+  declare storage: any
   @column({ serializeAs: null })
   declare password: string
 

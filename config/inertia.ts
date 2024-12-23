@@ -17,7 +17,7 @@ const inertiaConfig = defineConfig({
   sharedData: {
     auth: async (ctx) => {
       // ;(await ctx.auth?.use('admin_web').check()) ?? ctx.auth?.use('web').check()
-      const user = ctx.auth.use('admin_web')?.user ?? ctx.auth.use('web')?.user
+      const user = ctx.auth?.use('admin_web')?.user ?? ctx.auth?.use('web')?.user
       // console.log(user)
       return {
         user: user,

@@ -3,6 +3,7 @@ import { HttpContext, ExceptionHandler } from '@adonisjs/core/http'
 import type { StatusPageRange, StatusPageRenderer } from '@adonisjs/core/types/http'
 import { errors as authErrors } from '@adonisjs/auth'
 import { errors as limiterErrors } from '@adonisjs/limiter'
+import { errors } from '@adonisjs/core'
 
 export default class HttpExceptionHandler extends ExceptionHandler {
   /**
@@ -23,7 +24,8 @@ export default class HttpExceptionHandler extends ExceptionHandler {
    * to return the HTML contents to send as a response.
    */
   protected statusPages: Record<StatusPageRange, StatusPageRenderer> = {
-    '404': (error, { inertia }) => inertia.render('errors/not_found', { error }),
+    // '404': (error, { inertia }) => inertia.render('errors/not_found', { error }),
+    '404': (_, { view }) => view.render('errors/not-found'),
     '500..599': (error, { inertia }) => inertia.render('errors/server_error', { error }),
   }
 
@@ -74,7 +76,9 @@ export default class HttpExceptionHandler extends ExceptionHandler {
         // return
       }
     }
-
+    // else if (error instanceof errors.E_ROUTE_NOT_FOUND) {
+    //   return ctx.inertia.render('errors/not_found', { error })
+    // }
     return super.handle(error, ctx)
   }
 

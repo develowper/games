@@ -35,6 +35,9 @@ export default class User extends compose(BaseModel, AuthFinder) {
   declare id: number
 
   @column()
+  declare inviterId: number
+
+  @column()
   declare agencyId: number
 
   @column()
@@ -90,15 +93,14 @@ export default class User extends compose(BaseModel, AuthFinder) {
   declare card50000Count: number
   @column({ columnName: 'today_card_50000_count' })
   declare todayCard50000Count: number
+  @column()
+  declare storage: any
 
   @column({ serializeAs: null })
   declare password: string
 
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime
-
-  @column.dateTime({ autoCreate: true, autoUpdate: true })
-  declare updatedAt: DateTime | null
 
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   declare updatedAt: DateTime | null

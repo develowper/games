@@ -6,7 +6,7 @@ export default class extends BaseSchema {
 
   async up() {
     this.schema.createTable(this.tableName, (table) => {
-      table.increments('id')
+      table.bigIncrements('id')
       table.string('title')
       table.string('pay_id', 100).nullable().defaultTo(null)
       table.enum('type', Helper.TRANSACTION.types)

@@ -1,5 +1,4 @@
 import { DateTime } from 'luxon'
-import env from '#start/env'
 import axios from 'axios'
 import User from '../models/user.js'
 import Admin from '../models/admin.js'
@@ -161,6 +160,25 @@ export default class Telegram {
       message_thread_id: topic,
     })
   }
+  public static async sendContact(
+    chat_id: string,
+    text: string,
+    mode: string | null = null,
+    reply: string | null = null,
+    keyboard: any | null = null,
+    disable_notification: boolean = false,
+    topic: string | null = null
+  ) {
+    return this.creator('sendMessage', {
+      chat_id: chat_id,
+      text: text,
+      parse_mode: mode,
+      reply_to_message_id: reply,
+      reply_markup: keyboard,
+      disable_notification: disable_notification,
+      message_thread_id: topic,
+    })
+  }
 
   public static async creator(method: string, datas: any = {}) {
     // return
@@ -193,5 +211,141 @@ export default class Telegram {
       res = await this.sendMessage(log, msg, mode, null, null, false, topic)
     }
     return res
+  }
+  public static markdownV2(text: any) {
+    const specialChars = ['.', '=', '_', '~', '||']
+
+    // Escape all special characters except for formatting characters like `*`
+    return text.replace(new RegExp(`([${specialChars.join('\\')}])`, 'g'), '\\$1')
+  }
+  static async send(chatId: number, storage: string, reply: number | null = null) {
+    const message = JSON.parse(storage)
+
+    const {
+      poll,
+      text,
+      sticker,
+      animation,
+      photo,
+      document,
+      video,
+      audio,
+      voice,
+      video_note,
+      caption,
+    } = message
+
+    let processedText = text
+    let processedCaption = caption
+    let advSection: string[] = []
+
+    if (text) {
+      advSection = text.split('banner=') // Extract advertisement section from text
+      processedText = advSection[0]
+    } else if (caption) {
+      advSection = caption.split('banner=')
+      processedCaption = advSection[0]
+    }
+
+    let buttons = null
+
+    if (advSection.length === 2) {
+      const link = advSection[1].split('=')
+      let trueLink = link[1]
+
+      for (let idx = 2; idx < link.length; idx++) {
+        trueLink += '=' + link[idx]
+      }
+
+      buttons = [[{ text: `👈 ${link[0]} 👉`, url: trueLink }]]
+    }
+
+    const keyboard = buttons
+      ? JSON.stringify({ inline_keyboard: buttons, resize_keyboard: true })
+      : null
+
+    const basePayload = {
+      chat_id: chatId,
+      reply_to_message_id: reply,
+      reply_markup: keyboard,
+      parse_mode: null,
+    }
+
+    if (processedText) {
+      await Telegram.creator('sendMessage', { ...basePayload, text: processedText })
+    } else if (photo) {
+      await Telegram.creator('sendPhoto', {
+        ...basePayload,
+        photo: photo[photo.length - 1].file_id,
+        caption: processedCaption,
+      })
+    } else if (audio) {
+      await Telegram.creator('sendAudio', {
+        ...basePayload,
+        audio: audio.file_id,
+        caption: processedCaption,
+        duration: audio.duration,
+        performer: audio.performer,
+        title: audio.title,
+        thumb: audio.thumb,
+      })
+    } else if (document) {
+      await Telegram.creator('sendDocument', {
+        ...basePayload,
+        document: document.file_id,
+        caption: processedCaption,
+        thumb: document.thumb,
+      })
+    } else if (video) {
+      await Telegram.creator('sendVideo', {
+        ...basePayload,
+        video: video.file_id,
+        duration: video.duration,
+        width: video.width,
+        height: video.height,
+        caption: processedCaption,
+        thumb: video.thumb,
+      })
+    } else if (animation) {
+      await Telegram.creator('sendAnimation', {
+        ...basePayload,
+        animation: animation.file_id,
+        duration: animation.duration,
+        width: animation.width,
+        height: animation.height,
+        caption: processedCaption,
+        thumb: animation.thumb,
+      })
+    } else if (voice) {
+      await Telegram.creator('sendVoice', {
+        ...basePayload,
+        voice: voice.file_id,
+        duration: voice.duration,
+        caption: processedCaption,
+      })
+    } else if (video_note) {
+      await Telegram.creator('sendVideoNote', {
+        ...basePayload,
+        video_note: video_note.file_id,
+        duration: video_note.duration,
+        length: video_note.length,
+        thumb: video_note.thumb,
+      })
+    } else if (sticker) {
+      await Telegram.creator('sendSticker', {
+        ...basePayload,
+        sticker: sticker.file_id,
+        set_name: 'DaisyRomashka',
+      })
+    } else if (poll) {
+      await Telegram.creator('sendPoll', {
+        ...basePayload,
+        question: '',
+        options: JSON.stringify(['1', '2', '3']),
+        type: 'regular',
+        allows_multiple_answers: false,
+        correct_option_id: 0,
+      })
+    }
   }
 }

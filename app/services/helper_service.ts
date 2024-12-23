@@ -53,6 +53,7 @@ class Helper {
     /*'http://172.16.6.2:9204' ??*/ `${env.get('APP_URL')}:${env.get('PORT')}`
   public static ERROR_STATUS = 400
   public static BANK = 'zarinpal'
+  public static APP_URL = '/download/daberna.apk'
   public static APP_VERSION = 1
   public static PAGINATE = 24
   public static MIN_CHARGE = 50000
@@ -62,6 +63,7 @@ class Helper {
   public static CARDTOCARD_MINUTE_LIMIT = 5
   public static WINWHEEL_HOUR_LIMIT = 24
   public static WITHDRAW_HOUR_LIMIT = 24
+  public static REF_COMMISSION_PERCENT = 3
   public static USER_ROLES = ['us', 'bo']
   public static TELEGRAM_LOGS = ['72534783']
   public static ADMIN_ROLES = ['go', 'ad']
@@ -154,7 +156,7 @@ class Helper {
     playstore: '',
     bank: '',
   }
-  public static TELEGRAM_BOT: string = 'dabernabot'
+  public static TELEGRAM_BOT: string = 'daberna_bot'
   public static TELEGRAM_CHANNEL: string = 'dabernaparis'
 
   public static getFakeHttpCtx(): HttpContext {
@@ -224,7 +226,6 @@ class Helper {
           return item
         })
         .pluck('value', 'key')
-        .all()
     }
   }
   public static sendError(message: string) {
@@ -246,6 +247,7 @@ class Helper {
         title: __('winwheel'),
         value: JSON.stringify({
           active: 1,
+          limit_hour: Helper.WINWHEEL_HOUR_LIMIT,
           labels: [5000, 0, 0, 10000, 0, 0, 5000, 0, 0, 5000, 0, 0, 20000, 0],
         }),
       },
@@ -301,11 +303,32 @@ class Helper {
         title: __('telegram_channel_without_@'),
       },
       { key: 'policy', value: __('policy_content'), title: __('rules_text') },
+      {
+        key: 'ref_commission_percent',
+        value: Helper.REF_COMMISSION_PERCENT,
+        title: __('ref_commission_percent'),
+      },
+      {
+        key: 'app_url',
+        value: env.get('APP_URL') + Helper.APP_URL,
+        title: __('app_url'),
+      },
+      {
+        key: 'app_version',
+        value: Helper.APP_VERSION,
+        title: __('app_version'),
+      },
     ])
   }
   static createUsers() {
     User.createMany([
-      { username: 'mahyar.sh', password: 'm2330m', phone: '09011111111', agencyId: 1 },
+      {
+        username: 'mahyar.sh',
+        password: 'm2330m',
+        phone: '09011111111',
+        agencyId: 1,
+        agencyLevel: 0,
+      },
       { username: 'mojraj', password: '123123', phone: '09015555555', agencyId: 1, agencyLevel: 0 },
       {
         username: 'mojraj2',
@@ -483,6 +506,23 @@ class Helper {
     }
     return result.join('')
   }
+
+  static replace(find: string, rep: string, input: string): string {
+    const regex = new RegExp(find, 'i') // Add 'i' flag for case-insensitive matching if pattern is string
+    return input.replace(regex, rep)
+  }
+  static startsWith(str = '', searchString) {
+    // Check if the beginning of `str` matches `searchString`
+
+    return str.slice(0, searchString.length) === searchString
+  }
+  static myMap(arr, callbackFn) {
+    var tmp = []
+    for (var i = 0; i < arr.length; i++) {
+      tmp.push(callbackFn(arr[i]))
+    }
+    return tmp
+  }
 }
 
 // export default Helper
@@ -507,5 +547,8 @@ export const {
   log,
   sendError,
   inertiaError,
+  replace,
+  startsWith,
+  myMap,
 } = Helper
 export default Helper
