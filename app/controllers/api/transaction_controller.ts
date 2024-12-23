@@ -136,8 +136,9 @@ export default class TransactionsController {
         break
       case 'winwheel':
         await request.validateUsing(winWheelValidator)
-        const winWheelGapHours = Helper.WINWHEEL_HOUR_LIMIT
+
         const winWheel = JSON.parse((await Setting.query().where('key', 'winwheel').first())?.value)
+        const winWheelGapHours = winWheel?.limit_hour
 
         if (!winWheel || winWheel.active != 1) {
           return response.status(Helper.ERROR_STATUS).json({
