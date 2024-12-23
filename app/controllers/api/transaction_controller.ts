@@ -168,7 +168,7 @@ export default class TransactionsController {
           })
         }
         const randomIndex = Math.floor(Math.random() * winWheel.labels.length)
-        const winLabel = Number.parseInt(`${winWheel.labels[randomIndex]}`)
+        const winLabel = Number.parseInt(`${winWheel.labels[randomIndex].value}`)
 
         desc = __('winwheel_prize_*', { item: asPrice(`${winLabel}`) })
 
