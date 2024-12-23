@@ -15,6 +15,7 @@ export default () => {
   //auth
   router
     .group(() => {
+      router.post('telegram/connect', [UserController, 'getTelegramLink']).as('telegram.connect')
       router.delete('logout', [UserController, 'logout']).as('logout')
       router.get('user/info', [UserController, 'info']).as('info')
       router.post('user/update', [UserController, 'update']).as('update')

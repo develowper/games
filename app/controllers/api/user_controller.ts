@@ -5,6 +5,7 @@ import Helper, { __ } from '../../services/helper_service.js'
 import UserFinancial from '../../models/user_financial.js'
 import hash from '@adonisjs/core/services/hash'
 import Setting from '#models/setting'
+import { DateTime } from 'luxon'
 
 export default class UserController {
   async update({ response, request, auth }) {
@@ -122,5 +123,13 @@ export default class UserController {
       user: user?.serialize(),
       financial: await user.getUserFinancial(),
     })
+  }
+  async getTelegramLink({ auth, response }: HttpContext) {
+    const telegramBot = await Helper.getSettings('telegram_bot')
+    const user = auth.user
+    user?.storage = DateTime.now().toMillis()
+    user?.save()
+    const url = `https://t.me/${telegramBot ?? ''}?start=c${user?.storage}`
+    return response.json({ status: 'success', url: url })
   }
 }
