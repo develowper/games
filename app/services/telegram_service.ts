@@ -353,7 +353,6 @@ export default class Telegram {
       chat_id: chatId,
       user_id: userId,
     })
-    console.log(res)
-    return res?.result?.status
+    return res?.result?.status == 'member'
   }
 }
