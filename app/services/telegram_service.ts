@@ -348,7 +348,7 @@ export default class Telegram {
       })
     }
   }
-  public static isMember(chatId, userId) {
+  public static async isMember(chatId, userId) {
     return (
       await Telegram.creator('getChatMember', {
         chat_id: chatId,

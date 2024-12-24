@@ -91,20 +91,20 @@ export default class BotController {
 
     ///
     if (tc === 'private') {
-      // if (
-      //   Helper.TELEGRAM_CHANNEL &&
-      //   (await Telegram.isMember(`@${Helper.TELEGRAM_CHANNEL}`, fromId))
-      // ) {
-      //   msg = '📌 *جهت استفاده از ربات و دریافت پیام های اطلاع رسانی در کانال برنامه عضو شوید*'
-      //   res = await Telegram.sendMessage(
-      //     chatId,
-      //     Telegram.markdownV2(msg),
-      //     this.MODE_MARKDOWN,
-      //     null,
-      //     await this.getKeyboard('join_channel')
-      //   )
-      //   return
-      // }
+      if (
+        Helper.TELEGRAM_CHANNEL &&
+        (await Telegram.isMember(`@${Helper.TELEGRAM_CHANNEL}`, fromId))
+      ) {
+        msg = '📌 *جهت استفاده از ربات و دریافت پیام های اطلاع رسانی در کانال برنامه عضو شوید*'
+        res = await Telegram.sendMessage(
+          chatId,
+          Telegram.markdownV2(msg),
+          this.MODE_MARKDOWN,
+          null,
+          await this.getKeyboard('join_channel')
+        )
+        return
+      }
       this.user = await Admin.findBy('telegram_id', fromId)
       if (this.user) {
         this.isAdmin = true
