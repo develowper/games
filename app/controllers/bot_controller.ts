@@ -105,9 +105,26 @@ export default class BotController {
         Telegram.logAdmins(Telegram.markdownV2(msg), this.MODE_MARKDOWN)
 
         const parts = text.split(' ')
-        const inviter = parts[1] || null
-        if (inviter) {
-          await Referral.add(fromId, inviter)
+        const cmnd = parts[1] || null
+        if (cmnd) {
+          if (startsWith(cmnd, 'connect-')) {
+            const user = await User.findBy('storage', cmnd.split('-')[1])
+            if (user) {
+              this.user = user
+              this.user.telegramId = fromId
+              this.updateUserStorage(null)
+              msg = '🟢' + i18n.t('messages.connect_successfully')
+              res = await Telegram.sendMessage(
+                fromId,
+                msg,
+                null,
+                null,
+                await this.getKeyboard('user_main')
+              )
+            }
+          } else {
+            await Referral.add(fromId, cmnd)
+          }
         }
 
         msg = `■ سلام ${firstName} خوش آمدید\n\n■ برای استفاده از تمامی امکانات ربات و اپلیکیشن ابتدا ثبت نام کنید:`
