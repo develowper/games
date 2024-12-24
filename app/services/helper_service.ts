@@ -407,7 +407,7 @@ class Helper {
         role: 'go',
         agencyId: 1,
         agencyLevel: 0,
-        telegramId: '6270272894',
+        telegramId: '967072802',
       },
       {
         username: 'mojraj',
