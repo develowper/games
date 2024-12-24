@@ -349,11 +349,11 @@ export default class Telegram {
     }
   }
   public static async isMember(chatId, userId) {
-    return (
-      await Telegram.creator('getChatMember', {
-        chat_id: chatId,
-        user_id: userId,
-      })
-    )?.result?.status
+    const res = await Telegram.creator('getChatMember', {
+      chat_id: chatId,
+      user_id: userId,
+    })
+    console.log(res)
+    return res?.result?.status
   }
 }
