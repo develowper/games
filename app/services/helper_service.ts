@@ -251,14 +251,20 @@ class Helper {
         value: JSON.stringify({
           active: 1,
           limit_hour: Helper.WINWHEEL_HOUR_LIMIT,
-          labels: myMap(
-            [5000, 0, 0, 10000, 0, 0, 5000, 0, 0, 5000, 0, 0, 20000, 0],
-            (item: number) => {
-              const data = { name: __(`${item}`), value: item }
-              return data
-            }
-          ),
-        }),
+          labels:
+            [
+              { name: __('5000'), value: 5000 },
+              { name: __('null'), value: 0 },
+              { name: __(`rotate_again`), value: -1 },
+              { name: __('10000'), value: 10000 },
+              { name: __('null'), value: 0 },
+              { name: __(`rotate_again`), value: -1 },
+              { name: __('5000'), value: 5000 },
+              { name: __('null'), value: 0 },
+
+            ]
+
+
       },
       {
         key: 'charge_title',
