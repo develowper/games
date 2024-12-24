@@ -71,6 +71,7 @@
 </template>
 
 <script>
+let Vue3PersianDatetimePicker
 import Chart from 'chart.js/auto'
 
 import { shallowRef } from 'vue'
@@ -88,8 +89,7 @@ let colors = [
 export default {
   props: ['id', 'logLink', 'parentParams', 'logTypes', 'units'],
   components: {
-    dateTimePicker:
-      typeof window !== 'undefined' ? await import('vue3-persian-datetime-picker') : null,
+    dateTimePicker: Vue3PersianDatetimePicker,
     LoadingIcon,
     RadioGroup,
   },
@@ -113,7 +113,8 @@ export default {
       toggleSort: true,
     }
   },
-  mounted() {
+  async mounted() {
+    Vue3PersianDatetimePicker = await import('vue3-persian-datetime-picker')
     this.types = []
     // for (let k in this.logTypes)
     //   this.types.push({'name': this.logTypes[k], 'checked': true});
