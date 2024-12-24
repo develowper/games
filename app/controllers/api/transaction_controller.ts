@@ -170,6 +170,14 @@ export default class TransactionsController {
         const randomIndex = Math.floor(Math.random() * winWheel.labels.length)
         const winLabel = Number.parseInt(`${winWheel.labels[randomIndex].value}`)
 
+        // rotate again
+        if (winLabel == -1)
+          return response.json({
+            status: 'success',
+            message: __('rotate_again'),
+            prize: winLabel,
+            index: randomIndex,
+          })
         desc = __('winwheel_prize_*', { item: asPrice(`${winLabel}`) })
 
         const transaction = await Transaction.create({
