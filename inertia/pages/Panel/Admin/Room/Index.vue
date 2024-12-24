@@ -683,7 +683,7 @@ import {
 } from '@heroicons/vue/24/outline'
 import Image from '~/components/Image.vue'
 import Tooltip from '~/components/Tooltip.vue'
-import { Dropdown, Modal } from 'tw-elements'
+
 import {
   __,
   asPrice,
@@ -749,7 +749,8 @@ export default {
     Tooltip,
     ChatBubbleLeftEllipsisIcon,
   },
-  mounted() {
+  async mounted() {
+    const { Modal } = await import('tw-elements')
     this.tableWrapper = document.querySelector('table').parentElement
 
     this.params.type = this.urlParams.type

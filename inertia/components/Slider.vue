@@ -35,7 +35,7 @@
 <script>
 import Image from "~/components/Image.vue";
 
-import {Alert, initTE,} from "tw-elements";
+
 import {Swiper, SwiperSlide} from 'swiper/vue';
 import {Navigation, Pagination, Scrollbar, A11y, Autoplay} from 'swiper/modules';
 import 'swiper/css';

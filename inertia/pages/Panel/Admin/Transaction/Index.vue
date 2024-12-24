@@ -509,7 +509,7 @@ import {
 } from '@heroicons/vue/24/outline'
 import Image from '~/components/Image.vue'
 import Tooltip from '~/components/Tooltip.vue'
-import { Dropdown } from 'tw-elements'
+
 import {
   __,
   asPrice,

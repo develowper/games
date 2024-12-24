@@ -1,18 +1,14 @@
 <script>
 import ApplicationLogo from '~/components/ApplicationLogo.vue'
 import { Head, Link } from '@inertiajs/vue3'
-import mitt from 'mitt'
 import Alert from '~/components/Alert.vue'
 import Dialog from '~/components/Dialog.vue'
 import Toast from '~/components/Toast.vue'
 import LoadingIcon from '~/components/LoadingIcon.vue'
 import { route } from '@izzyjs/route/client'
 import { __, showAlert, emitter } from '../js/mixins.js'
-import { Toast as mToast, Alert as mAlert } from 'tw-elements'
-import { onMounted } from 'vue'
 export default {
   methods: { __, route },
-  // emits: ['showToast'],
   components: {
     Head,
     Link,

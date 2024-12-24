@@ -20,13 +20,13 @@ export default function () {
     return
     const room = await Room.first()
     room.players = JSON.stringify([
-      { user_id: 2, username: 'mojraj', user_role: 'us', card_count: 1 },
-      { user_id: 3, username: 'mojraj2', user_role: 'us', card_count: 1 },
+      { user_id: 2, username: 'mojraj', user_role: 'us', card_count: 2 },
+      { user_id: 3, username: 'mojraj2', user_role: 'us', card_count: 2 },
     ])
-    room.cardCount = 2
+    room.cardCount = 4
     room.playerCount = 2
     room.save()
-    return room
+
     return Daberna.makeGame(room)
 
     return await Setting.findBy({ key: 'policy' })

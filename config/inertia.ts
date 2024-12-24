@@ -59,7 +59,7 @@ const inertiaConfig = defineConfig({
     enabled: false,
     entrypoint: 'inertia/app/ssr.ts',
     pages: (ctx, page) => {
-      return !page.startsWith('Auth') && !page.startsWith('Panel')
+      return page.indexOf('Auth') < 0 && page.indexOf('Panel') < 0
     },
   },
 })

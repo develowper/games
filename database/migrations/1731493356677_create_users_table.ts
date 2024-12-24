@@ -40,7 +40,7 @@ export default class extends BaseSchema {
       table.string('ref_id', 15).index()
       table.datetime('last_charge').nullable()
       table.datetime('last_win').nullable()
-      table.string('inviter_id', 15).index().nullable()
+      table.bigInteger('inviter_id').unsigned().index().nullable()
       table.text('storage').nullable()
     })
   }

@@ -29,7 +29,7 @@ export default defineConfig({
     }),
   ],
   ssr: {
-    noExternal: ['async_hooks'],
+    noExternal: ['async_hooks' /*, 'tw-elements' , 'vue3-persian-datetime-picker'*/],
   },
   // build: {
   //   lib: {

@@ -5,6 +5,7 @@ import Room from '#models/room'
 import AgencyFinancial from '#models/agency_financial'
 import Transaction from '#models/transaction'
 import User from '#models/user'
+import collect from 'collect.js'
 
 export default class Daberna extends BaseModel {
   static table = 'daberna'
@@ -165,10 +166,42 @@ export default class Daberna extends BaseModel {
       }
       playedBoards = tmpBoards
     }
+    const users = collect(
+      await User.query()
+        .preload('financial')
+        .whereIn(
+          'id',
+          [...rowWinners, ...winners].map((item: any) => item.user_id)
+        )
+    )
+
+    const winnerRefs = users
+      .whereIn(
+        'id',
+        winners.map((item) => item.user_id)
+      )
+      .whereNotNull('inviterId')
+      .pluck('inviterId')
+      .toArray()
+    const inviterUsers = collect(await User.query().preload('financial').whereIn('id', winnerRefs))
+    //used commission for refs
+    let usedCommissionPercent = 0
+    let refCommissionPercent = 0
+    if (winnerRefs.length > 0) {
+      refCommissionPercent = await Helper.getSettings('ref_commission_percent')
+      usedCommissionPercent = winnerRefs.length * refCommissionPercent
+    }
+    const availableCommissionPercent =
+      room.commissionPercent - usedCommissionPercent > 0
+        ? room.commissionPercent - usedCommissionPercent
+        : 0
     const totalMoney = room.cardCount * room.cardPrice
-    const commissionPrice = Math.floor((totalMoney * room.commissionPercent) / 100)
+    const commissionPrice = Math.floor((totalMoney * availableCommissionPercent) / 100)
+    const refCommissionPrice = Math.floor(
+      (totalMoney * refCommissionPercent) / (100 * winnerRefs.length)
+    )
     const rowWinnerPrize = Math.floor((totalMoney * room.rowWinPercent) / (100 * rowWinners.length))
-    const winnerPrize = Math.floor((totalMoney - commissionPrice - rowWinnerPrize) / winners.length)
+    const winnerPrize = Math.floor((totalMoney * room.winPercent) / (100 * winners.length))
 
     const game = await Daberna.create({
       type: room.type,
@@ -193,24 +226,6 @@ export default class Daberna extends BaseModel {
     const af = await AgencyFinancial.find(1)
     af.balance += commissionPrice
     af.save()
-    /*
-    await Transaction.create({
-      agencyId: af.agencyId,
-      type: 'commission',
-      fromType: 'daberna',
-      fromId: game.id,
-      toType: 'agency',
-      toId: af.agencyId,
-      amount: commissionPrice,
-      gateway: 'wallet',
-      payId: `${Date.now()}`,
-      payedAt: DateTime.now(),
-      title: __('*_from_*_to_*', {
-        item1: __('commission'),
-        item2: `${__('daberna')} (${game.id})`,
-        item3: `${__('agency')} (${af.agencyId})`,
-      }),
-    })*/
 
     await Transaction.add(
       'commission',
@@ -222,8 +237,8 @@ export default class Daberna extends BaseModel {
       af.agencyId
     )
 
-    rowWinners.forEach(async (w) => {
-      const user = await User.query().preload('financial').where('id', w.user_id).first()
+    for (const w of rowWinners) {
+      const user = users.where('id', w.user_id).first()
       const financial = user.financial
       user.rowWinCount++
       user.prize += rowWinnerPrize
@@ -241,9 +256,9 @@ export default class Daberna extends BaseModel {
         rowWinnerPrize,
         user?.agencyId
       )
-    })
-    winners.forEach(async (w) => {
-      const user = await User.query().preload('financial').where('id', w.user_id).first()
+    }
+    for (const w of winners) {
+      const user = await users.where('id', w.user_id).first()
       const financial = user.financial
       user.winCount++
       user.prize += winnerPrize
@@ -254,7 +269,21 @@ export default class Daberna extends BaseModel {
       user.save()
       financial.save()
       await Transaction.add('win', 'daberna', game.id, 'user', user.id, winnerPrize, user?.agencyId)
-    })
+    }
+    for (const user of inviterUsers) {
+      const financial = user.financial
+      financial.balance += refCommissionPrice
+      financial.save()
+      await Transaction.add(
+        'ref_commission',
+        'daberna',
+        game.id,
+        'user',
+        user.id,
+        refCommissionPrice,
+        user?.agencyId
+      )
+    }
 
     room.clearCount++
     room.playerCount = 0

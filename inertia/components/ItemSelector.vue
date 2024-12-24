@@ -209,8 +209,8 @@ import {
   PlusIcon,
 
 } from "@heroicons/vue/24/outline";
-import {Modal} from "tw-elements";
 
+import { Modal } from 'tw-elements'
 export default {
   name: "ItemSElector",
   props: ['id', 'mode', 'beforeText', 'item', 'paginate', 'selected', 'placeholder', 'error'],

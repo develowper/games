@@ -348,4 +348,12 @@ export default class Telegram {
       })
     }
   }
+  public static isMember(chatId, userId) {
+    return (
+      await Telegram.creator('getChatMember', {
+        chat_id: chatId,
+        user_id: userId,
+      })
+    )?.result?.status
+  }
 }

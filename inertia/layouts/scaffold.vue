@@ -72,11 +72,8 @@ import Toast from '~/components/Toast.vue'
 import Dialog from '~/components/Dialog.vue'
 import Alert from '~/components/Alert.vue'
 import LoadingIcon from '~/components/LoadingIcon.vue'
-import mitt from 'mitt'
 import favicon from '~/images/logo.png'
-import { Dropdown, initTE, Modal } from 'tw-elements'
 import { __, dir, emitter, showAlert, showToast } from '~/js/mixins.js'
-// import {Server} from "socket.io";
 export default {
   data() {
     return {

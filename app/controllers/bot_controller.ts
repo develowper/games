@@ -91,6 +91,20 @@ export default class BotController {
 
     ///
     if (tc === 'private') {
+      if (
+        Helper.TELEGRAM_CHANNEL &&
+        (await Telegram.isMember(`@${Helper.TELEGRAM_CHANNEL}`, fromId))
+      ) {
+        msg = '📌 *جهت استفاده از ربات و دریافت پیام های اطلاع رسانی در کانال برنامه عضو شوید*'
+        res = await Telegram.sendMessage(
+          chatId,
+          Telegram.markdownV2(msg),
+          this.MODE_MARKDOWN,
+          null,
+          await this.getKeyboard('join_channel')
+        )
+        return
+      }
       this.user = await Admin.findBy('telegram_id', fromId)
       if (this.user) {
         this.isAdmin = true
@@ -278,7 +292,7 @@ export default class BotController {
         if (ref?.inviterId) {
           const inviter = await User.findBy('telegram_id', ref?.inviterId)
           if (inviter) {
-            this.user.inviterId = ref?.inviterId
+            this.user.inviterId = inviter.id
             this.user.agencyId = inviter?.agencyId
             this.user.agencyLevel = inviter?.agencyLevel
           }
@@ -433,6 +447,14 @@ export default class BotController {
           keyboard: [
             [{ text: '📱 ارسال شماره تماس 📱', request_contact: true }],
             [{ text: 'لغو ❌' }],
+          ],
+          resize_keyboard: true,
+        }
+        break
+      case 'join_channel':
+        tmp = {
+          inline_keyboard: [
+            [{ text: '🔑 ورود به کانال 🔑', url: `https://t.me/${Helper.TELEGRAM_CHANNEL}` }],
           ],
           resize_keyboard: true,
         }

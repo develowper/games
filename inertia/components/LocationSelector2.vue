@@ -102,7 +102,8 @@
 
 
 <script>
-import {Select, initTE, Modal} from "tw-elements";
+
+import { Modal } from 'tw-elements'
 import InputLabel from '~/components/InputLabel.vue';
 import TextInput from '~/components/TextInput.vue';
 import LoadingIcon from '~/components/LoadingIcon.vue';

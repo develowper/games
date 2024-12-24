@@ -1,22 +1,7 @@
 import '../scss/app.scss'
 import '../fonts/tanha/Farsi-Digits/font-face.css'
 import '../fonts/shabnam/Farsi-Digits/font-face.css'
-import {
-  Sidenav,
-  initTE,
-  Carousel,
-  Datepicker,
-  Select,
-  Timepicker,
-  Dropdown,
-  Ripple,
-  Toast,
-  Tooltip,
-  Popover,
-  Input,
-  Alert,
-  Modal,
-} from 'tw-elements'
+
 import axios, { isCancel, AxiosError } from 'axios'
 
 import { usePage } from '@inertiajs/vue3'
@@ -40,7 +25,7 @@ window.axios.interceptors.response.use(undefined, function (error) {
 })
 window.onload = (event) => {
   // console.log('***************')
-  // window.tailwindElements();
+  // window.tailwindElements()
 
   try {
     if (
@@ -56,8 +41,24 @@ window.onload = (event) => {
   initChat()
 }
 
-window.tailwindElements = () => {
+window.tailwindElements = async () => {
   // if (!window.Select) {
+  const {
+    Sidenav,
+    initTE,
+    Carousel,
+    Datepicker,
+    Select,
+    Timepicker,
+    Dropdown,
+    Ripple,
+    Toast,
+    Tooltip,
+    Popover,
+    Input,
+    Alert,
+    Modal,
+  } = await import('tw-elements')
   const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-te-toggle="tooltip"]'))
   tooltipTriggerList.map((tooltipTriggerEl) => new Tooltip(tooltipTriggerEl))
   const popoverTriggerList = [].slice.call(document.querySelectorAll('[data-te-toggle="popover"]'))

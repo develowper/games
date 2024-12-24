@@ -53,7 +53,7 @@ export default defineConfig({
       environment: ['web', 'console'],
     },
     () => import('@adonisjs/limiter/limiter_provider'),
-    () => import('@adonisjs/drive/drive_provider')
+    () => import('@adonisjs/drive/drive_provider'),
   ],
 
   /*
@@ -131,6 +131,6 @@ export default defineConfig({
   assetsBundler: false,
   hooks: {
     onBuildStarting: [() => import('@adonisjs/vite/build_hook')],
-    onDevServerStarted: [() => import('@izzyjs/route/dev_hook')],
+    // onDevServerStarted: [() => import('@izzyjs/route/dev_hook')],
   },
 })

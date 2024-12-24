@@ -24,6 +24,7 @@ declare module 'vue' {
     Chart: typeof import('./inertia/components/Chart.vue')['default']
     Checkbox: typeof import('./inertia/components/Checkbox.vue')['default']
     CitySelector: typeof import('./inertia/components/CitySelector.vue')['default']
+    ClientOnly: typeof import('./inertia/components/ClientOnly.vue')['default']
     ConfirmationModal: typeof import('./inertia/components/ConfirmationModal.vue')['default']
     ConfirmsPassword: typeof import('./inertia/components/ConfirmsPassword.vue')['default']
     DangerButton: typeof import('./inertia/components/DangerButton.vue')['default']

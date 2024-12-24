@@ -11,7 +11,7 @@
           <Bars2Icon class="h-7 w-7 mx-3" />
           <h1 class="text-2xl font-semibold">{{ __('settings') }}</h1>
         </div>
-        <div>
+        <client-only>
           <button
             v-if="false"
             @click="(params.id = null), (params.key = null), (params.value = null), modal.show()"
@@ -22,7 +22,7 @@
           >
             {{ __('new_setting') }}
           </button>
-        </div>
+        </client-only>
       </div>
       <!-- Content -->
       <div class="px-2 flex flex-col md:px-4">
@@ -517,12 +517,12 @@ import {
 import Image from '~/components/Image.vue'
 import Tooltip from '~/components/Tooltip.vue'
 import LoadingIcon from '~/components/LoadingIcon.vue'
-import { Modal } from 'tw-elements'
 import TextInput from '~/components/TextInput.vue'
 import PrimaryButton from '~/components/PrimaryButton.vue'
 import { __, log, showDialog, showToast, toJson, getError } from '../../../../js/mixins.js'
 import { route } from '@izzyjs/route/client'
 import { isArray, isObject, isString } from 'node:util'
+import ClientOnly from '~/components/ClientOnly.vue'
 
 export default {
   data() {
@@ -548,6 +548,7 @@ export default {
     }
   },
   components: {
+    ClientOnly,
     TextInput,
     Head,
     Link,
@@ -566,7 +567,8 @@ export default {
     PlusIcon,
     PrimaryButton,
   },
-  mounted() {
+  async mounted() {
+    const { Modal } = await import('tw-elements')
     this.getData()
     const modalEl = document.getElementById('settingModal')
     this.modal = new Modal(modalEl)

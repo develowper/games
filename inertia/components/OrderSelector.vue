@@ -435,7 +435,8 @@ import {
 
 
 } from "@heroicons/vue/24/outline";
-import {Modal} from "tw-elements";
+
+import { Modal } from 'tw-elements'
 import PrimaryButton from "~/components/PrimaryButton.vue";
 import UserSelector from "~/components/UserSelector.vue";
 

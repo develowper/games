@@ -32,7 +32,16 @@ class Helper {
   }
   public static TRANSACTION = {
     gateways: ['wallet', 'zarinpal'],
-    types: ['cardtocard', 'withdraw', 'win', 'row_win', 'charge', 'commission', 'winwheel'],
+    types: [
+      'cardtocard',
+      'withdraw',
+      'win',
+      'row_win',
+      'charge',
+      'commission',
+      'ref_commission',
+      'winwheel',
+    ],
     fromTypes: ['agency', 'user', 'admin', 'daberna'],
     colors: {
       win: 'green',
@@ -40,6 +49,7 @@ class Helper {
       withdraw: 'orange',
       charge: 'lime',
       commission: 'indigo',
+      ref_commission: 'violet',
       winwheel: 'sky',
       cardtocard: 'blue',
     } as { [key: string]: string },

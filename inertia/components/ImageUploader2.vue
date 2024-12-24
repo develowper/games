@@ -146,8 +146,8 @@
 <script>
 
 
-import {Modal} from "tw-elements";
 
+import { Modal } from 'tw-elements'
 let input = null;
 
 let self;
