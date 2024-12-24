@@ -450,6 +450,7 @@ export default class BotController {
           ],
           resize_keyboard: true,
         }
+
         break
       case 'join_channel':
         tmp = {
