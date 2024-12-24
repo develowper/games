@@ -108,7 +108,7 @@ export default class BotController {
         const cmnd = parts[1] || null
         if (cmnd) {
           if (startsWith(cmnd, 'connect-')) {
-            const user = await User.findBy('storage', cmnd.split('-')[1])
+            const user = await User.findBy('storage', cmnd)
             if (user) {
               this.user = user
               this.user.telegramId = fromId

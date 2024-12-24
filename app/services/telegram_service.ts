@@ -208,7 +208,7 @@ export default class Telegram {
     let res: any = null
     for (let i = 0; i < Helper.TELEGRAM_LOGS.length; i++) {
       const log = Helper.TELEGRAM_LOGS[i]
-      res = await this.sendMessage(log, msg, mode, null, null, false, topic)
+      res = await this.sendMessage(`${log}`, msg, mode, null, null, false, topic)
     }
     return res
   }
