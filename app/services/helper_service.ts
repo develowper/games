@@ -251,20 +251,17 @@ class Helper {
         value: JSON.stringify({
           active: 1,
           limit_hour: Helper.WINWHEEL_HOUR_LIMIT,
-          labels:
-            [
-              { name: __('5000'), value: 5000 },
-              { name: __('null'), value: 0 },
-              { name: __(`rotate_again`), value: -1 },
-              { name: __('10000'), value: 10000 },
-              { name: __('null'), value: 0 },
-              { name: __(`rotate_again`), value: -1 },
-              { name: __('5000'), value: 5000 },
-              { name: __('null'), value: 0 },
-
-            ]
-
-
+          labels: [
+            { name: __('5000'), value: 5000 },
+            { name: __('null'), value: 0 },
+            { name: __(`rotate_again`), value: -1 },
+            { name: __('10000'), value: 10000 },
+            { name: __('null'), value: 0 },
+            { name: __(`rotate_again`), value: -1 },
+            { name: __('5000'), value: 5000 },
+            { name: __('null'), value: 0 },
+          ],
+        }),
       },
       {
         key: 'charge_title',
