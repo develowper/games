@@ -194,12 +194,12 @@ export default class Telegram {
       // console.log(res)
 
       if (res.status !== 200) {
-        this.sendMessage(Helper.TELEGRAM_LOGS[0], `${res.data}\n${JSON.stringify(datas)}`)
+        this.sendMessage(`${Helper.TELEGRAM_LOGS[0]}`, `${res.data}\n${JSON.stringify(datas)}`)
       }
       return res.data
     } catch (error) {
       // console.log(error)
-      this.sendMessage(Helper.TELEGRAM_LOGS[0], `${error.message}\n${JSON.stringify(datas)}`)
+      this.sendMessage(`${Helper.TELEGRAM_LOGS[0]}`, `${error.message}\n${JSON.stringify(datas)}`)
       return null
     }
   }
