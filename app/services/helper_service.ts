@@ -254,10 +254,10 @@ class Helper {
           labels: [
             { name: __('5000'), value: 5000 },
             { name: __('null'), value: 0 },
-            { name: __(`rotate_again`), value: -1 },
+            { name: __(`rotate`), value: -1 },
             { name: __('10000'), value: 10000 },
             { name: __('null'), value: 0 },
-            { name: __(`rotate_again`), value: -1 },
+            { name: __(`rotate`), value: -1 },
             { name: __('5000'), value: 5000 },
             { name: __('null'), value: 0 },
           ],
