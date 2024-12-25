@@ -300,7 +300,7 @@
                 </td>
 
                 <td class="px-2 py-4">
-                  <div v-html="`${__(d.full_name) || '-'}<br>(${d.phone ?? '-'})`"></div>
+                  <div v-html="`${__(d.full_name ?? '') || '-'}<br>(${d.phone ?? '-'})`"></div>
                 </td>
                 <td class="px-2 py-4">
                   <button
