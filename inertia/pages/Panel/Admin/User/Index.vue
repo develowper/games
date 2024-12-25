@@ -685,7 +685,7 @@ export default {
           item3: `${__('settlement')}`,
         })
       else if (this.params.cmnd === 'charge')
-        this.params.description = __('wallet_charge_*_by_*', {
+        this.params.description = __('wallet_charge_*_*_for_*', {
           item1: `${asPrice(`${this.params.amount}`)} ${__('currency')}`,
           item2: `${__('user')} (${this.params.id})`,
           item3: `${__('cardtocard')}`,
