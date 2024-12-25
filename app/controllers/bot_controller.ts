@@ -286,6 +286,7 @@ export default class BotController {
         this.user.password = await hash.make(username ?? firstName)
         this.user.agencyId = 1
         this.user.agencyLevel = 0
+        this.user.refId = await User.makeRefCode()
         if (ref?.inviterId) {
           const inviter = await User.findBy('telegram_id', ref?.inviterId)
           if (inviter) {
@@ -294,7 +295,7 @@ export default class BotController {
             this.user.agencyLevel = inviter?.agencyLevel
           }
         }
-
+        this.user.related('financial').create({ balance: 0 })
         msg = 'نام کاربری را وارد کنید:'
         this.updateUserStorage('register-username')
         res = await Telegram.sendMessage(
