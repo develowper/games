@@ -185,7 +185,7 @@ export default class Room extends BaseModel {
       console.log(room.type)
       console.log(room.cardCount)
       console.log(room.secondsRemaining)
-      console.log(room.players)
+      // console.log(room.players)
 
       emitter.emit('room-update', {
         type: room.type,

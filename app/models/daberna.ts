@@ -295,7 +295,6 @@ export default class Daberna extends BaseModel {
       user.save()
       financial.balance += winnerPrize
       financial.save()
-      logger.error(`user.role ${user.role}`)
       if (user.role == 'us') {
         await Transaction.add(
           'win',
