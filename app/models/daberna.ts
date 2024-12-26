@@ -267,14 +267,15 @@ export default class Daberna extends BaseModel {
       if (!user) continue
       console.log('user.id', user?.id)
       console.log('user.role', user.role)
-      const financial = user?.financial
+      const financial = user?.financial ?? (await user.related('financial').create({ balance: 0 }))
+      financial.balance += rowWinnerPrize
+      financial.save()
       user.rowWinCount++
       user.prize += rowWinnerPrize
       user.todayPrize += rowWinnerPrize
       user.lastWin = DateTime.now()
       user.save()
-      financial.balance += rowWinnerPrize
-      financial.save()
+
       if (user?.role == 'us') {
         await Transaction.add(
           'row_win',
@@ -290,15 +291,16 @@ export default class Daberna extends BaseModel {
     for (const w of winners) {
       const user = await users.where('id', w.user_id).first()
       if (!user) continue
-      const financial = user?.financial
+      const financial = user?.financial ?? (await user.related('financial').create({ balance: 0 }))
+      financial.balance += winnerPrize
+      financial.save()
       user.winCount++
       user.prize += winnerPrize
       user.score += room.winScore
       user.todayPrize += winnerPrize
       user.lastWin = DateTime.now()
       user?.save()
-      financial.balance += winnerPrize
-      financial.save()
+
       if (user?.role == 'us') {
         await Transaction.add(
           'win',

@@ -726,7 +726,7 @@ export default {
             el.accesses = el.accesses ? el.accesses.split(',') : []
           })
           delete response.data.data
-          this.pagination = response.data
+          this.pagination = response.data.meta
 
           this.$nextTick(() => {
             initTableDropdowns()

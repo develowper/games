@@ -111,7 +111,7 @@ export default class User extends compose(BaseModel, AuthFinder) {
   @column.dateTime()
   declare lastWin: DateTime | null
 
-  static accessTokens = DbAccessTokensProvider.forModel(User)
+  static accessTokens = DbAccessTokensProvider.forModel(User, { table: 'remember_me_user_tokens' })
 
   public getAccesses() {
     return []

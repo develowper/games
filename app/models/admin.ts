@@ -24,7 +24,9 @@ const af = {
 const AuthFinder = withAuthFinder(af.hash, af.options)
 
 export default class Admin extends compose(BaseModel, AuthFinder) {
-  static rememberMeTokens = DbRememberMeTokensProvider.forModel(Admin)
+  static rememberMeTokens = DbRememberMeTokensProvider.forModel(Admin, {
+    table: 'remember_me_admin_tokens',
+  })
 
   public static async findForAuth(identifier: any, value: any) {
     // Define dynamic fields to search for the identifier
