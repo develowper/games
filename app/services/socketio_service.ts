@@ -1,19 +1,16 @@
 import server from '@adonisjs/core/services/server'
 import { Server, Socket } from 'socket.io'
-import { ApplicationService } from '@adonisjs/core/types'
 import { HttpContext } from '@adonisjs/core/http'
 import authConfig from '#config/auth'
-import User from '../models/user.js'
-import logger from '@adonisjs/core/services/logger'
 import emitter from '@adonisjs/core/services/emitter'
-// import { emitter } from '#start/globals'
-import app from '@adonisjs/core/services/app'
 import Room from '#models/room'
 import Daberna from '#models/daberna'
 import i18nManager from '@adonisjs/i18n/services/main'
 import env from '#start/env'
 import Helper, { __, getSettings } from '#services/helper_service'
 import { storage } from '#start/globals'
+import app from '@adonisjs/core/services/app'
+import Setting from '#models/setting'
 
 export default class SocketIo {
   private user: any
@@ -120,14 +117,22 @@ export default class SocketIo {
     } as HttpContext
 
     storage.run(state, async () => {
+      app.listen('SIGTERM', () => {
+        console.log('****sigterm****')
+        clearInterval(SocketIo.timer)
+      })
       SocketIo.timer = setInterval(async () => {
         for (let room of await Room.query().where('is_active', true)) {
           // console.log(`players ${room.playerCount}`, `time ${room.secondsRemaining}`)
           // console.log(__('transactions'))
-          const robotActive = await getSettings('robot_is_active')
 
-          if (robotActive) {
+          if (await getSettings('robot_is_active')) {
             await Room.addBot(room)
+          }
+          if (app.isTerminated || app.isTerminating) {
+            clearInterval(SocketIo.timer)
+            await Setting.create({ key: 'log', value: app.getState() })
+            break
           }
           if (room.playerCount > 1 && room.secondsRemaining == room.maxSeconds) {
             const game = await Daberna.makeGame(room)

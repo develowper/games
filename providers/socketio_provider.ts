@@ -12,8 +12,7 @@ export default class SocketioProvider {
    */
   register() {
     this.app.container.singleton('MySocket', async () => {
-      this.socketIo = new SocketIo()
-      return this.socketIo
+      return new SocketIo()
     })
 
     // this.app.container.alias('MySocket', SocketIo)

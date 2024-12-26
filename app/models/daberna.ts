@@ -7,6 +7,8 @@ import Transaction from '#models/transaction'
 import User from '#models/user'
 import collect from 'collect.js'
 import app from '@adonisjs/core/services/app'
+import logger from '@adonisjs/core/services/logger'
+import Setting from '#models/setting'
 
 export default class Daberna extends BaseModel {
   static table = 'daberna'
@@ -83,6 +85,8 @@ export default class Daberna extends BaseModel {
   }
 
   public static async makeGame(room: Room) {
+    if (app.isTerminated || app.isTerminating) return
+
     const players = JSON.parse(room.players ?? '[]')
     if (players?.length < 2) {
       return null
@@ -259,9 +263,7 @@ export default class Daberna extends BaseModel {
     }
 
     for (const w of rowWinners) {
-      console.log('rowWinner', w)
       const user = users.where('id', w.user_id).first()
-      console.log('rowWinnerUser', user)
       const financial = user.financial
       user.rowWinCount++
       user.prize += rowWinnerPrize
@@ -293,6 +295,7 @@ export default class Daberna extends BaseModel {
       user.save()
       financial.balance += winnerPrize
       financial.save()
+      logger.error(`user.role ${user.role}`)
       if (user.role == 'us') {
         await Transaction.add(
           'win',
@@ -321,6 +324,8 @@ export default class Daberna extends BaseModel {
     }
 
     //all not bot
+    await Setting.create({ key: 'realTotalMoney', value: realTotalMoney })
+
     if (realTotalMoney > 0) {
       game.save()
       room.clearCount++

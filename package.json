@@ -93,6 +93,7 @@
     "luxon": "^3.5.0",
     "mitt": "^3.0.1",
     "mysql2": "^3.11.4",
+    "pino-roll": "^2.2.0",
     "radix-vue": "^1.9.9",
     "reflect-metadata": "^0.2.2",
     "socket.io": "^4.8.1",

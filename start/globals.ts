@@ -5,7 +5,6 @@
 // edge.global('__', hs.__)
 
 // import MySocket from "@ioc:MyScocket"
-// import app from '@adonisjs/core/services/app'
 
 // import MySocket from "@ioc:MyScocket"
 // app.ready(async () => {

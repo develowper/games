@@ -3,8 +3,6 @@ import { BaseModel, column } from '@adonisjs/lucid/orm'
 import Helper, { __ } from '#services/helper_service'
 import Env from '#start/env'
 import axios from 'axios'
-import i18nManager from '@adonisjs/i18n/services/main'
-import env from '#start/env'
 export default class Transaction extends BaseModel {
   @column({ isPrimary: true })
   declare id: number
@@ -69,6 +67,7 @@ export default class Transaction extends BaseModel {
         item2: `${__(`${fromType}`)} (${fromId})`,
         item3: `${__(`${toType}`)} (${toId})`,
       })
+    // console.log(t)
 
     return await Transaction.create({
       agencyId: agencyId,
