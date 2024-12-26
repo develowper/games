@@ -175,7 +175,7 @@ export default class User extends compose(BaseModel, AuthFinder) {
 
     const users = await User.createMany(items)
     users.forEach((u: User) => {
-      u.related('financial').create()
+      u.related('financial').create({ balance: 0 })
     })
   }
 }
