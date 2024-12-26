@@ -323,7 +323,6 @@ export default class Daberna extends BaseModel {
     }
 
     //all not bot
-    await Setting.create({ key: 'realTotalMoney', value: realTotalMoney })
 
     if (realTotalMoney > 0) {
       game.save()
