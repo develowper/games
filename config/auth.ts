@@ -11,6 +11,7 @@ const authConfig = defineConfig({
       rememberMeTokensAge: 2 * 30 * 24 * 60 * 60,
       provider: sessionUserProvider({
         model: () => import('#models/user'),
+        table: 'remember_me_user_tokens',
       }),
     }),
     api: tokensGuard({
@@ -24,6 +25,7 @@ const authConfig = defineConfig({
       rememberMeTokensAge: 2 * 30 * 24 * 60 * 60,
       provider: sessionUserProvider({
         model: () => import('#models/admin'),
+        table: 'remember_me_admin_tokens',
       }),
     }),
     admin_api: tokensGuard({
