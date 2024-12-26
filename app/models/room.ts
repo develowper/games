@@ -2,9 +2,11 @@ import { DateTime } from 'luxon'
 import { BaseModel, column, computed } from '@adonisjs/lucid/orm'
 import collect from 'collect.js'
 import { HttpContext } from '@adonisjs/core/http'
-import { json } from 'stream/consumers'
-import Helper from '../services/helper_service.js'
-import { parse } from 'path'
+import emitter from '@adonisjs/core/services/emitter'
+import { getSettings, range } from '#services/helper_service'
+import User from '#models/user'
+import app from '@adonisjs/core/services/app'
+import Daberna from '#models/daberna'
 
 // import { HttpContext } from '@adonisjs/http-server/build/standalone'
 // @inject()
@@ -104,8 +106,8 @@ export default class Room extends BaseModel {
 
     return result?.card_count ?? 0
   }
-  public setUserCardsCount(count: number) {
-    const user = this.auth?.user
+  public setUserCardsCount(count: number, us: User | null = null) {
+    const user = this.auth?.user ?? us
     let res: any[] = []
     const parsed: any = JSON.parse(this.players) ?? []
     const beforeExists = collect(parsed).first((item: any) => item.user_id == user.id)
@@ -130,5 +132,74 @@ export default class Room extends BaseModel {
     this.players = JSON.stringify(res)
 
     return true
+  }
+
+  public static async addBot(room: Room) {
+    const players = JSON.parse(room.players ?? '[]')
+    const beforeIds = collect(players).pluck('user_id').toArray()
+
+    const botUser = await User.query()
+      .whereNotIn('id', beforeIds)
+      .where('role', 'bo')
+      .orderByRaw('RAND()')
+      .first()
+
+    if (!botUser) return
+
+    const cardCount = [1, 2, 3][Math.floor(Math.random() * 3)]
+
+    if (room.setUserCardsCount(cardCount, botUser)) {
+      room.playerCount++
+      botUser.playCount++
+      room.cardCount += cardCount
+
+      if (
+        room.playerCount == 2 ||
+        (room.playerCount > 2 && room.secondsRemaining == room.maxSeconds)
+      )
+        room.startAt = DateTime.now().plus({ seconds: room.maxSeconds - 1 })
+
+      room.save()
+
+      switch (room.cardPrice) {
+        case 5000:
+          botUser.card5000Count += cardCount
+          botUser.todayCard5000Count += cardCount
+          break
+        case 10000:
+          botUser.card10000Count += cardCount
+          botUser.todayCard10000Count += cardCount
+          break
+        case 20000:
+          botUser.card20000Count += cardCount
+          botUser.todayCard20000Count += cardCount
+          break
+        case 50000:
+          botUser.card50000Count += cardCount
+          botUser.todayCard50000Count += cardCount
+          break
+      }
+
+      botUser.save()
+      console.log('*************')
+      console.log(room.type)
+      console.log(room.cardCount)
+      console.log(room.secondsRemaining)
+      console.log(room.players)
+
+      emitter.emit('room-update', {
+        type: room.type,
+        cmnd: 'card-added',
+        players: room.players,
+        start_with_me: room.startWithMe,
+        seconds_remaining: room.playerCount > 1 ? room.secondsRemaining : room.maxSeconds,
+        player_count: room.playerCount,
+        user_id: botUser?.id,
+        username: botUser?.username,
+        user_card_count: cardCount,
+        card_count: room.cardCount,
+      })
+      Daberna.startRooms([room])
+    }
   }
 }

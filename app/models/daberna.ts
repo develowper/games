@@ -6,6 +6,7 @@ import AgencyFinancial from '#models/agency_financial'
 import Transaction from '#models/transaction'
 import User from '#models/user'
 import collect from 'collect.js'
+import app from '@adonisjs/core/services/app'
 
 export default class Daberna extends BaseModel {
   static table = 'daberna'
@@ -122,7 +123,7 @@ export default class Daberna extends BaseModel {
     //     .reduce((acc, num) => acc + 1, 0)
     // )
     const rw =
-      boards.some((item) => item.user_role === 'ro') && Math.floor(Math.random() * 101) <= room.rwp
+      boards.some((item) => item.user_role === 'bo') && Math.floor(Math.random() * 101) <= room.rwp
 
     let winners: any[] = []
     let rowWinners: any[] = []
@@ -166,6 +167,10 @@ export default class Daberna extends BaseModel {
       }
       playedBoards = tmpBoards
     }
+
+    //game ended
+
+    //***
     const users = collect(
       await User.query()
         .preload('financial')
@@ -183,27 +188,41 @@ export default class Daberna extends BaseModel {
       .whereNotNull('inviterId')
       .pluck('inviterId')
       .toArray()
-    const inviterUsers = collect(await User.query().preload('financial').whereIn('id', winnerRefs))
-    //used commission for refs
-    let usedCommissionPercent = 0
-    let refCommissionPercent = 0
-    if (winnerRefs.length > 0) {
-      refCommissionPercent = await Helper.getSettings('ref_commission_percent')
-      usedCommissionPercent = winnerRefs.length * refCommissionPercent
-    }
-    const availableCommissionPercent =
-      room.commissionPercent - usedCommissionPercent > 0
-        ? room.commissionPercent - usedCommissionPercent
-        : 0
+
     const totalMoney = room.cardCount * room.cardPrice
-    const commissionPrice = Math.floor((totalMoney * availableCommissionPercent) / 100)
-    const refCommissionPrice = Math.floor(
-      (totalMoney * refCommissionPercent) / (100 * winnerRefs.length)
-    )
+
     const rowWinnerPrize = Math.floor((totalMoney * room.rowWinPercent) / (100 * rowWinners.length))
     const winnerPrize = Math.floor((totalMoney * room.winPercent) / (100 * winners.length))
 
-    const game = await Daberna.create({
+    const inviterUsers = collect(await User.query().preload('financial').whereIn('id', winnerRefs))
+    //used commission for refs
+    let refCommissionPercent = 0
+    let refCommissionPrice = 0
+    if (winnerRefs.length > 0) {
+      refCommissionPercent = await Helper.getSettings('ref_commission_percent')
+
+      refCommissionPrice = Math.floor(
+        (totalMoney * refCommissionPercent) / (100 * winnerRefs.length)
+      )
+    }
+    //commission price is complicated
+    //realTotal - realPrize
+    const realTotalMoney =
+      Number.parseInt(collect(room.players).where('user_role', 'us').sum('card_count').toString()) *
+      room.cardPrice
+
+    console.log('realTotalMoney', realTotalMoney)
+
+    const realPrize =
+      collect(winners).where('role', 'us').count() * winnerPrize +
+      collect(rowWinners).where('role', 'us').count() * rowWinnerPrize
+
+    console.log('realPrize', realPrize)
+
+    const commissionPrice = Math.floor(realTotalMoney - realPrize)
+    console.log('commissionPrice', commissionPrice)
+
+    const game = new Daberna().fill({
       type: room.type,
       boards: JSON.stringify(boards),
       numbers: JSON.stringify(playedNumbers),
@@ -226,36 +245,42 @@ export default class Daberna extends BaseModel {
     const af = await AgencyFinancial.find(1)
     af.balance += commissionPrice
     af.save()
-
-    await Transaction.add(
-      'commission',
-      'daberna',
-      game.id,
-      'agency',
-      af.agencyId,
-      commissionPrice,
-      af.agencyId
-    )
+    if (commissionPrice != 0) {
+      console.log('commissionTransaction', commissionPrice)
+      await Transaction.add(
+        'commission',
+        'daberna',
+        game.id,
+        'agency',
+        af.agencyId,
+        commissionPrice,
+        af.agencyId
+      )
+    }
 
     for (const w of rowWinners) {
+      console.log('rowWinner', w)
       const user = users.where('id', w.user_id).first()
+      console.log('rowWinnerUser', user)
       const financial = user.financial
       user.rowWinCount++
       user.prize += rowWinnerPrize
       user.todayPrize += rowWinnerPrize
-      financial.balance += rowWinnerPrize
       user.lastWin = DateTime.now()
       user.save()
+      financial.balance += rowWinnerPrize
       financial.save()
-      await Transaction.add(
-        'row_win',
-        'daberna',
-        game.id,
-        'user',
-        user.id,
-        rowWinnerPrize,
-        user?.agencyId
-      )
+      if (user.role == 'us') {
+        await Transaction.add(
+          'row_win',
+          'daberna',
+          game.id,
+          'user',
+          user.id,
+          rowWinnerPrize,
+          user?.agencyId
+        )
+      }
     }
     for (const w of winners) {
       const user = await users.where('id', w.user_id).first()
@@ -264,11 +289,21 @@ export default class Daberna extends BaseModel {
       user.prize += winnerPrize
       user.score += room.winScore
       user.todayPrize += winnerPrize
-      financial.balance += winnerPrize
       user.lastWin = DateTime.now()
       user.save()
+      financial.balance += winnerPrize
       financial.save()
-      await Transaction.add('win', 'daberna', game.id, 'user', user.id, winnerPrize, user?.agencyId)
+      if (user.role == 'us') {
+        await Transaction.add(
+          'win',
+          'daberna',
+          game.id,
+          'user',
+          user.id,
+          winnerPrize,
+          user?.agencyId
+        )
+      }
     }
     for (const user of inviterUsers) {
       const financial = user.financial
@@ -285,12 +320,17 @@ export default class Daberna extends BaseModel {
       )
     }
 
-    room.clearCount++
+    //all not bot
+    if (realTotalMoney > 0) {
+      game.save()
+      room.clearCount++
+    }
     room.playerCount = 0
     room.cardCount = 0
     room.players = null
     room.startAt = null
     room.save()
+
     return game
   }
 
@@ -317,5 +357,25 @@ export default class Daberna extends BaseModel {
   }
   static isEmpty(card: number[][]): boolean {
     return card.every((rows) => rows.every((col) => col === 0))
+  }
+
+  public static async startRooms(rooms: Room[]) {
+    const mySocket = await app.container.make('MySocket')
+
+    for (const room of rooms) {
+      // console.log(`players ${room.playerCount}`, `time ${room.secondsRemaining}`)
+
+      if (
+        room.playerCount > 1 &&
+        (room.secondsRemaining == room.maxSeconds || room.cardCount >= room.maxCardsCount)
+      ) {
+        //create game and empty room
+
+        const game = await Daberna.makeGame(room)
+        // const tmp = await Daberna.query().orderBy('id', 'DESC').first()
+
+        mySocket.emitToRoom(`room-${room.type}`, 'game-start', game)
+      }
+    }
   }
 }

@@ -8,7 +8,7 @@ import Transaction from '#models/transaction'
 import vine from '@vinejs/vine'
 import { DateTime } from 'luxon'
 import collect from 'collect.js'
-import { createUserValidator, updateUserValidator } from '#validators/user'
+import { createUserFakeValidator, createUserValidator, updateUserValidator } from '#validators/user'
 import Telegram from '#services/telegram_service'
 import hash from '@adonisjs/core/services/hash'
 import db from '@adonisjs/lucid/services/db'
@@ -40,28 +40,31 @@ export default class UserController {
   }
   async store({ request, response, inertia, auth, session }: HttpContext) {
     const admin = auth.user
-    await request.validateUsing(createUserValidator)
+    const role = request.input('role')
 
-    const user = await User.create({
-      fullName: request.input('full_name'),
-      username: request.input('username'),
-      phone: request.input('phone'),
-      role: request.input('role'),
-      isActive: true,
-      password: await hash.make(request.input('password')),
-      agencyId: /*request.input('agency_id') ?? */ admin?.agencyId,
-      refId: await User.makeRefCode(),
-    })
+    if (role === 'bo') {
+      const data = await request.validateUsing(createUserFakeValidator)
+      await User.fake(data.count)
+    } else {
+      await request.validateUsing(createUserValidator)
 
-    const userFinancial = await user.related('financial').create({
-      card: request.input('card'),
-      sheba: request.input('sheba'),
-    })
+      const user = await User.create({
+        fullName: request.input('full_name'),
+        username: request.input('username'),
+        phone: request.input('phone'),
+        isActive: true,
+        password: await hash.make(request.input('password')),
+        agencyId: /*request.input('agency_id') ?? */ admin?.agencyId,
+        refId: await User.makeRefCode(),
+      })
 
+      const userFinancial = await user.related('financial').create({
+        card: request.input('card'),
+        sheba: request.input('sheba'),
+      })
+      Telegram.log(null, 'user_created', user)
+    }
     session.flash('notification', { message: __('created_successfully'), status: 'success' })
-
-    Telegram.log(null, 'user_created', user)
-
     return response.redirect().toRoute('admin.panel.user.index')
   }
   async search({ request, response, auth }: HttpContext) {

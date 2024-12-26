@@ -53,3 +53,9 @@ export const createUserValidator = vine.compile(
       .regex(/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d\W]{6,}$/),
   })
 )
+export const createUserFakeValidator = vine.compile(
+  vine.object({
+    role: vine.string().in(Helper.USER_ROLES),
+    count: vine.number().min(1),
+  })
+)

@@ -126,24 +126,7 @@ export default class RoomController {
       })
       emitter.emit(`user-${user.id}-info`, { user_balance: userFinancials.balance })
 
-      RoomController.startGame([room])
+      Daberna.startRooms([room])
     }
-  }
-
-  public static async startGame(rooms: Room[]) {
-    const mySocket = await app.container.make('MySocket')
-
-    rooms.forEach(async (room) => {
-      // console.log(`players ${room.playerCount}`, `time ${room.secondsRemaining}`)
-
-      if (room.playerCount > 1 && room.secondsRemaining == room.maxSeconds) {
-        //create game and empty room
-
-        const game = await Daberna.makeGame(room)
-        // const tmp = await Daberna.query().orderBy('id', 'DESC').first()
-
-        mySocket.emitToRoom(`room-${room.type}`, 'game-start', game)
-      }
-    })
   }
 }

@@ -8,12 +8,11 @@ import logger from '@adonisjs/core/services/logger'
 import emitter from '@adonisjs/core/services/emitter'
 // import { emitter } from '#start/globals'
 import app from '@adonisjs/core/services/app'
-const RoomController = (await import('#controllers/api/room_controller')).default
 import Room from '#models/room'
 import Daberna from '#models/daberna'
 import i18nManager from '@adonisjs/i18n/services/main'
 import env from '#start/env'
-import Helper, { __ } from '#services/helper_service'
+import Helper, { __, getSettings } from '#services/helper_service'
 import { storage } from '#start/globals'
 
 export default class SocketIo {
@@ -121,10 +120,15 @@ export default class SocketIo {
     } as HttpContext
 
     storage.run(state, async () => {
-      setInterval(async () => {
+      SocketIo.timer = setInterval(async () => {
         for (let room of await Room.query().where('is_active', true)) {
           // console.log(`players ${room.playerCount}`, `time ${room.secondsRemaining}`)
           // console.log(__('transactions'))
+          const robotActive = await getSettings('robot_is_active')
+
+          if (robotActive) {
+            await Room.addBot(room)
+          }
           if (room.playerCount > 1 && room.secondsRemaining == room.maxSeconds) {
             const game = await Daberna.makeGame(room)
             SocketIo.wsIo?.to(`room-${room.type}`).emit('game-start', game)
@@ -154,6 +158,11 @@ export default class SocketIo {
       // console.log(error)
       socket.disconnect()
     }
+  }
+
+  clearTimer() {
+    console.log('********timer stopped********')
+    clearInterval(SocketIo.timer)
   }
 }
 // export default new SocketIo()

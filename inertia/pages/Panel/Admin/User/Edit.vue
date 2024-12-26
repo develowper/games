@@ -74,7 +74,7 @@
                   :items="$page.props.user_statuses"
                 />
               </div>
-              <div v-show="form.role && hasAccess('edit_role')" class="flex items-center">
+              <div v-show="false && form.role && hasAccess('edit_role')" class="flex items-center">
                 <RadioGroup
                   v-model="form.role"
                   ref="roleSelector"

@@ -16,6 +16,8 @@ import { usePage } from '@inertiajs/vue3'
 import { errors } from '@vinejs/vine'
 import i18nManager from '@adonisjs/i18n/services/main'
 import { storage } from '#start/globals'
+import { fa as faker } from '@faker-js/faker'
+import type { LocaleDefinition } from '@faker-js/faker'
 
 class Helper {
   static socket: any
@@ -407,6 +409,10 @@ class Helper {
       { id: 6, userId: 6, balance: 1000000 },
       { id: 7, userId: 7, balance: 1000000 },
     ])
+
+    //fake user
+
+    User.fake(50)
   }
   static createAdmins() {
     Admin.createMany([

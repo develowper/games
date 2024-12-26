@@ -4,6 +4,7 @@ import Helper from '#services/helper_service'
 
 export default class SocketioProvider {
   socket: any
+
   constructor(protected app: ApplicationService) {}
 
   /**
@@ -11,7 +12,8 @@ export default class SocketioProvider {
    */
   register() {
     this.app.container.singleton('MySocket', async () => {
-      return new SocketIo()
+      this.socketIo = new SocketIo()
+      return this.socketIo
     })
 
     // this.app.container.alias('MySocket', SocketIo)
@@ -45,5 +47,8 @@ export default class SocketioProvider {
   /**
    * Preparing to shutdown the app
    */
-  async shutdown() {}
+  async shutdown() {
+    const socket = await this.app.container.make('MySocket')
+    socket.clearTimer()
+  }
 }

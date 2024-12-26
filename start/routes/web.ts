@@ -6,7 +6,7 @@ const PanelController = () => import('#controllers/panel_controller')
 import { middleware } from '#start/kernel'
 import Daberna from '#models/daberna'
 import Room from '#models/room'
-import Helper, { __, asPrice } from '#services/helper_service'
+import Helper, { __, asPrice, replace, startsWith } from '#services/helper_service'
 import Transaction from '#models/transaction'
 import Setting from '../../app/models/setting.js'
 import User from '../../app/models/user.js'
@@ -14,7 +14,8 @@ import hash from '@adonisjs/core/services/hash'
 import SettingController from '../../app/controllers/api/setting_controller.js'
 import { HttpContext } from '@adonisjs/core/http'
 import db from '@adonisjs/lucid/services/db'
-
+import { fakerFA as faker } from '@faker-js/faker'
+import vine from '@vinejs/vine'
 export default function () {
   router.get('test', async () => {
     return
@@ -26,7 +27,7 @@ export default function () {
     room.cardCount = 4
     room.playerCount = 2
     room.save()
-
+    return room
     return Daberna.makeGame(room)
 
     return await Setting.findBy({ key: 'policy' })

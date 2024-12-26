@@ -15,7 +15,7 @@
       <!-- Content -->
       <div class="px-2 md:px-4">
         <div
-          class="lg:grid lg:grid-cols-3 mx-auto md:max-w-5xl my-6 px-2 md:px-4 py-4 bg-white shadow-md overflow-hidden rounded-lg"
+          class="lg:grid mx-auto md:max-w-2xl my-6 px-2 md:px-4 py-4 bg-white shadow-md overflow-hidden rounded-lg"
         >
           <!--          <div-->
           <!--            class="lg:flex-col flex flex-wrap self-center md:m-2 lg:mx-2 md:items-center lg:items-stretch rounded-lg"-->
@@ -39,7 +39,7 @@
           <!--              </div>-->
           <!--            </div>-->
           <!--          </div>-->
-          <div class="flex flex-col mx-2 col-span-2 w-full lg:border-s px-2">
+          <div class="flex flex-col mx-2 w-full px-2">
             <form @submit.prevent="submit">
               <div class="flex items-center">
                 <RadioGroup
@@ -50,67 +50,16 @@
                   :items="$page.props.user_roles"
                 />
               </div>
-              <div class="my-4">
-                <TextInput
-                  id="username"
-                  type="text"
-                  :placeholder="__('username')"
-                  classes="  "
-                  v-model="form.username"
-                  autocomplete="username"
-                  :error="form.errors.username"
-                >
-                  <template v-slot:prepend>
-                    <div class="p-3">
-                      <Bars2Icon class="h-5 w-5" />
-                    </div>
-                  </template>
-                </TextInput>
-              </div>
-              <div class="my-4">
-                <TextInput
-                  id="full_name"
-                  type="text"
-                  :placeholder="__('full_name')"
-                  classes="  "
-                  v-model="form.full_name"
-                  autocomplete="fullname"
-                  :error="form.errors.full_name"
-                >
-                  <template v-slot:prepend>
-                    <div class="p-3">
-                      <Bars2Icon class="h-5 w-5" />
-                    </div>
-                  </template>
-                </TextInput>
-              </div>
 
-              <div class="my-4">
+              <div v-if="form.role == 'bo'" class="my-4">
                 <TextInput
-                  id="phone"
-                  type="text"
-                  :placeholder="__('phone')"
-                  classes="  "
-                  v-model="form.phone"
-                  autocomplete="phone"
-                  :error="form.errors.phone"
-                >
-                  <template v-slot:prepend>
-                    <div class="p-3">
-                      <PhoneIcon class="h-5 w-5" />
-                    </div>
-                  </template>
-                </TextInput>
-              </div>
-              <div class="my-4">
-                <TextInput
-                  id="card"
+                  id="fake_count"
                   type="number"
-                  :placeholder="__('card')"
+                  :placeholder="__('count')"
                   classes="  "
-                  v-model="form.card"
+                  v-model="form.count"
                   autocomplete="card"
-                  :error="form.errors.card"
+                  :error="form.errors.count"
                 >
                   <template v-slot:prepend>
                     <div class="p-2 px-3">
@@ -119,60 +68,130 @@
                   </template>
                 </TextInput>
               </div>
-              <div class="my-4">
-                <TextInput
-                  id="sheba"
-                  type="number"
-                  :placeholder="__('sheba')"
-                  classes="  "
-                  v-model="form.sheba"
-                  autocomplete="sheba"
-                  v-model:verified="form.sheba"
-                  :error="form.errors.sheba"
-                >
-                  <template v-slot:prepend>
-                    <div class="p-2 px-4">
-                      <strong>IR</strong>
-                      <!--                      <CreditCardIcon class="h-5 w-5"/>-->
-                    </div>
-                  </template>
-                </TextInput>
-              </div>
-              <div class="my-4">
-                <TextInput
-                  id="password"
-                  type="text"
-                  :placeholder="__('password')"
-                  classes="  "
-                  v-model="form.password"
-                  autocomplete="password"
-                  :error="form.errors.password"
-                >
-                  <template v-slot:prepend>
-                    <div class="p-3">
-                      <KeyIcon class="h-5 w-5" />
-                    </div>
-                  </template>
-                </TextInput>
-              </div>
-              <div class="my-4">
-                <TextInput
-                  id="password_confirmation"
-                  type="text"
-                  :placeholder="__('password_confirmation')"
-                  classes="  "
-                  v-model="form.password_confirmation"
-                  autocomplete="password_confirmation"
-                  :error="form.errors.password_confirmation"
-                >
-                  <template v-slot:prepend>
-                    <div class="p-3">
-                      <KeyIcon class="h-5 w-5" />
-                    </div>
-                  </template>
-                </TextInput>
-              </div>
+              <div v-else>
+                <div class="my-4">
+                  <TextInput
+                    id="username"
+                    type="text"
+                    :placeholder="__('username')"
+                    classes="  "
+                    v-model="form.username"
+                    autocomplete="username"
+                    :error="form.errors.username"
+                  >
+                    <template v-slot:prepend>
+                      <div class="p-3">
+                        <Bars2Icon class="h-5 w-5" />
+                      </div>
+                    </template>
+                  </TextInput>
+                </div>
+                <div class="my-4">
+                  <TextInput
+                    id="full_name"
+                    type="text"
+                    :placeholder="__('full_name')"
+                    classes="  "
+                    v-model="form.full_name"
+                    autocomplete="fullname"
+                    :error="form.errors.full_name"
+                  >
+                    <template v-slot:prepend>
+                      <div class="p-3">
+                        <Bars2Icon class="h-5 w-5" />
+                      </div>
+                    </template>
+                  </TextInput>
+                </div>
 
+                <div class="my-4">
+                  <TextInput
+                    id="phone"
+                    type="text"
+                    :placeholder="__('phone')"
+                    classes="  "
+                    v-model="form.phone"
+                    autocomplete="phone"
+                    :error="form.errors.phone"
+                  >
+                    <template v-slot:prepend>
+                      <div class="p-3">
+                        <PhoneIcon class="h-5 w-5" />
+                      </div>
+                    </template>
+                  </TextInput>
+                </div>
+                <div class="my-4">
+                  <TextInput
+                    id="card"
+                    type="number"
+                    :placeholder="__('card')"
+                    classes="  "
+                    v-model="form.card"
+                    autocomplete="card"
+                    :error="form.errors.card"
+                  >
+                    <template v-slot:prepend>
+                      <div class="p-2 px-3">
+                        <CreditCardIcon class="h-5 w-5" />
+                      </div>
+                    </template>
+                  </TextInput>
+                </div>
+                <div class="my-4">
+                  <TextInput
+                    id="sheba"
+                    type="number"
+                    :placeholder="__('sheba')"
+                    classes="  "
+                    v-model="form.sheba"
+                    autocomplete="sheba"
+                    v-model:verified="form.sheba"
+                    :error="form.errors.sheba"
+                  >
+                    <template v-slot:prepend>
+                      <div class="p-2 px-4">
+                        <strong>IR</strong>
+                        <!--                      <CreditCardIcon class="h-5 w-5"/>-->
+                      </div>
+                    </template>
+                  </TextInput>
+                </div>
+                <div class="my-4">
+                  <TextInput
+                    id="password"
+                    type="text"
+                    :placeholder="__('password')"
+                    classes="  "
+                    v-model="form.password"
+                    autocomplete="password"
+                    :error="form.errors.password"
+                  >
+                    <template v-slot:prepend>
+                      <div class="p-3">
+                        <KeyIcon class="h-5 w-5" />
+                      </div>
+                    </template>
+                  </TextInput>
+                </div>
+                <div class="my-4">
+                  <TextInput
+                    id="password_confirmation"
+                    type="text"
+                    :placeholder="__('password_confirmation')"
+                    classes="  "
+                    v-model="form.password_confirmation"
+                    autocomplete="password_confirmation"
+                    :error="form.errors.password_confirmation"
+                  >
+                    <template v-slot:prepend>
+                      <div class="p-3">
+                        <KeyIcon class="h-5 w-5" />
+                      </div>
+                    </template>
+                  </TextInput>
+                </div>
+              </div>
               <div class="py-4"></div>
               <div
                 v-if="form.progress"
@@ -238,7 +257,7 @@ import Selector from '~/components/Selector.vue'
 import PhoneFields from '~/components/PhoneFields.vue'
 import SocialFields from '~/components/SocialFields.vue'
 import EmailFields from '~/components/EmailFields.vue'
-import { __, showAlert, showToast } from '../../../../js/mixins.js'
+import { __, log, showAlert, showToast } from '../../../../js/mixins.js'
 import { route } from '@izzyjs/route/client'
 
 export default {
@@ -261,6 +280,7 @@ export default {
         status: null,
         img: null,
         role: null,
+        count: null,
       }),
       profile: null,
     }
@@ -306,6 +326,7 @@ export default {
     this.form.role = this.$page.props.user_roles[0]
   },
   methods: {
+    log,
     __,
     submit() {
       // this.form.category_id = this.$refs.categorySelector.selected;

@@ -8,7 +8,8 @@ import type { HasMany, HasOne } from '@adonisjs/lucid/types/relations'
 import { DbAccessTokensProvider } from '@adonisjs/auth/access_tokens'
 import UserFinancial from './user_financial.js'
 import { DbRememberMeTokensProvider } from '@adonisjs/auth/session'
-import Helper from '#services/helper_service'
+import Helper, { range, replace, startsWith } from '#services/helper_service'
+import { fakerFA as faker } from '@faker-js/faker'
 
 const AuthFinder = withAuthFinder(() => hash.use('scrypt'), {
   uids: ['username'],
@@ -131,5 +132,50 @@ export default class User extends compose(BaseModel, AuthFinder) {
     }
 
     return ref
+  }
+
+  static async fake(number: number, user: any = null): Promise<Record<any, any>[]> {
+    let items = []
+    let rangeArray = range(1, number)
+    for (const item of rangeArray) {
+      const rand = Math.random()
+      let fn = rand > 0.5 ? faker.person.firstName() : ''
+      let ln = rand > 0.5 || fn == '' ? faker.person.lastName() : ''
+      let fOption = {
+        firstName: '',
+        lastName: '',
+      }
+
+      fOption.firstName = fn
+      fOption.lastName = ln
+      let fullName = faker.person.fullName(fOption).trim()
+      let username = faker.internet.username(fOption)
+
+      if (startsWith(username, '_')) username = replace('_', '', username)
+      if (startsWith(username, '.')) username = replace('.', '', username)
+      fullName = replace('خانم', '', fullName)
+      fullName = replace('آقای', '', fullName)
+      fullName = replace('دکتر', '', fullName)
+
+      if (items.filter((item) => item.username == username).length > 0) {
+        rangeArray.push(1)
+        continue
+      }
+      items.push({
+        fullName,
+        username,
+        password: await hash.make(`${username}1`),
+        ref_id: await User.makeRefCode(),
+        role: 'bo',
+        phone: '09999999999',
+        agencyId: user?.agencyId ?? 1,
+        agencyLevel: user?.agencyLevel ?? 0,
+      })
+    }
+
+    const users = await User.createMany(items)
+    users.forEach((u: User) => {
+      u.related('financial').create()
+    })
   }
 }
