@@ -353,6 +353,6 @@ export default class Telegram {
       chat_id: chatId,
       user_id: userId,
     })
-    return res?.result?.status == 'member'
+    return ['member', 'administrator', 'creator'].includes(res?.result?.status)
   }
 }

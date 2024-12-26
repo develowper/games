@@ -13,11 +13,14 @@ export default class extends BaseSchema {
         .references('id')
         .inTable('users')
         .onDelete('CASCADE')
-
+      table.string('type', 20)
+      table.string('name').nullable()
+      table.json('abilities').nullable()
       table.string('hash').notNullable().unique()
       table.timestamp('created_at').notNullable()
       table.timestamp('updated_at').nullable()
       table.timestamp('expires_at').nullable()
+      table.timestamp('last_used_at').nullable()
     })
   }
 

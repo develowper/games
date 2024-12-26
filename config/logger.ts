@@ -16,15 +16,15 @@ const loggerConfig = defineConfig({
       level: env.get('LOG_LEVEL'),
       transport: {
         targets: targets()
-          .push({
-            target: 'pino-roll',
-            level: 'error',
-            options: {
-              file: 'adonisjs.log',
-              frequency: 'daily',
-              mkdir: true,
-            },
-          })
+          // .push({
+          //   target: 'pino-roll',
+          //   level: 'error',
+          //   options: {
+          //     file: 'adonisjs.log',
+          //     frequency: 'daily',
+          //     mkdir: true,
+          //   },
+          // })
 
           // .pushIf(!app.inProduction, targets.pretty())
           .pushIf(!app.inProduction, targets.file())
