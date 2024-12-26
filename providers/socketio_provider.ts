@@ -47,7 +47,7 @@ export default class SocketioProvider {
    * Preparing to shutdown the app
    */
   async shutdown() {
-    const socket = await this.app.container.make('MySocket')
-    socket.clearTimer()
+    // const socket = await this.app.container.make('MySocket')
+    // socket.clearTimer()
   }
 }
