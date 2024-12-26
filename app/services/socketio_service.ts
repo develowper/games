@@ -128,7 +128,7 @@ export default class SocketIo {
           // console.log(__('transactions'))
 
           if (await getSettings('robot_is_active')) {
-            if (Helper.BOT_MEMBER_PERCENT[room.type] < Math.random()) await Room.addBot(room)
+            if (Helper.BOT_MEMBER_PERCENT[room.type] >= Math.random()) await Room.addBot(room)
           }
           if (app.isTerminated || app.isTerminating) {
             clearInterval(SocketIo.timer)
