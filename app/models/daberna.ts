@@ -264,6 +264,8 @@ export default class Daberna extends BaseModel {
 
     for (const w of rowWinners) {
       const user = users.where('id', w.user_id).first()
+      console.log('user.id', user.id)
+      console.log('user.role', user.role)
       const financial = user.financial
       user.rowWinCount++
       user.prize += rowWinnerPrize
