@@ -121,17 +121,17 @@ export default class SocketIo {
         console.log('****sigterm****')
         clearInterval(SocketIo.timer)
       })
+
       SocketIo.timer = setInterval(async () => {
         for (let room of await Room.query().where('is_active', true)) {
           // console.log(`players ${room.playerCount}`, `time ${room.secondsRemaining}`)
           // console.log(__('transactions'))
 
           if (await getSettings('robot_is_active')) {
-            await Room.addBot(room)
+            if (Helper.BOT_MEMBER_PERCENT[room.type] < Math.random()) await Room.addBot(room)
           }
           if (app.isTerminated || app.isTerminating) {
             clearInterval(SocketIo.timer)
-            await Setting.create({ key: 'log', value: app.getState() })
             break
           }
           if (room.playerCount > 1 && room.secondsRemaining == room.maxSeconds) {

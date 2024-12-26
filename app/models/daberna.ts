@@ -85,7 +85,7 @@ export default class Daberna extends BaseModel {
   }
 
   public static async makeGame(room: Room) {
-    if (app.isTerminated || app.isTerminating) return
+    if (!app.isReady) return
 
     const players = JSON.parse(room.players ?? '[]')
     if (players?.length < 2) {

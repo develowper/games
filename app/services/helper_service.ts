@@ -89,6 +89,7 @@ class Helper {
     { name: 'active', color: 'green' },
     { name: 'inactive', color: 'red' },
   ]
+  static BOT_MEMBER_PERCENT: Record<any, any> = { d5000: 1, d10000: 0.5, d20000: 0.3, d50000: 0.1 }
 
   constructor() {}
 
