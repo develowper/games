@@ -698,6 +698,7 @@ import {
   isLoading,
   getError,
   getErrors,
+  getSocketUrl,
 } from '~/js/mixins.js'
 import { route } from '@izzyjs/route/client'
 import { DateTime } from 'luxon'
@@ -705,6 +706,7 @@ import TextInput from '~/components/TextInput.vue'
 import { PhotoIcon } from '@heroicons/vue/24/outline/index.js'
 import { CheckIcon } from '@heroicons/vue/24/solid/index.js'
 import LoadingIcon from '~/components/LoadingIcon.vue'
+import { io } from 'socket.io-client'
 
 export default {
   data() {
@@ -759,6 +761,8 @@ export default {
     const modalEl = document.getElementById('chargeModal')
     this.chargeModal = new Modal(modalEl)
     this.getData()
+
+    this.initSocketIO()
     // console.log(this.urlParams)
     // this.showDialog('danger', 'message',()=>{});
     // this.showDialog('danger', 'message',()=>{});
@@ -919,6 +923,34 @@ export default {
       this.getData()
     },
     bulkAction(cmnd) {},
+    initSocketIO() {
+      const socket = io('https://adonis.ailverchi.ae', {
+        transports: ['websocket', 'polling', 'flashsocket' /**/],
+        // path: '/',
+        cors: true,
+        origins: ['*'],
+      })
+
+      socket.onAny((name, arg) => {
+        console.log('onAny ' + name)
+        // console.log(arg);
+      })
+      // socket.on("hello", (arg) => {
+      //     console.log(arg);
+      // });
+      socket.on('NewMessage', (arg) => {
+        console.log('NewMessage ' + arg)
+      })
+      socket.on('connect', () => {
+        console.log(`Connected Socket ${socket.id} `)
+        socket.onAny((name, arg) => {
+          console.log('onAny ' + name)
+          // console.log(arg);
+        })
+        // socket.emit('hello', 'stranger')
+      })
+      // socket.emit("hello", `hello from  `);
+    },
   },
 }
 </script>

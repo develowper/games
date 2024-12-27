@@ -140,6 +140,7 @@ export default class Room extends BaseModel {
 
     const botUser = await User.query()
       .whereNotIn('id', beforeIds)
+      .where('is_active', true)
       .where('role', 'bo')
       .orderByRaw('RAND()')
       .first()
@@ -181,10 +182,10 @@ export default class Room extends BaseModel {
       }
 
       botUser.save()
-      console.log('*************')
-      console.log(room.type)
-      console.log(room.cardCount)
-      console.log(room.secondsRemaining)
+      // console.log('*************')
+      // console.log(room.type)
+      // console.log(room.cardCount)
+      // console.log(room.secondsRemaining)
       // console.log(room.players)
 
       emitter.emit('room-update', {

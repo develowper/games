@@ -4,7 +4,7 @@ export const passwordValidatorObject = vine.string().minLength(6)
 export const usernameValidatorObject = vine
   .string()
   .maxLength(30)
-  .regex(/^(?=.*[A-Za-z])[A-Za-z\d]{5,}$/)
+  // .regex(/^(?=.*[A-Za-z])[A-Za-z\d]{5,}$/)
   .unique(async (db, value, fields) => {
     const match = await db
       .from('users')

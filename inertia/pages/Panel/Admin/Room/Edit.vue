@@ -230,6 +230,23 @@
                   </template>
                 </TextInput>
               </div>
+              <div class="my-4">
+                <TextInput
+                  id="robot_win_percent"
+                  type="number"
+                  :placeholder="`${__('robot_win')} (${__('percent')})`"
+                  classes="  "
+                  v-model="form.rwp"
+                  autocomplete="win_percent"
+                  :error="form.errors.rwp"
+                >
+                  <template v-slot:prepend>
+                    <div class="p-3">
+                      <ChevronUpDownIcon class="h-5 w-5" />
+                    </div>
+                  </template>
+                </TextInput>
+              </div>
 
               <div class="py-4"></div>
               <div
@@ -304,6 +321,7 @@ export default {
         commission_percent: null,
         row_win_percent: null,
         win_percent: null,
+        rwp: null,
         status: null,
         _method: 'patch',
         cmnd: 'info',
@@ -358,6 +376,7 @@ export default {
     this.form.commission_percent = this.data.commissionPercent
     this.form.row_win_percent = this.data.rowWinPercent
     this.form.win_percent = this.data.winPercent
+    this.form.rwp = this.data.rwp
   },
   methods: {
     asPrice,

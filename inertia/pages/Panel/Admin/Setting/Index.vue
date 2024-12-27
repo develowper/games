@@ -519,7 +519,7 @@ import Tooltip from '~/components/Tooltip.vue'
 import LoadingIcon from '~/components/LoadingIcon.vue'
 import TextInput from '~/components/TextInput.vue'
 import PrimaryButton from '~/components/PrimaryButton.vue'
-import { __, log, showDialog, showToast, toJson, getError } from '../../../../js/mixins.js'
+import { __, log, showDialog, showToast, toJson, getError, f2e } from '../../../../js/mixins.js'
 import { route } from '@izzyjs/route/client'
 import { isArray, isObject, isString } from 'node:util'
 import ClientOnly from '~/components/ClientOnly.vue'
@@ -640,6 +640,7 @@ export default {
       this.loading = true
       const params = JSON.parse(JSON.stringify(this.params))
       params.value = !isString(params.value) ? JSON.stringify(params.value) : params.value
+      params.value = f2e(params.value)
       // params._method = 'PATCH'
       window.axios
         .patch(route('admin.panel.setting.update'), params, {})

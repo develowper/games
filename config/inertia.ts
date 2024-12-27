@@ -1,6 +1,6 @@
 import { defineConfig } from '@adonisjs/inertia'
 import type { InferSharedProps } from '@adonisjs/inertia/types'
-import { getLangFile } from '#services/helper_service'
+import Helper, { getLangFile } from '#services/helper_service'
 import Admin from '#models/admin'
 import AgencyFinancial from '#models/agency_financial'
 import Agency from '#models/agency'
@@ -44,6 +44,7 @@ const inertiaConfig = defineConfig({
     errors: (ctx) => ctx.session?.flashMessages.get('errors') ?? {},
     language: (ctx) => getLangFile(ctx),
     pageItems: [24, 50, 100],
+    socket_url: Helper.SOCKET_LINK_CLIENT,
     // __: (ctx) => {
     //   return {
     //     ...ctx.i18n,

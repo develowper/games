@@ -7,8 +7,6 @@ import Transaction from '#models/transaction'
 import User from '#models/user'
 import collect from 'collect.js'
 import app from '@adonisjs/core/services/app'
-import logger from '@adonisjs/core/services/logger'
-import Setting from '#models/setting'
 
 export default class Daberna extends BaseModel {
   static table = 'daberna'

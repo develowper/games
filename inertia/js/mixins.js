@@ -292,7 +292,11 @@ export function toJson(str) {
   }
 }
 export function isClient() {
-  console.log('******************')
-  console.log(typeof window !== 'undefined')
+  // console.log('******************')
+  // console.log(typeof window !== 'undefined')
   return typeof window !== 'undefined'
+}
+
+export function getSocketUrl() {
+  return usePage().props.socket_url
 }
