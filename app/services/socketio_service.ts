@@ -157,10 +157,10 @@ export default class SocketIo {
           request: request,
         } as unknown as HttpContext)
 
-      const auth = authResolver.guards.api(ctx) ?? ctx?.auth.use('admin_web')
+      const auth = authResolver.guards.api(ctx) ?? authResolver.guards.admin_web(ctx)
       const user = await auth.authenticate()
 
-      console.log(`********${user}`)
+      console.log(`********${typeof user}`)
       return user
     } catch (error) {
       console.log(error)
