@@ -938,14 +938,17 @@ export default {
       // socket.on("hello", (arg) => {
       //     console.log(arg);
       // });
-      socket.on('NewMessage', (arg) => {
-        console.log('NewMessage ' + arg)
+      socket.on('room-update', (arg) => {
+        console.log('room-update' + arg)
       })
       socket.on('connect', () => {
         console.log(`Connected Socket ${socket.id} `)
         socket.onAny((name, arg) => {
           console.log('onAny ' + name)
           // console.log(arg);
+        })
+        socket.on('room-update', (arg) => {
+          console.log('room-update' + arg)
         })
         // socket.emit('hello', 'stranger')
       })

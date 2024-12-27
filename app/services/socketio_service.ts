@@ -151,16 +151,19 @@ export default class SocketIo {
         header: () => `Bearer ${token}`,
       } as unknown as Request
 
-      let ctx: HttpContext = {
-        request: request,
-      } as unknown as HttpContext
+      let ctx: HttpContext =
+        HttpContext.get() ??
+        ({
+          request: request,
+        } as unknown as HttpContext)
 
-      const auth = authResolver.guards.api(ctx)
+      const auth = authResolver.guards.api(ctx) ?? ctx?.auth.use('admin_web')
       const user = await auth.authenticate()
 
+      console.log(`********${user}`)
       return user
     } catch (error) {
-      // console.log(error)
+      console.log(error)
       socket.disconnect()
     }
   }
