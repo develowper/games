@@ -2,6 +2,8 @@ import server from '@adonisjs/core/services/server'
 import { Server, Socket } from 'socket.io'
 import { HttpContext } from '@adonisjs/core/http'
 import authConfig from '#config/auth'
+import sessionConfig from '#config/session'
+
 import emitter from '@adonisjs/core/services/emitter'
 import Room from '#models/room'
 import Daberna from '#models/daberna'
@@ -10,14 +12,27 @@ import env from '#start/env'
 import Helper, { __, getSettings } from '#services/helper_service'
 import { storage } from '#start/globals'
 import app from '@adonisjs/core/services/app'
-import Setting from '#models/setting'
+import Encryption from '@adonisjs/core/services/encryption'
+import { CookieClient } from '@adonisjs/http-server'
+import { ServerResponse } from 'node:http'
+import qs from 'qs'
+import { Request } from '@adonisjs/core/http'
+import config from '@adonisjs/core/services/config'
 
+import SocketHttpContextMiddleware from '#middleware/socket/socket_http_context_middleware'
+import SocketAuthMiddleware from '#middleware/socket/socket_auth_middleware'
+import User from '#models/user'
+declare module 'socket.io' {
+  interface Socket {
+    context: HttpContext
+  }
+}
+export type SocketMiddleware = Parameters<SocketIo['io']['use']>[0]
 export default class SocketIo {
   private user: any
   private socket
-  public static wsIo
+  public static wsIo: Server
   public static timer
-
   constructor(/*protected app: ApplicationService*/) {
     // console.log('*********   socket service created ')
     // console.log(Daberna.makeCard())
@@ -31,14 +46,18 @@ export default class SocketIo {
       },
     })
 
-    //TODO: remove this new server to use adonis server
+    // SocketIo.wsIo.use(SocketHttpContextMiddleware({ guards: ['admin_web'] }))
+    // SocketIo.wsIo.use(SocketAuthMiddleware({ guards: ['admin_api'] }))
 
     SocketIo.wsIo.on('connection', async (socket) => {
       this.socket = socket
       console.log('*****  ws server service connected')
       const token = socket.handshake.auth.token ?? socket.handshake.headers.token
       const roomType = socket.handshake.headers['request-room']
-      this.user = await this.authenticateUser({ socket, token })
+
+      if (token) this.user = await this.getTokenUser({ socket, token })
+      else this.user = await this.getSessionUser(socket)
+      // else this.user = this.authenticateSessionUser({ socket })
 
       if (roomType) {
         const res = await socket.join(`room-${roomType}`)
@@ -95,7 +114,7 @@ export default class SocketIo {
       SocketIo.wsIo?.emit(data.event, data)
     })
 
-    // this.setTimeChecker()
+    this.setTimeChecker()
   }
   public async emitToRoom(room: string, event: string, data: any) {
     // var room = SocketIo.wsIo.sockets.adapter.rooms[room]
@@ -144,25 +163,23 @@ export default class SocketIo {
     })
   }
 
-  private async authenticateUser({ socket, token }: { socket: Socket; token: string }) {
+  private async getTokenUser({ socket, token }: { socket: Socket; token: string }) {
     try {
       const authResolver = await authConfig.resolver(app)
       const request: Request = {
         header: () => `Bearer ${token}`,
       } as unknown as Request
+      let ctx: HttpContext = {
+        request: request,
+      } as unknown as HttpContext
 
-      let ctx: HttpContext =
-        HttpContext.get() ??
-        ({
-          request: request,
-        } as unknown as HttpContext)
+      const auth = authResolver.guards.api(ctx)
 
-      const auth = authResolver.guards.api(ctx) ?? authResolver.guards.admin_web(ctx)
       const user = await auth.authenticate()
 
-      console.log(`********${typeof user}`)
       return user
     } catch (error) {
+      console.log('******error socket auth')
       console.log(error)
       socket.disconnect()
     }
@@ -171,6 +188,27 @@ export default class SocketIo {
   clearTimer() {
     console.log('********timer stopped********')
     clearInterval(SocketIo.timer)
+  }
+
+  async getSessionUser(socket: Socket) {
+    const sessionResolver = await sessionConfig.resolver(app)
+    const sessionKey = sessionResolver.cookieName
+    const SocketRequest = new Request(socket.request, {}, Encryption, {}, qs)
+
+    const sessionId = SocketRequest.cookie(sessionKey)
+
+    if (!sessionId) {
+      return null
+    }
+    const session = SocketRequest.encryptedCookie(sessionId)
+    if (!session || !session.auth_admin_web) {
+      return null
+    }
+    const user = (await User.find(session.auth_admin_web)) ?? null
+    if (!user) {
+      socket.disconnect()
+    }
+    return user
   }
 }
 // export default new SocketIo()

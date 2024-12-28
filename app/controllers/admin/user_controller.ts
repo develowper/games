@@ -76,7 +76,7 @@ export default class UserController {
     const dir = request.input('dir') ?? 'DESC'
     const payedAt = request.input('payed_at')
     const sort = request.input('order_by') ?? 'created_at'
-
+    const where = request.input('where') ?? null
     let query = User.query()
     // .whereNotNull('payed_at')
     // .where((query) => {
@@ -86,6 +86,9 @@ export default class UserController {
     if (search) query.where('full_name', 'like', `%${search}%`)
     if (type) {
       query.where('type', type)
+    }
+    if (where) {
+      query.where(where)
     }
 
     return response.json(await query.orderBy(sort, dir).paginate(page, Helper.PAGINATE))

@@ -107,13 +107,13 @@ export default class Room extends BaseModel {
     return result?.card_count ?? 0
   }
   public setUserCardsCount(count: number, us: User | null = null) {
-    const user = this.auth?.user ?? us
+    const user = us ?? this.auth?.user
     let res: any[] = []
     const parsed: any = JSON.parse(this.players) ?? []
     const beforeExists = collect(parsed).first((item: any) => item.user_id == user.id)
 
     if (!beforeExists) {
-      parsed.push({
+      parsed.unshift({
         user_id: user.id,
         username: user.username,
         user_role: user.role,
@@ -134,20 +134,22 @@ export default class Room extends BaseModel {
     return true
   }
 
-  public static async addBot(room: Room) {
+  public static async addBot(room: Room, user: User | null, userCardCount: number) {
     const players = JSON.parse(room.players ?? '[]')
     const beforeIds = collect(players).pluck('user_id').toArray()
 
-    const botUser = await User.query()
-      .whereNotIn('id', beforeIds)
-      .where('is_active', true)
-      .where('role', 'bo')
-      .orderByRaw('RAND()')
-      .first()
+    const botUser =
+      user ??
+      (await User.query()
+        .whereNotIn('id', beforeIds)
+        .where('is_active', true)
+        .where('role', 'bo')
+        .orderByRaw('RAND()')
+        .first())
 
-    if (!botUser) return
+    if (!botUser /*|| beforeIds.includes(user?.id)*/) return
 
-    const cardCount = [1, 2, 3][Math.floor(Math.random() * 3)]
+    const cardCount = userCardCount ?? [1, 2, 3][Math.floor(Math.random() * 3)]
 
     if (room.setUserCardsCount(cardCount, botUser)) {
       room.playerCount++
@@ -192,9 +194,11 @@ export default class Room extends BaseModel {
         type: room.type,
         cmnd: 'card-added',
         players: room.players,
+        game_id: room.clearCount,
+        card_count: room.cardCount,
+        player_count: room.playerCount,
         start_with_me: room.startWithMe,
         seconds_remaining: room.playerCount > 1 ? room.secondsRemaining : room.maxSeconds,
-        player_count: room.playerCount,
         user_id: botUser?.id,
         username: botUser?.username,
         user_card_count: cardCount,

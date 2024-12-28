@@ -12,6 +12,7 @@ const AdminController = () => import('#controllers/admin_controller')
 const AuthController = () => import('#controllers/auth_controller')
 const PanelController = () => import('#controllers/panel_controller')
 const SettingController = () => import('#controllers/admin/setting_controller')
+const SocketController = () => import('#controllers/admin/socket_controller')
 
 export default () => {
   router
@@ -67,6 +68,7 @@ export default () => {
           router.post('room/store', [RoomController, 'store']).as('room.store')
           router.patch('room/update', [RoomController, 'update']).as('room.update')
           router.get('room/:id', [RoomController, 'edit']).as('room.edit')
+          router.get('room-live/:id', [RoomController, 'live']).as('room.live')
 
           router.get('setting/index', [SettingController, 'index']).as('setting.index')
           router.get('setting/search', [SettingController, 'search']).as('setting.search')
@@ -86,3 +88,12 @@ export default () => {
     .as('admin')
     .prefix('admin')
 }
+
+router
+  .any('socket.io', [SocketController, 'connect'])
+  .as('socket.connect')
+  .use(
+    middleware.auth_admin({
+      guards: ['admin_web' /*, 'api'*/],
+    })
+  )

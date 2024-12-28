@@ -471,18 +471,29 @@
                 <td class="px-2 py-4">
                   <!-- Actions Group -->
                   <div
-                    class="inline-flex rounded-md shadow-sm transition duration-150 ease-in-out focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)]"
+                    class="inline-flex rounded-md transition duration-150 ease-in-out focus:outline-none focus:ring-0 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)]"
                     role="group"
                   >
                     <Link
+                      :href="route('admin.panel.room.live', { params: { id: d.id } })"
+                      type="button"
+                      class="flex items-center mx-1 rounded-md bg-indigo-400 text-indigo-500 px-6 py-2 text-xs font-medium uppercase leading-normal text-white transition duration-150 ease-in-out hover:bg-indigo-100 focus:outline-none focus:ring-0"
+                      data-te-ripple-init
+                      data-te-ripple-color="light"
+                    >
+                      <span class="animate-pulse rounded-full bg-white mx-1 w-1 h-1 p-1"></span>
+                      <span>{{ __('game') }}</span>
+                    </Link>
+                    <Link
                       :href="route('admin.panel.room.edit', { params: { id: d.id } })"
                       type="button"
-                      class="inline-block rounded-s bg-orange-500 text-white px-6 py-2 text-xs font-medium uppercase leading-normal text-white transition duration-150 ease-in-out hover:bg-orange-400 focus:outline-none focus:ring-0"
+                      class="inline-block rounded-md bg-orange-500 text-white px-6 py-2 text-xs font-medium uppercase leading-normal text-white transition duration-150 ease-in-out hover:bg-orange-400 focus:outline-none focus:ring-0"
                       data-te-ripple-init
                       data-te-ripple-color="light"
                     >
                       {{ __('edit') }}
                     </Link>
+
                     <button
                       v-if="false"
                       @click="
@@ -762,7 +773,6 @@ export default {
     this.chargeModal = new Modal(modalEl)
     this.getData()
 
-    this.initSocketIO()
     // console.log(this.urlParams)
     // this.showDialog('danger', 'message',()=>{});
     // this.showDialog('danger', 'message',()=>{});
@@ -923,37 +933,6 @@ export default {
       this.getData()
     },
     bulkAction(cmnd) {},
-    initSocketIO() {
-      const socket = io('https://adonis.ailverchi.ae', {
-        transports: ['websocket', 'polling', 'flashsocket' /**/],
-        // path: '/',
-        cors: true,
-        origins: ['*'],
-      })
-
-      socket.onAny((name, arg) => {
-        console.log('onAny ' + name)
-        // console.log(arg);
-      })
-      // socket.on("hello", (arg) => {
-      //     console.log(arg);
-      // });
-      socket.on('room-update', (arg) => {
-        console.log('room-update' + arg)
-      })
-      socket.on('connect', () => {
-        console.log(`Connected Socket ${socket.id} `)
-        socket.onAny((name, arg) => {
-          console.log('onAny ' + name)
-          // console.log(arg);
-        })
-        socket.on('room-update', (arg) => {
-          console.log('room-update' + arg)
-        })
-        // socket.emit('hello', 'stranger')
-      })
-      // socket.emit("hello", `hello from  `);
-    },
   },
 }
 </script>

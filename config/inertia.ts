@@ -44,7 +44,7 @@ const inertiaConfig = defineConfig({
     errors: (ctx) => ctx.session?.flashMessages.get('errors') ?? {},
     language: (ctx) => getLangFile(ctx),
     pageItems: [24, 50, 100],
-    socket_url: Helper.SOCKET_LINK_CLIENT,
+    socket_url:  Helper.SOCKET_LINK_CLIENT,
     // __: (ctx) => {
     //   return {
     //     ...ctx.i18n,

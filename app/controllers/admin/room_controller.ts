@@ -7,6 +7,7 @@ import collect from 'collect.js'
 import { createRoomValidator, updateRoomValidator } from '#validators/room'
 import Telegram from '#services/telegram_service'
 import hash from '@adonisjs/core/services/hash'
+import User from '#models/user'
 
 export default class RoomController {
   //
@@ -15,8 +16,16 @@ export default class RoomController {
       statuses: collect(Helper.ROOM_STATUSES).pluck('name'),
     })
   }
-  async edit({ request, inertia, params }: HttpContext) {
+  async edit({ inertia, params }: HttpContext) {
     return inertia.render('Panel/Admin/Room/Edit', {
+      data: await Room.query()
+        .where({ id: params.id ?? 0 })
+        .first(),
+      statuses: collect(Helper.ROOM_STATUSES).pluck('name'),
+    })
+  }
+  async live({ inertia, params }: HttpContext) {
+    return inertia.render('Panel/Admin/Room/Live', {
       data: await Room.query()
         .where({ id: params.id ?? 0 })
         .first(),
@@ -54,22 +63,20 @@ export default class RoomController {
 
     return response.redirect().toRoute('admin.panel.room.index')
   }
-  async search({ request, response, auth }: HttpContext) {
-    const user = auth.user
+  async search(ctx: HttpContext) {
+    const user = ctx.auth.user
     const userId = user?.id
-    const page = request.input('page') ?? 1
-    const search = request.input('search')
-    const type = request.input('type')
-    const dir = request.input('dir') ?? 'DESC'
-    const sort = request.input('order_by') ?? 'created_at'
-
+    const page = ctx.request.input('page') ?? 1
+    const search = ctx.request.input('search')
+    const type = ctx.request.input('type')
+    const dir = ctx.request.input('dir') ?? 'DESC'
+    const sort = ctx.request.input('order_by') ?? 'created_at'
     let query = Room.query()
-
     if (search) query.where('title', 'like', `%${search}%`)
     if (type) {
       query.where('type', type)
     }
-    return response.json(await query.orderBy(sort, dir).paginate(page, Helper.PAGINATE))
+    return ctx.response.json(await query.orderBy(sort, dir).paginate(page, Helper.PAGINATE))
   }
 
   async update({ request, response, auth, session, inertia }: HttpContext) {
@@ -119,6 +126,32 @@ export default class RoomController {
         Telegram.log(null, 'room_edited', data)
 
         return response.redirect().back()
+        break
+      case 'add-bot':
+        const userId = request.input('user_id')
+        const cardCount = Number.parseInt(request.input('card_count'))
+        const user = await User.find(userId)
+        if (!user)
+          return response.badRequest({
+            status: 'danger',
+            message: __('not_found_*', {
+              item: `${__('user')}`,
+            }),
+          })
+        if (!cardCount)
+          return response.badRequest({
+            status: 'danger',
+            message: __('*_is_*', {
+              item1: `${__('card_count')}`,
+              item2: `${__('invalid')}`,
+            }),
+          })
+        await Room.addBot(data, user, cardCount)
+        return response.send({
+          status: 'success',
+          message: __('updated_successfully'),
+          is_active: data.isActive ? 1 : 0,
+        })
         break
     }
     return response.badRequest({

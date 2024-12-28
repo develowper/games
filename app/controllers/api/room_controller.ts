@@ -115,6 +115,8 @@ export default class RoomController {
       emitter.emit('room-update', {
         type: roomType,
         cmnd: 'card-added',
+        game_id: room.clearCount,
+        cards: room.cardCount,
         players: room.players,
         start_with_me: room.startWithMe,
         seconds_remaining: room.playerCount > 1 ? room.secondsRemaining : room.maxSeconds,

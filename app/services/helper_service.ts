@@ -18,6 +18,7 @@ import i18nManager from '@adonisjs/i18n/services/main'
 import { storage } from '#start/globals'
 import { fa as faker } from '@faker-js/faker'
 import type { LocaleDefinition } from '@faker-js/faker'
+import { io } from 'socket.io-client'
 
 class Helper {
   static socket: any
@@ -63,7 +64,7 @@ class Helper {
   public static SOCKET_LINK =
     `http://adonis.ailverchi.ae:${env.get('PORT')}` ??
     /*'http://172.16.6.2:9204' ??*/ `${env.get('APP_URL')}:${env.get('PORT')}`
-  public static SOCKET_LINK_CLIENT = `https://adonis.ailverchi.ae`
+  public static SOCKET_LINK_CLIENT = '127.0.0.1:9204' ?? 'https://adonis.ailverchi.ae'
   public static ERROR_STATUS = 400
   public static BANK = 'zarinpal'
   public static APP_DOWNLOAD_URL =

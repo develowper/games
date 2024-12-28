@@ -260,6 +260,7 @@ export default {
     'callback',
     'multi',
     'editable',
+    'where',
   ],
   components: {
     ChevronDownIcon,
@@ -280,6 +281,7 @@ export default {
         dir: 'DESC',
         cols: this.colsData || ['fullname', 'phone'],
         labels: this.colsData || ['name', 'phone'],
+        where: this.where,
       },
       Modal: null,
       data: [],
@@ -369,7 +371,7 @@ export default {
           // console.log(response.data.data)
           this.data = response.data.data
           delete response.data.data
-          this.pagination = response.data
+          this.pagination = response.data.meta
         })
 
         .catch((error) => {
