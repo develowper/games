@@ -203,6 +203,15 @@ export default {
   created() {
     this.data = this.$page.props.data ?? {}
     this.admin = this.$page.props.auth.user ?? {}
+    this.socketParams = {
+      cardCount: this.data.cardCount,
+      playerCount: this.data.playerCount,
+      cmnd: this.data.cmnd,
+      players: this.data.players,
+      secondsRemaining: this.data.secondsRemaining,
+      startWithMe: this.data.startWithMe,
+      type: this.data.type,
+    }
   },
   mounted() {
     // this.$nextTick(() => {
@@ -214,7 +223,7 @@ export default {
     this.initSocketIO()
   },
   beforeUnmount() {
-    console.log('*******')
+    // console.log('*******')
     this.socket.disconnect()
   },
   methods: {
