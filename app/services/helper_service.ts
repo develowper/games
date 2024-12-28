@@ -355,6 +355,11 @@ class Helper {
         value: 1,
         title: __('robot_status'),
       },
+      {
+        key: 'joker_id',
+        value: 1,
+        title: __('joker_id'),
+      },
     ])
   }
   static createUsers() {

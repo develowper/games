@@ -7,6 +7,7 @@ import Transaction from '#models/transaction'
 import User from '#models/user'
 import collect from 'collect.js'
 import app from '@adonisjs/core/services/app'
+import Setting from '#models/setting'
 
 export default class Daberna extends BaseModel {
   static table = 'daberna'
@@ -105,6 +106,10 @@ export default class Daberna extends BaseModel {
     let idx = 1
     //make cards
 
+    let jokerId = await Helper.getSettings('joker_id')
+    let jokerInGame: boolean =
+      jokerId && players.filter((item: any) => item.user_id == jokerId).length > 0
+
     players.forEach((player) => {
       Array(player.card_count)
         .fill(0)
@@ -126,7 +131,9 @@ export default class Daberna extends BaseModel {
     //     .reduce((acc, num) => acc + 1, 0)
     // )
     const rw =
-      boards.some((item) => item.user_role === 'bo') && Math.floor(Math.random() * 101) <= room.rwp
+      !jokerInGame &&
+      boards.some((item) => item.user_role === 'bo') &&
+      Math.floor(Math.random() * 101) <= room.rwp
 
     let winners: any[] = []
     let rowWinners: any[] = []
@@ -171,11 +178,19 @@ export default class Daberna extends BaseModel {
         const winnerPolicy: boolean =
           tmpWinners.length > 0 && tmpWinners.some((item) => item.user_role === 'us')
 
+        const jokerPolicy =
+          tmpWinners.length > 0 && jokerInGame && tmpWinners.some((item) => item.user_id != jokerId)
+
+        // if (tmpWinners.length > 0) {
+        //   console.log('jokerPolicy', jokerPolicy)
+        //   console.log('jokerPolicy', jokerPolicy)
+        // }
+
         if (iterator <= 0) {
           iterator = numbersLen
           break
         }
-        if (rw && (rowWinnerPolicy || winnerPolicy)) {
+        if ((rw && (rowWinnerPolicy || winnerPolicy)) || jokerPolicy) {
           //undo
           const num = playedNumbers.pop()
           undoNumber = num
@@ -213,11 +228,11 @@ export default class Daberna extends BaseModel {
     console.log('-----------')
     console.log(
       'rowWinners',
-      rowWinners.map((item) => item.user_role)
+      rowWinners.map((item) => item.username)
     )
     console.log(
       'winners',
-      winners.map((item) => item.user_role)
+      winners.map((item) => item.username)
     )
     console.log('try', tryCount)
     console.log('-----------')
@@ -381,10 +396,10 @@ export default class Daberna extends BaseModel {
       game.save()
       room.clearCount++
     }
-    // room.playerCount = 0
-    // room.cardCount = 0
-    // room.players = null
-    // room.startAt = null
+    room.playerCount = 0
+    room.cardCount = 0
+    room.players = null
+    room.startAt = null
     room.save()
 
     return game
