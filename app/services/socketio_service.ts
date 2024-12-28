@@ -145,14 +145,20 @@ export default class SocketIo {
         for (let room of await Room.query().where('is_active', true)) {
           // console.log(`players ${room.playerCount}`, `time ${room.secondsRemaining}`)
           // console.log(__('transactions'))
+          console.log(app.getState())
 
           if (await getSettings('robot_is_active')) {
             if (Helper.BOT_MEMBER_PERCENT[room.type] >= Math.random()) await Room.addBot(room)
           }
           if (app.isTerminated || app.isTerminating) {
+            console.log('clearInterval')
             clearInterval(SocketIo.timer)
             break
           }
+
+          console.log('playerCount', room.playerCount)
+          console.log('secondsRemaining', room.secondsRemaining)
+
           if (room.playerCount > 1 && room.secondsRemaining == room.maxSeconds) {
             const game = await Daberna.makeGame(room)
             SocketIo.wsIo?.to(`room-${room.type}`).emit('game-start', game)
