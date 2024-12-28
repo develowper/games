@@ -147,7 +147,6 @@ export default class Daberna extends BaseModel {
       playedNumbers.length = 0
       level = 0
       undoNumber = null
-      console.log('>>>>>>>>>>>>>', iterator)
       numbers = shuffle(range(info.min, info.max))
 
       while (winners.length === 0) {
@@ -157,7 +156,6 @@ export default class Daberna extends BaseModel {
         const playNumber = numbers.pop() as number
         playedNumbers.push(playNumber)
 
-        console.log('play number', playNumber)
         let {
           tmpWinners: tmpWinners,
           tmpRowWinners: tmpRowWinners,
@@ -173,28 +171,14 @@ export default class Daberna extends BaseModel {
         const winnerPolicy: boolean =
           tmpWinners.length > 0 && tmpWinners.some((item) => item.user_role === 'us')
 
-        console.log('rw', rw)
-        console.log('rowWinnerPolicy', rowWinnerPolicy)
-        console.log('winnerPolicy', winnerPolicy)
-        console.log('level', level)
-        console.log(
-          'winners',
-          tmpWinners.map((item) => item.user_role)
-        )
-        console.log(
-          'rowwinners',
-          tmpRowWinners.map((item) => item.user_role)
-        )
         if (iterator <= 0) {
           iterator = numbersLen
-          console.log(`-----------${iterator}---------`)
           break
         }
         if (rw && (rowWinnerPolicy || winnerPolicy)) {
           //undo
           const num = playedNumbers.pop()
           undoNumber = num
-          console.log('********')
           numbers.unshift(num)
           level--
           tmpWinners = []
@@ -275,14 +259,14 @@ export default class Daberna extends BaseModel {
     //commission price is complicated
     //realTotal - realPrize
     const realTotalMoney =
-      Number.parseInt(collect(room.players).where('user_role', 'us').sum('card_count').toString()) *
+      Number.parseInt(collect(players).where('user_role', 'us').sum('card_count').toString()) *
       room.cardPrice
 
     console.log('realTotalMoney', realTotalMoney)
 
     const realPrize =
-      collect(winners).where('role', 'us').count() * winnerPrize +
-      collect(rowWinners).where('role', 'us').count() * rowWinnerPrize
+      collect(winners).where('user_role', 'us').count() * winnerPrize +
+      collect(rowWinners).where('user_role', 'us').count() * rowWinnerPrize
 
     console.log('realPrize', realPrize)
 
@@ -308,7 +292,7 @@ export default class Daberna extends BaseModel {
       playerCount: room.playerCount,
       cardCount: room.cardCount,
     })
-
+    // console.log(boards.map((item) => item.card))
     const af = await AgencyFinancial.find(1)
     af.balance += commissionPrice
     af.save()
@@ -328,8 +312,7 @@ export default class Daberna extends BaseModel {
     for (const w of rowWinners) {
       const user = users.where('id', w.user_id).first()
       if (!user) continue
-      console.log('user.id', user?.id)
-      console.log('user.role', user.role)
+      console.log('rowwin.transaction', rowWinnerPrize)
       const financial = user?.financial ?? (await user.related('financial').create({ balance: 0 }))
       financial.balance += rowWinnerPrize
       financial.save()
@@ -357,6 +340,7 @@ export default class Daberna extends BaseModel {
       const financial = user?.financial ?? (await user.related('financial').create({ balance: 0 }))
       financial.balance += winnerPrize
       financial.save()
+      console.log('win.transaction', winnerPrize)
       user.winCount++
       user.prize += winnerPrize
       user.score += room.winScore
@@ -427,7 +411,6 @@ export default class Daberna extends BaseModel {
         }
       }
     }
-    console.log('undoNumber', undoNumber)
 
     const tmpWinners = boards.filter((board) => this.isEmpty(board.card))
     const tmpRowWinners = boards.filter((board) => this.isEmptyRow(board.card))
