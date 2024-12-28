@@ -134,7 +134,11 @@ export default class Room extends BaseModel {
     return true
   }
 
-  public static async addBot(room: Room, user: User | null, userCardCount: number) {
+  public static async addBot(
+    room: Room,
+    user: User | null = null,
+    userCardCount: number | null = null
+  ) {
     const players = JSON.parse(room.players ?? '[]')
     const beforeIds = collect(players).pluck('user_id').toArray()
 
