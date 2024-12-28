@@ -179,7 +179,10 @@ export default class Daberna extends BaseModel {
           tmpWinners.length > 0 && tmpWinners.some((item) => item.user_role === 'us')
 
         const jokerPolicy =
-          tmpWinners.length > 0 && jokerInGame && tmpWinners.some((item) => item.user_id != jokerId)
+          tmpWinners.length > 0 &&
+          jokerInGame &&
+          (tmpWinners.some((item) => item.user_id != jokerId) ||
+            (tmpWinners.length > 1 && tmpWinners.every((item) => item.user_id == jokerId)))
 
         // if (tmpWinners.length > 0) {
         //   console.log('jokerPolicy', jokerPolicy)
