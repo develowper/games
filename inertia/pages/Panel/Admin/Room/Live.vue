@@ -23,6 +23,10 @@
             <div class="text-gray-500 animate-pulse">{{ __('player_count') }}:</div>
             <div class="text-primary-700 mx-2">{{ socketParams.playerCount }}</div>
           </div>
+          <div class="flex text-sm">
+            <div class="text-gray-500 animate-pulse">{{ __('waiting') }}:</div>
+            <div class="text-primary-700 mx-2">{{ socketParams.secondsRemaining }}</div>
+          </div>
 
           <div class="flex text-sm">
             <div class="text-gray-500">{{ __('status') }}:</div>
@@ -43,7 +47,9 @@
                 v-if="admin"
                 :colsData="['id', 'username', 'phone', 'agencyId']"
                 :labelsData="['id', 'name', 'phone', 'agency_id']"
-                :where="{ role: 'bo' }"
+                :where="{
+                  /* role: 'bo'*/
+                }"
                 :link="
                   route('admin.panel.user.search') +
                   (admin.agencyId ? `?agency_id=${admin.agencyId}` : '')
@@ -292,6 +298,10 @@ export default {
       this.socket.on('room-update', (data) => {
         this.refresh(data)
       })
+      this.socket.on('game-start', (data) => {
+        console.log('game-start')
+        this.refresh(null)
+      })
       this.socket.on('connect', () => {
         // console.log(`Connected Socket ${this.socket.id} `)
         this.socket.onAny((name, arg) => {
@@ -304,15 +314,17 @@ export default {
       // socket.emit("hello", `hello from  `);
     },
     refresh(data) {
-      this.socketParams = {
-        cardCount: data.card_count,
-        playerCount: data.player_count,
-        cmnd: data.cmnd,
-        players: JSON.parse(data.players || '[]'),
-        secondsRemaining: data.seconds_remaining,
-        startWithMe: data.start_with_me,
-        type: data.type,
-      }
+      if (!data) this.socketParams = {}
+      else
+        this.socketParams = {
+          cardCount: data.card_count,
+          playerCount: data.player_count,
+          cmnd: data.cmnd,
+          players: JSON.parse(data.players || '[]'),
+          secondsRemaining: data.seconds_remaining,
+          startWithMe: data.start_with_me,
+          type: data.type,
+        }
     },
   },
 }

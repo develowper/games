@@ -71,10 +71,10 @@ export default class UserController {
     const user = auth.user
     const userId = user?.id
     const page = request.input('page') ?? 1
+    const paginate = request.input('paginate') ?? Helper.PAGINATE
     const search = request.input('search')
     const type = request.input('type')
     const dir = request.input('dir') ?? 'DESC'
-    const payedAt = request.input('payed_at')
     const sort = request.input('order_by') ?? 'created_at'
     const where = request.input('where') ?? null
     let query = User.query()
@@ -91,7 +91,7 @@ export default class UserController {
       query.where(where)
     }
 
-    return response.json(await query.orderBy(sort, dir).paginate(page, Helper.PAGINATE))
+    return response.json(await query.orderBy(sort, dir).paginate(page, paginate))
   }
 
   async update({ request, response, auth, session, inertia }: HttpContext) {

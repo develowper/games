@@ -90,9 +90,9 @@ export default class Daberna extends BaseModel {
       return null
     }
     const info = Helper.DABERNA
-    const numbers: number[] = shuffle(range(info.min, info.max))
-
-    const boards = []
+    let numbers: number[] = shuffle(range(info.min, info.max))
+    const numbersLen = numbers.length
+    let boards: any[] = []
     // for (let i = 0; i < 10000; i++) {
     //   players.push({
     //     user_id: 1,
@@ -101,6 +101,7 @@ export default class Daberna extends BaseModel {
     //     card: Daberna.makeCard(),
     //   })
     // }
+    let tryCount = 0
     let idx = 1
     //make cards
 
@@ -132,49 +133,110 @@ export default class Daberna extends BaseModel {
     const playedNumbers: number[] = []
     let playedBoards: number[] = JSON.parse(JSON.stringify(boards))
     let level = 0
+    let undoNumber = null
+    let iterator = numbersLen
 
-    while (winners.length === 0) {
-      level++
-      const playNumber = numbers.pop()
-      playedNumbers.push(playNumber)
-
-      const {
-        tmpWinners: tmpWinners,
-        tmpRowWinners: tmpRowWinners,
-        boards: tmpBoards,
-      } = Daberna.play(playedBoards, playNumber)
-      // return { playNumber, playedBoards, tmpBoards }
-      //if rw and winners are us =>  undo played number
-
-      const rowWinnerPolicy: boolean =
-        rowWinners.length === 0 &&
-        tmpRowWinners.length > 0 &&
-        tmpRowWinners.every((item) => item.user_role === 'us')
-      const winnerPolicy: boolean =
-        tmpWinners.length > 0 && tmpWinners.every((item) => item.user_role === 'us')
-
-      console.log('rw', rw)
-      console.log('rowWinnerPolicy', rowWinnerPolicy)
-      console.log('winnerPolicy', winnerPolicy)
-      if (rw && (rowWinnerPolicy || winnerPolicy)) {
-        //undo
-        numbers.push(playedNumbers.pop())
-
-        continue
+    while (iterator > 0) {
+      //reset game
+      for (const item of boards) {
+        item.card = Daberna.makeCard()
       }
-      if (rowWinners.length === 0 && tmpRowWinners.length > 0) {
-        rowWinners = JSON.parse(JSON.stringify(tmpRowWinners))
-        rowWinners.forEach((item) => (item.level = level))
+      playedBoards = JSON.parse(JSON.stringify(boards))
+      winners.length = 0
+      rowWinners.length = 0
+      playedNumbers.length = 0
+      level = 0
+      undoNumber = null
+      console.log('>>>>>>>>>>>>>', iterator)
+      numbers = shuffle(range(info.min, info.max))
+
+      while (winners.length === 0) {
+        level++
+        iterator--
+        tryCount++
+        const playNumber = numbers.pop() as number
+        playedNumbers.push(playNumber)
+
+        console.log('play number', playNumber)
+        let {
+          tmpWinners: tmpWinners,
+          tmpRowWinners: tmpRowWinners,
+          boards: tmpBoards,
+        } = Daberna.play(playedBoards, playNumber, undoNumber)
+        // return { playNumber, playedBoards, tmpBoards }
+        //if rw and winners are us =>  undo played number
+
+        const rowWinnerPolicy: boolean =
+          rowWinners.length === 0 &&
+          tmpRowWinners.length > 0 &&
+          tmpRowWinners.some((item) => item.user_role === 'us')
+        const winnerPolicy: boolean =
+          tmpWinners.length > 0 && tmpWinners.some((item) => item.user_role === 'us')
+
+        console.log('rw', rw)
+        console.log('rowWinnerPolicy', rowWinnerPolicy)
+        console.log('winnerPolicy', winnerPolicy)
+        console.log('level', level)
+        console.log(
+          'winners',
+          tmpWinners.map((item) => item.user_role)
+        )
+        console.log(
+          'rowwinners',
+          tmpRowWinners.map((item) => item.user_role)
+        )
+        if (iterator <= 0) {
+          iterator = numbersLen
+          console.log(`-----------${iterator}---------`)
+          break
+        }
+        if (rw && (rowWinnerPolicy || winnerPolicy)) {
+          //undo
+          const num = playedNumbers.pop()
+          undoNumber = num
+          console.log('********')
+          numbers.unshift(num)
+          level--
+          tmpWinners = []
+          tmpRowWinners = []
+
+          continue
+        }
+        if (rowWinners.length === 0 && tmpRowWinners.length > 0) {
+          rowWinners = JSON.parse(JSON.stringify(tmpRowWinners))
+          rowWinners.forEach((item) => (item.level = level))
+        }
+        if (tmpWinners.length > 0) {
+          winners = JSON.parse(JSON.stringify(tmpWinners))
+          winners.forEach((item) => (item.level = level))
+          iterator = 0
+        }
+
+        for (const board of tmpBoards) {
+          for (let j = 0; j < board.card.length; j++) {
+            for (let k = 0; k < board.card[j].length; k++) {
+              if (-1 === board.card[j][k]) {
+                board.card[j][k] = 0
+              }
+            }
+          }
+        }
+        playedBoards = tmpBoards
       }
-      if (tmpWinners.length > 0) {
-        winners = JSON.parse(JSON.stringify(tmpWinners))
-        winners.forEach((item) => (item.level = level))
-      }
-      playedBoards = tmpBoards
     }
-
+    // console.log('end board', playedBoards)
     //game ended
-
+    console.log('-----------')
+    console.log(
+      'rowWinners',
+      rowWinners.map((item) => item.user_role)
+    )
+    console.log(
+      'winners',
+      winners.map((item) => item.user_role)
+    )
+    console.log('try', tryCount)
+    console.log('-----------')
     //***
     const users = collect(
       await User.query()
@@ -335,27 +397,37 @@ export default class Daberna extends BaseModel {
       game.save()
       room.clearCount++
     }
-    room.playerCount = 0
-    room.cardCount = 0
-    room.players = null
-    room.startAt = null
+    // room.playerCount = 0
+    // room.cardCount = 0
+    // room.players = null
+    // room.startAt = null
     room.save()
 
     return game
   }
 
-  public static play(mainBoards: any[], number: number) {
-    let boards = mainBoards
-
+  public static play(gameBoard: any[], number: number, undoNumber: number | null = null) {
+    const boards = [...gameBoard]
     for (const board of boards) {
       for (let j = 0; j < board.card.length; j++) {
         for (let k = 0; k < board.card[j].length; k++) {
+          if (-1 === board.card[j][k]) {
+            if (undoNumber == null) {
+              //before number accepted
+              board.card[j][k] = 0
+            } else {
+              //undo number
+              board.card[j][k] = undoNumber
+            }
+          }
+
           if (number === board.card[j][k]) {
-            board.card[j][k] = 0
+            board.card[j][k] = -1
           }
         }
       }
     }
+    console.log('undoNumber', undoNumber)
 
     const tmpWinners = boards.filter((board) => this.isEmpty(board.card))
     const tmpRowWinners = boards.filter((board) => this.isEmptyRow(board.card))
@@ -363,10 +435,10 @@ export default class Daberna extends BaseModel {
     return { tmpWinners, tmpRowWinners, boards }
   }
   static isEmptyRow(card: number[][]): boolean {
-    return card.some((rows) => rows.every((col) => col === 0))
+    return card.some((rows) => rows.every((col) => col === 0 || col === -1))
   }
   static isEmpty(card: number[][]): boolean {
-    return card.every((rows) => rows.every((col) => col === 0))
+    return card.every((rows) => rows.every((col) => col === 0 || col === -1))
   }
 
   public static async startRooms(rooms: Room[]) {

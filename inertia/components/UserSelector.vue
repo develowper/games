@@ -95,7 +95,7 @@
                     >
                       <div v-for="num in $page.props.pageItems" class="">
                         <div
-                          @click.stop="(params.paginate = num), getData()"
+                          @click.stop="((params.paginate = num), (params.page = 1)), getData()"
                           role="menuitem"
                           class="cursor-pointer select-none block p-2 px-6 text-sm transition-colors hover:bg-gray-100 dark:text-light dark:hover:bg-primary"
                         >
