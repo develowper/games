@@ -153,6 +153,9 @@ export default class Daberna extends BaseModel {
       const winnerPolicy: boolean =
         tmpWinners.length > 0 && tmpWinners.every((item) => item.user_role === 'us')
 
+      console.log('rw', rw)
+      console.log('rowWinnerPolicy', rowWinnerPolicy)
+      console.log('winnerPolicy', winnerPolicy)
       if (rw && (rowWinnerPolicy || winnerPolicy)) {
         //undo
         numbers.push(playedNumbers.pop())
