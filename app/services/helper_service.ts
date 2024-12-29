@@ -58,7 +58,7 @@ class Helper {
     } as { [key: string]: string },
   }
   public static SUPPORT = {
-    telegram: 'https://t.me/support_paris',
+    telegram: 'https://t.me/paris_admin1',
   }
 
   public static SOCKET_LINK =
