@@ -74,6 +74,7 @@ class Helper {
   public static PAGINATE = 24
   public static MIN_CHARGE = 50000
   public static MIN_WITHDRAW = 100000
+  public static CALL_SPEED = 1000
   public static CLEAR_TRANSACTION_DAY = 0
   public static CLEAR_INACTIVE_USERS_DAY = 0
   public static CARDTOCARD_MINUTE_LIMIT = 5
