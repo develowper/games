@@ -13,6 +13,7 @@ const AuthController = () => import('#controllers/auth_controller')
 const PanelController = () => import('#controllers/panel_controller')
 const SettingController = () => import('#controllers/admin/setting_controller')
 const SocketController = () => import('#controllers/admin/socket_controller')
+const LogController = () => import('#controllers/admin/log_controller')
 
 export default () => {
   router
@@ -73,6 +74,9 @@ export default () => {
           router.get('setting/index', [SettingController, 'index']).as('setting.index')
           router.get('setting/search', [SettingController, 'search']).as('setting.search')
           router.patch('setting/update', [SettingController, 'update']).as('setting.update')
+
+          router.get('log/search', [LogController, 'search']).as('log.search')
+          router.get('log/index', [LogController, 'index']).as('log.index')
         })
         .prefix('panel')
         .as('panel')

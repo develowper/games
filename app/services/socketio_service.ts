@@ -154,6 +154,9 @@ export default class SocketIo {
             break
           }
           //
+
+          console.log('**************')
+          console.log('room', room.type)
           console.log('playerCount', room.playerCount)
           console.log('secondsRemaining', room.secondsRemaining)
 
@@ -163,7 +166,7 @@ export default class SocketIo {
           }
         }
         // clearInterval(SocketIo.timer)
-      }, 6000)
+      }, 5000)
     })
   }
 

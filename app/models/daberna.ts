@@ -8,6 +8,7 @@ import User from '#models/user'
 import collect from 'collect.js'
 import app from '@adonisjs/core/services/app'
 import Setting from '#models/setting'
+import Log from '#models/log'
 
 export default class Daberna extends BaseModel {
   static table = 'daberna'
@@ -32,12 +33,12 @@ export default class Daberna extends BaseModel {
     serialize: (value: string) => JSON.parse(value) ?? [],
     // consume: (value: any) => JSON.stringify(value)
   })
-  declare winners: number
+  declare winners: any
   @column({
     // serializeAs: 'row_winners',
     serialize: (value: string) => JSON.parse(value) ?? [],
   })
-  declare rowWinners: number
+  declare rowWinners: any
 
   @column()
   declare cardCount: number
@@ -276,9 +277,9 @@ export default class Daberna extends BaseModel {
     }
     //commission price is complicated
     //realTotal - realPrize
-    const realTotalMoney =
-      Number.parseInt(collect(players).where('user_role', 'us').sum('card_count').toString()) *
-      room.cardPrice
+    const realCardCount =
+      Number.parseInt(collect(players).where('user_role', 'us').sum('card_count').toString()) ?? 0
+    const realTotalMoney = realCardCount * room.cardPrice
 
     console.log('realTotalMoney', realTotalMoney)
 
@@ -288,7 +289,11 @@ export default class Daberna extends BaseModel {
 
     console.log('realPrize', realPrize)
 
-    const commissionPrice = Math.floor(realTotalMoney - realPrize)
+    const commissionPrice = Math.floor(realTotalMoney - realPrize) /* +
+      (jokerInGame
+        ? Number.parseInt(collect(winners).where('user_id', jokerId).sum('prize').toString())
+        : 0)*/
+
     console.log('commissionPrice', commissionPrice)
 
     const game = new Daberna().fill({
@@ -310,6 +315,12 @@ export default class Daberna extends BaseModel {
       playerCount: room.playerCount,
       cardCount: room.cardCount,
     })
+    //all not bot
+
+    if (realTotalMoney > 0) {
+      game.save()
+      room.clearCount++
+    }
     // console.log(boards.map((item) => item.card))
     const af = await AgencyFinancial.find(1)
     af.balance += commissionPrice
@@ -393,12 +404,18 @@ export default class Daberna extends BaseModel {
       )
     }
 
-    //all not bot
+    //*****add log
 
-    if (realTotalMoney > 0) {
-      game.save()
-      room.clearCount++
-    }
+    await Log.add(
+      room.type,
+      realCardCount,
+      game.id ? 1 : 0,
+      commissionPrice,
+      DateTime.now().startOf('day').toJSDate()
+    )
+
+    //***end **add log
+
     room.playerCount = 0
     room.cardCount = 0
     room.players = null
