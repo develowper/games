@@ -24,7 +24,7 @@ export const phoneValidatorObject = vine
     const match = await db
       .from('users')
       .select('id')
-      .whereNot('id', fields.meta.id)
+      .whereNot('id', fields.meta?.id ?? 0)
       .where('phone', value)
       .first()
     return !match
