@@ -361,6 +361,11 @@ class Helper {
         value: 1,
         title: __('joker_id'),
       },
+      {
+        key: 'clear_period_day',
+        value: 60,
+        title: __('clear_period_title'),
+      },
     ])
   }
   static createUsers() {

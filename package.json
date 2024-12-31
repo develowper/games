@@ -82,7 +82,7 @@
     "@izzyjs/route": "^1.2.0",
     "@vinejs/vine": "^2.1.0",
     "@vue/server-renderer": "^3.5.13",
-    "adonisjs-scheduler": "^1.0.5",
+    "adonisjs-scheduler": "^1.0.8",
     "chart.js": "^4.4.7",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
