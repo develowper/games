@@ -31,7 +31,7 @@ export default class TransactionController {
     const cmnd = request.input('cmnd')
     const admin = auth.user as Admin
     const data = await Transaction.find(id)
-
+    const now = DateTime.now()
     if (!data)
       return response.badRequest({
         status: 'danger',
@@ -53,10 +53,11 @@ export default class TransactionController {
           })
         if (data.type == 'cardtocard') {
           uf.balance += amount
+          uf.lastCharge = now
         } else if (data.type == 'withdraw') {
           uf.balance -= amount
         }
-        data.payedAt = DateTime.now()
+        data.payedAt = now
         await data.save()
         await uf.save()
         await User.query().where('user_id', uf.userId).update({ lastTransaction: data.payedAt })

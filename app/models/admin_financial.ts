@@ -15,4 +15,7 @@ export default class AdminFinancial extends BaseModel {
 
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   declare updatedAt: DateTime
+
+  @column.dateTime()
+  declare lastCharge: DateTime | null
 }

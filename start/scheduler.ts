@@ -1,5 +1,5 @@
 import scheduler from 'adonisjs-scheduler/services/main'
-import Helper from '../app/services/helper_service.js'
+import { getSettings } from '#services/helper_service'
 import Room from '../app/models/room.js'
 import { DateTime } from 'luxon'
 import RoomController from '../app/controllers/api/room_controller.js'
@@ -8,6 +8,7 @@ import app from '@adonisjs/core/services/app'
 import emitter from '@adonisjs/core/services/emitter'
 // import MySocket from '@ioc:MySocket'
 import mserver from '@adonisjs/core/services/server'
+import Log from '#models/log'
 // scheduler
 //   .call(() => {
 //     console.log('Pruge DB!')
@@ -21,6 +22,16 @@ import mserver from '@adonisjs/core/services/server'
 
 scheduler
   .call(async () => {
+    const clearPeriodDay = (await getSettings('')) ?? 0
 
+    const now = DateTime.now()
+    //clear
+    if (clearPeriodDay > 0) {
+      Log.query()
+        .where('created_at', '<', now.minus({ days: clearPeriodDay }).toJSDate())
+        .delete()
+
+    }
   })
-   .dailyAt('13:00')
+  .everyFiveSeconds()
+  .cron('0 4 * * *') // Runs daily at 4:00 AM

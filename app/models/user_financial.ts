@@ -25,4 +25,7 @@ export default class UserFinancial extends BaseModel {
 
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   declare updatedAt: DateTime
+
+  @column.dateTime()
+  declare lastCharge: DateTime | null
 }

@@ -125,13 +125,9 @@ export default class UserController {
 
         break
       case 'remove':
-        Transaction.query()
-          .where({ from_id: data.id, from_type: 'user' })
-          .orWhere({ to_id: data.id, to_type: 'user' })
-          .delete()
+        await User.deleteAllInfo([data])
+
         Telegram.log(null, 'user_removed', data)
-        data.financial.delete()
-        data.delete()
 
         return response.send({
           status: 'success',

@@ -367,6 +367,7 @@ export default class TransactionsController {
           )
           financial.merge({
             balance: (financial.balance ?? 0) + transaction.amount,
+            lastCharge: now,
           })
           await financial.save()
         }
@@ -374,7 +375,7 @@ export default class TransactionsController {
           payedAt: now,
         })
         await transaction.save()
-        user.lastTransaction = now
+
         await user.save()
       }
 

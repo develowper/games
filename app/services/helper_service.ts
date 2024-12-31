@@ -426,7 +426,7 @@ class Helper {
 
     //fake user
 
-    User.fake(50)
+    // User.fake(50)
   }
   static createAdmins() {
     Admin.createMany([

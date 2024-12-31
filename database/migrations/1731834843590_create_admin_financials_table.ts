@@ -18,7 +18,9 @@ export default class extends BaseSchema {
       table.string('card', 20).nullable().defaultTo(null)
       table.string('sheba', 40).nullable().defaultTo(null)
       table.timestamps()
+      table.datetime('last_charge').nullable()
     })
+
     createAdmins()
   }
 

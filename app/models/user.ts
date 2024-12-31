@@ -10,6 +10,8 @@ import UserFinancial from './user_financial.js'
 import { DbRememberMeTokensProvider } from '@adonisjs/auth/session'
 import Helper, { range, replace, startsWith } from '#services/helper_service'
 import { fakerFA as faker } from '@faker-js/faker'
+import Transaction from '#models/transaction'
+import Telegram from '#services/telegram_service'
 
 const AuthFinder = withAuthFinder(() => hash.use('scrypt'), {
   uids: ['username'],
@@ -107,8 +109,6 @@ export default class User extends compose(BaseModel, AuthFinder) {
   declare updatedAt: DateTime | null
 
   @column.dateTime()
-  declare lastCharge: DateTime | null
-  @column.dateTime()
   declare lastWin: DateTime | null
 
   static accessTokens = DbAccessTokensProvider.forModel(User, { table: 'remember_me_user_tokens' })
@@ -177,5 +177,15 @@ export default class User extends compose(BaseModel, AuthFinder) {
     users.forEach((u: User) => {
       u.related('financial').create({ balance: 0 })
     })
+  }
+
+  static async deleteAllInfo(user: User) {
+    await Transaction.query()
+      .where({ from_id: user.id, from_type: 'user' })
+      .orWhere({ to_id: user.id, to_type: 'user' })
+      .delete()
+    if (user.financial) user.financial?.delete()
+    else await UserFinancial.query().where('user_id', user.id).delete()
+    await user.delete()
   }
 }
