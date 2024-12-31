@@ -1,5 +1,5 @@
 import scheduler from 'adonisjs-scheduler/services/main'
-import { asPrice, getSettings } from '#services/helper_service'
+import Helper, { asPrice, getSettings } from '#services/helper_service'
 import { DateTime } from 'luxon'
 // scheduler.command("inspire").everyFiveSeconds();
 import app from '@adonisjs/core/services/app'
@@ -9,11 +9,11 @@ import Log from '#models/log'
 import UserFinancial from '#models/user_financial'
 import User from '#models/user'
 import Telegram from '#services/telegram_service'
-scheduler
-  .call(() => {
-    console.log('Pruge DB!')
-  })
-  .everyFiveSeconds()
+// scheduler
+//   .call(() => {
+//     console.log('Pruge DB!')
+//   })
+//   .everyFiveSeconds()
 
 // app.ready(async () => {
 //   const mySocket = await app.container.make('MySocket')
@@ -81,10 +81,9 @@ scheduler
       tmp += '\u200F➖➖➖➖➖➖➖➖➖➖➖\n'
       return tmp
     })
-    console.log(msg)
-    await Telegram.sendMessage(`${Helper.TELEGRAM_LOGS[0]}`, msg)
+    Telegram.sendMessage(`${Helper.TELEGRAM_LOGS[0]}`, msg)
+    Telegram.sendMessage(`${Helper.TELEGRAM_LOGS[1]}`, msg)
   })
-
-  .everyMinute()
-// .cron('0 4 * * *') // Runs daily at 4:00 AM
+  // .everyMinute()
+  .cron('0 4 * * *') // Runs daily at 4:00 AM
 // })
