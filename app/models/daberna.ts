@@ -229,17 +229,17 @@ export default class Daberna extends BaseModel {
     }
     // console.log('end board', playedBoards)
     //game ended
-    console.log('-----------')
-    console.log(
-      'rowWinners',
-      rowWinners.map((item) => item.username)
-    )
-    console.log(
-      'winners',
-      winners.map((item) => item.username)
-    )
-    console.log('try', tryCount)
-    console.log('-----------')
+    // console.log('-----------')
+    // console.log(
+    //   'rowWinners',
+    //   rowWinners.map((item) => item.username)
+    // )
+    // console.log(
+    //   'winners',
+    //   winners.map((item) => item.username)
+    // )
+    // console.log('try', tryCount)
+    // console.log('-----------')
     //***
     const users = collect(
       await User.query()
@@ -281,20 +281,20 @@ export default class Daberna extends BaseModel {
       Number.parseInt(collect(players).where('user_role', 'us').sum('card_count').toString()) ?? 0
     const realTotalMoney = realCardCount * room.cardPrice
 
-    console.log('realTotalMoney', realTotalMoney)
+    // console.log('realTotalMoney', realTotalMoney)
 
     const realPrize =
       collect(winners).where('user_role', 'us').count() * winnerPrize +
       collect(rowWinners).where('user_role', 'us').count() * rowWinnerPrize
 
-    console.log('realPrize', realPrize)
+    // console.log('realPrize', realPrize)
 
     const commissionPrice = Math.floor(realTotalMoney - realPrize) /* +
       (jokerInGame
         ? Number.parseInt(collect(winners).where('user_id', jokerId).sum('prize').toString())
         : 0)*/
 
-    console.log('commissionPrice', commissionPrice)
+    // console.log('commissionPrice', commissionPrice)
 
     const game = new Daberna().fill({
       type: room.type,
@@ -326,7 +326,7 @@ export default class Daberna extends BaseModel {
     af.balance += commissionPrice
     af.save()
     if (commissionPrice != 0) {
-      console.log('commissionTransaction', commissionPrice)
+      // console.log('commissionTransaction', commissionPrice)
       await Transaction.add(
         'commission',
         'daberna',
@@ -341,7 +341,7 @@ export default class Daberna extends BaseModel {
     for (const w of rowWinners) {
       const user = users.where('id', w.user_id).first()
       if (!user) continue
-      console.log('rowwin.transaction', rowWinnerPrize)
+      // console.log('rowwin.transaction', rowWinnerPrize)
       const financial = user?.financial ?? (await user.related('financial').create({ balance: 0 }))
       financial.balance += rowWinnerPrize
       financial.save()
@@ -369,7 +369,7 @@ export default class Daberna extends BaseModel {
       const financial = user?.financial ?? (await user.related('financial').create({ balance: 0 }))
       financial.balance += winnerPrize
       financial.save()
-      console.log('win.transaction', winnerPrize)
+      // console.log('win.transaction', winnerPrize)
       user.winCount++
       user.prize += winnerPrize
       user.score += room.winScore
