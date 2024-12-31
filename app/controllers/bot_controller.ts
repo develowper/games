@@ -291,8 +291,10 @@ export default class BotController {
           const inviter = await User.findBy('telegram_id', ref?.inviterId)
           if (inviter) {
             this.user.inviterId = inviter.id
-            this.user.agencyId = inviter?.agencyId
-            this.user.agencyLevel = inviter?.agencyLevel
+            this.user.agencyId = inviter.agencyId
+            this.user.agencyLevel = inviter.agencyLevel
+            inviter.refCount++
+            inviter.save()
           }
         }
         this.user.related('financial').create({ balance: 0 })

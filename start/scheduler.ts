@@ -52,7 +52,7 @@ scheduler
       const ufs = await UserFinancial.query()
         .whereNotIn(
           'user_id',
-          collect(await User.findBy('role', 'bo'))
+          collect((await User.findBy('role', 'bo')) ?? [])
             .pluck('id')
             .toArray()
         )

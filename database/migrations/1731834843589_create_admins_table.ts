@@ -26,8 +26,8 @@ export default class extends BaseSchema {
         .inTable('agencies')
         .onDelete('CASCADE')
       table.tinyint('agency_level').unsigned()
-      table.timestamps()
       table.text('storage').nullable()
+      table.timestamps()
     })
   }
 

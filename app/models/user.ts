@@ -47,6 +47,9 @@ export default class User extends compose(BaseModel, AuthFinder) {
   declare agencyLevel: number
 
   @column()
+  declare refCount: number
+
+  @column()
   declare access: object
 
   @column()
