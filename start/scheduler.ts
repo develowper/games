@@ -21,7 +21,6 @@ import Telegram from '#services/telegram_service'
 
 scheduler
   .call(async () => {
-    console.log('hi scheduler')
     const clearPeriodDay = (await getSettings('clear_period_day')) ?? 0
 
     const now = DateTime.now()
