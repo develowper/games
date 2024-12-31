@@ -282,7 +282,7 @@ export default class BotController {
         const ref = await Referral.findBy('invited_id', fromId)
         this.user.telegramId = fromId
 
-        this.user.username = `U${fromId}` /* ?? username ?? firstName*/
+        this.user.username = `U${username ?? firstName}` /* ?? username ?? firstName*/
         this.user.password = await hash.make(username ?? firstName)
         this.user.agencyId = 1
         this.user.agencyLevel = 0
