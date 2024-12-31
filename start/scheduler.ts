@@ -89,7 +89,7 @@ scheduler
         return tmp
       })
       .join('\n')
-    console.log(msg)
+
     Telegram.sendMessage(`${Helper.TELEGRAM_LOGS[0]}`, msg)
     Telegram.sendMessage(`${Helper.TELEGRAM_LOGS[1]}`, msg)
   })
