@@ -84,7 +84,7 @@ scheduler
       tmp += '\u200F➖➖➖➖➖➖➖➖➖➖➖\n'
       return tmp
     })
-
+    console.log(msg)
     await Telegram.sendMessage(`${Helper.TELEGRAM_LOGS[0]}`, msg)
   })
   .everyMinute()
