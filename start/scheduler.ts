@@ -87,5 +87,5 @@ scheduler
     console.log(msg)
     await Telegram.sendMessage(`${Helper.TELEGRAM_LOGS[0]}`, msg)
   })
-  .everyMinute()
+  .everyFiveSeconds()
 // .cron('0 4 * * *') // Runs daily at 4:00 AM
