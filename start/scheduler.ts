@@ -1,22 +1,19 @@
 import scheduler from 'adonisjs-scheduler/services/main'
-import Helper, { asPrice, getSettings } from '#services/helper_service'
-import Room from '../app/models/room.js'
+import { asPrice, getSettings } from '#services/helper_service'
 import { DateTime } from 'luxon'
-import RoomController from '../app/controllers/api/room_controller.js'
 // scheduler.command("inspire").everyFiveSeconds();
 import app from '@adonisjs/core/services/app'
 import emitter from '@adonisjs/core/services/emitter'
 // import MySocket from '@ioc:MySocket'
-import mserver from '@adonisjs/core/services/server'
 import Log from '#models/log'
 import UserFinancial from '#models/user_financial'
 import User from '#models/user'
 import Telegram from '#services/telegram_service'
-// scheduler
-//   .call(() => {
-//     console.log('Pruge DB!')
-//   })
-//   .weekly()
+scheduler
+  .call(() => {
+    console.log('Pruge DB!')
+  })
+  .everyFiveSeconds()
 
 // app.ready(async () => {
 //   const mySocket = await app.container.make('MySocket')
