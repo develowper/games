@@ -179,12 +179,19 @@ export default class User extends compose(BaseModel, AuthFinder) {
     })
   }
 
-  static async deleteAllInfo(user: User) {
+  static async deleteAllInfo(data: User | UserFinancial) {
+    let user
+    if (data instanceof UserFinancial) {
+      user = await User.find((data as UserFinancial).userId)
+    } else user = data
+
+    if (!user) return
     await Transaction.query()
       .where({ from_id: user.id, from_type: 'user' })
       .orWhere({ to_id: user.id, to_type: 'user' })
       .delete()
     if (user.financial) user.financial?.delete()
+    else if (data instanceof UserFinancial) data?.delete()
     else await UserFinancial.query().where('user_id', user.id).delete()
     await user.delete()
   }
