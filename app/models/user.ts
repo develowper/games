@@ -73,7 +73,7 @@ export default class User extends compose(BaseModel, AuthFinder) {
   @column()
   declare score: number
   @column()
-  declare refId: number
+  declare refId: any
   @column({ serialize: (value) => Boolean(value) })
   declare isActive: boolean
   @column()
