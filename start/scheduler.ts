@@ -9,6 +9,7 @@ import Log from '#models/log'
 import UserFinancial from '#models/user_financial'
 import User from '#models/user'
 import Telegram from '#services/telegram_service'
+import collect from 'collect.js'
 // scheduler
 //   .call(() => {
 //     console.log('Pruge DB!')
@@ -49,6 +50,12 @@ scheduler
       logs?.forEach((item: Log) => item.delete())
 
       const ufs = await UserFinancial.query()
+        .whereNotIn(
+          'user_id',
+          collect(await User.findBy('role', 'bo'))
+            .pluck('id')
+            .toArray()
+        )
         .where('balance', '<', 5000)
         .where('last_charge', '<', now.minus({ days: clearPeriodDay }).toJSDate())
       ufsLen = ufs.length
@@ -71,15 +78,18 @@ scheduler
     msg += '👤 کاربران جدید: ' + (uc[0]?.$extras.total ?? 0) + '\n'
     msg += '         〰️〰️کارت ها〰️〰️' + '\n'
 
-    msg += logsToday.map((item: Log) => {
-      let tmp = ''
-      tmp += ' 🎴نوع: ' + item.type + '\n'
-      tmp += ' 🔵بازی: ' + item.gameCount + '\n'
-      tmp += ' 🟣کارت: ' + item.cardCount + '\n'
-      tmp += ' 🟢سود: ' + asPrice(item.profit ?? 0) + '\n'
-      tmp += '\u200F➖➖➖➖➖➖➖➖➖➖➖\n'
-      return tmp
-    })
+    msg += logsToday
+      .map((item: Log) => {
+        let tmp = ''
+        tmp += ' 🎴نوع: ' + item.type + '\n'
+        tmp += ' 🔵بازی: ' + item.gameCount + '\n'
+        tmp += ' 🟣کارت: ' + item.cardCount + '\n'
+        tmp += ' 🟢سود: ' + asPrice(item.profit ?? 0) + '\n'
+        tmp += '\u200F➖➖➖➖➖➖➖➖➖➖➖'
+        return tmp
+      })
+      .join('\n')
+    console.log(msg)
     Telegram.sendMessage(`${Helper.TELEGRAM_LOGS[0]}`, msg)
     Telegram.sendMessage(`${Helper.TELEGRAM_LOGS[1]}`, msg)
   })
