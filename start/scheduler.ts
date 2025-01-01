@@ -93,6 +93,8 @@ scheduler
     await Telegram.sendMessage(`${Helper.TELEGRAM_LOGS[0]}`, msg)
   })
   .timezone('ASIA/TEHRAN')
-  .everyMinute()
-// .cron('0 0 8-10 * * *') // Runs daily at 4:00 AM
+  // .everyMinute()
+  // .cron('0 0 4 * * *') // Runs daily at 4:00 AM
+  .cron('10 8 * * *') // Runs daily at 4:00 AM
+
 // })
