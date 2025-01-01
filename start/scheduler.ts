@@ -95,6 +95,6 @@ scheduler
   // .timezone('ASIA/TEHRAN')
   // .everyMinute()
   // .cron('0 0 4 * * *') // Runs daily at 4:00 AM
-  .cron('42 4 * * *') // Runs daily at 4:00 AM
+  .cron('44 4 * * *') // Runs daily at 4:00 AM
 
 // })
