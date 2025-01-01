@@ -92,6 +92,7 @@ scheduler
 
     console.log(await Telegram.sendMessage(`${Helper.TELEGRAM_LOGS[0]}`, msg))
   })
-  // .everyMinute()
-  .cron('0 4 * * *') // Runs daily at 4:00 AM
+  .everyMinute()
+  // .cron('0 4 * * *') // Runs daily at 4:00 AM
+  .timezone('ASIA/TEHRAN')
 // })
