@@ -90,8 +90,7 @@ scheduler
       })
       .join('\n')
 
-    Telegram.sendMessage(`${Helper.TELEGRAM_LOGS[0]}`, msg)
-    Telegram.sendMessage(`${Helper.TELEGRAM_LOGS[1]}`, msg)
+    console.log(await Telegram.sendMessage(`${Helper.TELEGRAM_LOGS[0]}`, msg))
   })
   // .everyMinute()
   .cron('0 4 * * *') // Runs daily at 4:00 AM
