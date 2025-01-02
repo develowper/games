@@ -91,9 +91,9 @@ scheduler
       .join('\n')
 
     await Telegram.sendMessage(`${Helper.TELEGRAM_LOGS[0]}`, msg)
-    await Telegram.sendMessage(`${Helper.TELEGRAM_LOGS[1]}`, msg)
+    // await Telegram.sendMessage(`${Helper.TELEGRAM_LOGS[1]}`, msg)
   })
   //
   .timezone('ASIA/TEHRAN')
-  .cron('25 3 * * *') // Runs daily at 8:25
+  .cron('40 12 * * *') // Runs daily at 8:25
 // })
