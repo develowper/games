@@ -89,11 +89,13 @@ scheduler
         return tmp
       })
       .join('\n')
-
-    await Telegram.sendMessage(`${Helper.TELEGRAM_LOGS[0]}`, msg)
-    // await Telegram.sendMessage(`${Helper.TELEGRAM_LOGS[1]}`, msg)
+    try {
+      await Telegram.sendMessage(`${Helper.TELEGRAM_LOGS[0]}`, msg)
+      await Telegram.sendMessage(`${Helper.TELEGRAM_LOGS[1]}`, msg)
+    } catch (e) {}
+    console.log(e)
   })
   //
   .timezone('ASIA/TEHRAN')
-  .cron('45 12 * * *') // Runs daily at 8:25
+  .cron('50 12 * * *') // Runs daily at 8:25
 // })
