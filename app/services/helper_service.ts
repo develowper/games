@@ -577,6 +577,9 @@ class Helper {
     }
     return tmp
   }
+  static async sleep(time: number) {
+    return new Promise((resolve) => setTimeout(resolve, time))
+  }
 }
 
 // export default Helper
@@ -604,5 +607,6 @@ export const {
   replace,
   startsWith,
   myMap,
+  sleep,
 } = Helper
 export default Helper

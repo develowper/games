@@ -1,5 +1,5 @@
 import scheduler from 'adonisjs-scheduler/services/main'
-import Helper, { asPrice, getSettings } from '#services/helper_service'
+import Helper, { asPrice, getSettings, sleep } from '#services/helper_service'
 import { DateTime } from 'luxon'
 // scheduler.command("inspire").everyFiveSeconds();
 import app from '@adonisjs/core/services/app'
@@ -93,6 +93,7 @@ scheduler
       .join('\n')
     try {
       await Telegram.sendMessage(`${Helper.TELEGRAM_LOGS[0]}`, msg)
+      await sleep(1000)
       await Telegram.sendMessage(`${Helper.TELEGRAM_LOGS[1]}`, msg)
     } catch (e: any) {
       console.log(e)
