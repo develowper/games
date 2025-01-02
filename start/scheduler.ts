@@ -91,9 +91,10 @@ scheduler
       .join('\n')
     try {
       await Telegram.sendMessage(`${Helper.TELEGRAM_LOGS[0]}`, msg)
-      await Telegram.sendMessage(`${Helper.TELEGRAM_LOGS[1]}`, msg)
-    } catch (e) {}
-    console.log(e)
+      console.log(await Telegram.sendMessage(`${Helper.TELEGRAM_LOGS[1]}`, msg))
+    } catch (e: any) {
+      console.log(e)
+    }
   })
   //
   .timezone('ASIA/TEHRAN')
