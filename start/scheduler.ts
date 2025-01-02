@@ -67,7 +67,9 @@ scheduler
     msg += '🛄 گزارشات پاک شده: ' + logsLen + '\n'
     msg += '\u200F➖➖➖➖➖➖➖➖➖➖➖\n'
 
-    const uc = await User.query().count('* as total')
+    const uc = await User.query()
+      .where('created_at', '>', now.minus({ hours: 24 }).toJSDate())
+      .count('* as total')
     const logsToday = await Log.query().where(
       'created_at',
       '>',
@@ -91,12 +93,12 @@ scheduler
       .join('\n')
     try {
       await Telegram.sendMessage(`${Helper.TELEGRAM_LOGS[0]}`, msg)
-      console.log(await Telegram.sendMessage(`${Helper.TELEGRAM_LOGS[1]}`, msg))
+      await Telegram.sendMessage(`${Helper.TELEGRAM_LOGS[1]}`, msg)
     } catch (e: any) {
       console.log(e)
     }
   })
   //
   .timezone('ASIA/TEHRAN')
-  .cron('35 13 * * *') // Runs daily at 8:25
+  .cron('35 1 * * *') // Runs daily at 8:25
 // })
