@@ -93,13 +93,14 @@ scheduler
       .join('\n')
     try {
       await Telegram.sendMessage(`${Helper.TELEGRAM_LOGS[0]}`, msg)
-      await sleep(1000)
-      await Telegram.sendMessage(`${Helper.TELEGRAM_LOGS[1]}`, msg)
+      // await sleep(1000)
+      // await Telegram.sendMessage(`${Helper.TELEGRAM_LOGS[1]}`, msg)
     } catch (e: any) {
       console.log(e)
     }
   })
   //
   .timezone('ASIA/TEHRAN')
-  .cron('35 1 * * *') // Runs daily at 8:25
+  .everyMinute()
+// .cron('35 1 * * *') // Runs daily at 8:25
 // })
