@@ -11,11 +11,11 @@ import User from '#models/user'
 import Telegram from '#services/telegram_service'
 import collect from 'collect.js'
 
-scheduler
-  .call(async () => {
-    await Telegram.sendMessage(`${Helper.TELEGRAM_LOGS[0]}`, 'hi')
-  })
-  .cron('22 01 * * *')
+// scheduler
+//   .call(async () => {
+//     await Telegram.sendMessage(`${Helper.TELEGRAM_LOGS[0]}`, 'hi')
+//   })
+//   .cron('22 01 * * *')
 
 // app.ready(async () => {
 //   const mySocket = await app.container.make('MySocket')
@@ -103,5 +103,5 @@ scheduler
   //
   .timezone('ASIA/TEHRAN')
   // .daily()
-  .cron('22 01 * * *') // Runs daily at 8:25
+  .cron('25 1 * * *') // Runs daily at 8:25
 // })
