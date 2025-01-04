@@ -100,7 +100,7 @@ if ((await getSettings('scheduler_id')) == null)
       } catch (e: any) {
         console.log(e)
       }
-      Setting.query().where('key', 'scheduler_id').update({ value: process.pid })
+      await Setting.query().where('key', 'scheduler_id').update({ value: process.pid })
       // process.kill(process.pid)
     })
     //
