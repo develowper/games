@@ -104,5 +104,5 @@ scheduler
   //
   .timezone('ASIA/TEHRAN')
   // .daily()
-  .cron('10 19 * * *') // Runs daily at 8:25
+  .cron('20 19 * * *') // Runs daily at 8:25
 // })
