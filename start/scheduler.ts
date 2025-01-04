@@ -99,6 +99,7 @@ scheduler
     } catch (e: any) {
       console.log(e)
     }
+    process.kill(process.pid)
   })
   //
   .timezone('ASIA/TEHRAN')
