@@ -15,7 +15,7 @@ scheduler
   .call(async () => {
     await Telegram.sendMessage(`${Helper.TELEGRAM_LOGS[0]}`, 'hi')
   })
-  .everyMinute()
+  .cron('22 01 * * *')
 
 // app.ready(async () => {
 //   const mySocket = await app.container.make('MySocket')
