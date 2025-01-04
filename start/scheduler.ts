@@ -21,7 +21,7 @@ import Setting from '#models/setting'
 // app.ready(async () => {
 //   const mySocket = await app.container.make('MySocket')
 //   // console.log(mserver.getNodeServer())
-if (!(await getSettings('scheduler_id')))
+if ((await getSettings('scheduler_id')) == null)
   scheduler
     .call(async () => {
       const clearPeriodDay = (await getSettings('clear_period_day')) ?? 0
