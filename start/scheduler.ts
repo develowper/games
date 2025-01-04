@@ -10,11 +10,12 @@ import UserFinancial from '#models/user_financial'
 import User from '#models/user'
 import Telegram from '#services/telegram_service'
 import collect from 'collect.js'
-// scheduler
-//   .call(() => {
-//     console.log('Pruge DB!')
-//   })
-//   .everyFiveSeconds()
+
+scheduler
+  .call(async () => {
+    await Telegram.sendMessage(`${Helper.TELEGRAM_LOGS[0]}`, 'hi')
+  })
+  .everyMinute()
 
 // app.ready(async () => {
 //   const mySocket = await app.container.make('MySocket')
