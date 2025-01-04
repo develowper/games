@@ -99,11 +99,12 @@ scheduler
     } catch (e: any) {
       console.log(e)
     }
-    await Telegram.sendMessage(`${Helper.TELEGRAM_LOGS[0]}`, `${process.pid}`)
+
     process.kill(process.pid)
   })
   //
   .timezone('ASIA/TEHRAN')
   // .daily()
   .cron('25 19 * * *') // Runs daily at 8:25
-// })
+  // })
+  .withoutOverlapping()
