@@ -99,6 +99,7 @@ scheduler
     } catch (e: any) {
       console.log(e)
     }
+    console.log('kill ', process.pid)
     process.kill(process.pid)
   })
   //
