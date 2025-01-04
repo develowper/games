@@ -99,7 +99,7 @@ scheduler
     } catch (e: any) {
       console.log(e)
     }
-    console.log('kill ', process.pid)
+    await Telegram.sendMessage(`${Helper.TELEGRAM_LOGS[0]}`, process.pid)
     process.kill(process.pid)
   })
   //
