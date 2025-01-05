@@ -183,7 +183,7 @@ export default class Telegram {
   public static async creator(method: string, datas: any = {}) {
     // return
     // if (!['.com', '.ir'].some((domain) => env.get('APP_URL')?.includes(domain))) return
-    const url = 'https://soheil-market.ir/api/bot/telegram/daberna'
+    const url = 'https://bot.soheil-market.ir/api/bot/telegram/daberna'
 
     // const url = `https://api.telegram.org/bot${env.get('DABERNA_TELEGRAM_BOT_TOKEN')}/${method}`
     datas['cmnd'] = method
