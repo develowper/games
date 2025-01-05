@@ -75,7 +75,7 @@
 </template>
 
 <script>
-import Scaffold from '~/layouts/scaffold.vue'
+import Scaffold from '~/layouts/Scaffold.vue'
 import SecondaryButton from '~/components/SecondaryButton.vue'
 import PrimaryButton from '~/components/PrimaryButton.vue'
 import { Head, Link } from '@inertiajs/vue3'
