@@ -18,6 +18,7 @@ import { fakerFA as faker } from '@faker-js/faker'
 import vine from '@vinejs/vine'
 export default function () {
   router.get('test', async () => {
+
     return
     const room = await Room.first()
     room.players = JSON.stringify([
