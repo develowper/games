@@ -186,7 +186,7 @@
 <script>
 import LoadingIcon from '~/components/LoadingIcon.vue'
 import Image from '~/components/Image.vue'
-import Scaffold from '~/layouts/Scaffold.vue'
+import Scaffold from '~/layouts/scaffold.vue'
 import { Head, Link } from '@inertiajs/vue3'
 import heroImage from '~/images/hero.jpg'
 import PrimaryButton from '~/components/PrimaryButton.vue'
