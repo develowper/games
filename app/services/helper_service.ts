@@ -62,8 +62,8 @@ class Helper {
   }
 
   public static SOCKET_LINK = `http://${env.get('APP_URL')}:${env.get('PORT')}`
-  /*'http://172.16.6.2:4106' ??*/
-  public static SOCKET_LINK_CLIENT = `https://${env.get('APP_URL')}` /* ?? '127.0.0.1:4106' ?? ''*/
+  /*'http://172.16.6.2:3298' ??*/
+  public static SOCKET_LINK_CLIENT = `https://${env.get('APP_URL')}` /* ?? '127.0.0.1:3298' ?? ''*/
   public static ERROR_STATUS = 400
   public static BANK = 'zarinpal'
   public static APP_DOWNLOAD_URL =
