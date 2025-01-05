@@ -11,10 +11,10 @@ jobs:
       - name: Sync files
         uses: SamKirkland/FTP-Deploy-Action@4.3.3
         with:
-          server: 195.214.235.148
+          server: soheilmarket.ir
           protocol: ftp
           port: 21
-          username: allveerchi
+          username: soheilm4
           password: ${{ secrets.FTP_PASSWORD }}
           server-dir: /daberna/
           dangerous-clean-slate: false
