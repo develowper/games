@@ -125,7 +125,7 @@ export default class UserController {
 
         break
       case 'remove':
-        await User.deleteAllInfo([data])
+        await User.deleteAllInfo(data)
 
         Telegram.log(null, 'user_removed', data)
 
