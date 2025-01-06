@@ -440,7 +440,7 @@
                 <td class="px-2 py-4">
                   <div v-if="d.payedAt">{{ toShamsi(d.payedAt, true) || '_' }}</div>
                   <button
-                    v-else
+                    v-else-if="d.type != 'charge'"
                     @click="
                       showDialog(
                         'primary',

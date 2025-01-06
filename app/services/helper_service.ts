@@ -72,7 +72,7 @@ class Helper {
   public static ENAMAD = `<a referrerpolicy='origin' target='_blank' href='https://trustseal.enamad.ir/?id=565455&Code=WNIwA9GN3WFa1TNq7pu6HeHTJCQzv9T6'><img referrerpolicy='origin' src='https://trustseal.enamad.ir/logo.aspx?id=565455&Code=WNIwA9GN3WFa1TNq7pu6HeHTJCQzv9T6' alt='' style='cursor:pointer' code='WNIwA9GN3WFa1TNq7pu6HeHTJCQzv9T6'></a>`
   public static APP_VERSION = 1
   public static PAGINATE = 24
-  public static MIN_CHARGE = 50000
+  public static MIN_CHARGE = 0
   public static MIN_WITHDRAW = 100000
   public static CALL_SPEED = 1000
   public static CLEAR_TRANSACTION_DAY = 0
