@@ -355,7 +355,7 @@ export default class Telegram {
       chat_id: chatId,
       user_id: userId,
     })
-    console.log(res)
+
     return ['member', 'administrator', 'creator'].includes(res?.result?.status)
   }
 }

@@ -6,19 +6,20 @@ import Log from '#models/log'
 import UserFinancial from '#models/user_financial'
 import collect from 'collect.js'
 import User from '#models/user'
-import Telegram from '#services/telegram_service'
+
 import Setting from '#models/setting'
+import Telegram from '#services/telegram_service'
+import app from '@adonisjs/core/services/app'
 
 export default class DailyReport extends BaseCommand {
   static commandName = 'report:daily'
   static description = 'daily report telegram and clear database'
   static aliases = ['report']
-  static options: CommandOptions = { staysAlive: false, startApp: false, allowUnknownFlags: false }
+  static options: CommandOptions = { staysAlive: false, startApp: true, allowUnknownFlags: false }
 
-  static reportTime = DateTime.fromObject({ hour: 1, minute: 35 }, { zone: 'Asia/Tehran' })
+  static reportTime = DateTime.fromObject({ hour: 3, minute: 55 }, { zone: 'Asia/Tehran' })
   async run() {
     const now = DateTime.now().setZone('Asia/Tehran')
-
     if (now.hour !== DailyReport.reportTime.hour || now.minute !== DailyReport.reportTime.minute)
       return
 
