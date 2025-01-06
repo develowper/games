@@ -383,10 +383,9 @@ export default class TransactionsController {
         await transaction.save()
 
         await user.save()
+        transaction.user = user
+        Telegram.log(null, 'transaction_created', transaction)
       }
-
-      transaction.user = user
-      Telegram.log(null, 'transaction_created', transaction)
 
       return inertia.render('Invoice', {
         lang: {
