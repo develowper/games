@@ -102,7 +102,7 @@ export default class Transaction extends BaseModel {
           const zarinpalData = {
             merchant_id: Env.get('ZARINPAL_TOKEN'),
             amount: `${price}0`,
-            callback_url: `${Env.get('APP_URL')}/api/payment/done`,
+            callback_url: `https://${Env.get('APP_URL')}/api/payment/done`,
             description: description,
             mobile: phone,
             email: mail,
