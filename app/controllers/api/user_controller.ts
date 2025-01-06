@@ -72,7 +72,7 @@ export default class UserController {
       })
     const data = await request.validateUsing(registerValidator)
 
-    const user = await User.create({ ...data, agencyId: 1, agencyLevel: 0, isActive: 1 })
+    const user = await User.create({ ...data, agencyId: 1, agencyLevel: 0, isActive: true })
     const tokenData = await User.accessTokens.create(user)
     await UserFinancial.create({ userId: user.id, balance: 0 })
     return response.json({
