@@ -12,7 +12,6 @@ export const usernameValidatorObject = vine
       .whereNot('id', fields?.meta?.id ?? 0)
       .where('username', value)
       .first()
-    console.log(match)
     return !match
   })
 export const phoneValidatorObject = vine
@@ -26,7 +25,6 @@ export const phoneValidatorObject = vine
       .whereNot('id', fields?.meta?.id ?? 0)
       .where('phone', value)
       .first()
-    console.log(match)
     return !match
   })
 

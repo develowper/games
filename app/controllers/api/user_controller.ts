@@ -76,6 +76,7 @@ export default class UserController {
     const tokenData = await User.accessTokens.create(user)
     await UserFinancial.create({ userId: user.id, balance: 0 })
     return response.json({
+      status: 'success',
       token: tokenData.value!.release(),
       user: user,
       message: i18n.t('messages.welcome'),
