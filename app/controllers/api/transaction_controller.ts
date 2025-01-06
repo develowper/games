@@ -8,7 +8,7 @@ import {
   withdrawValidator,
 } from '#validators/transaction'
 import Transaction from '#models/transaction'
-import Helper, { __, asPrice } from '#services/helper_service'
+import Helper, { __, asPrice, getSettings } from '#services/helper_service'
 import { DateTime } from 'luxon'
 import User from '#models/user'
 import Admin from '#models/admin'
@@ -31,22 +31,26 @@ export default class TransactionsController {
     const toCard = request.input('to_card')
     const now = DateTime.now()
     let desc
+    const gapTransactionMinutes = await getSettings('cardtocard_minute_limit')
     switch (type) {
       case 'charge':
         await request.validateUsing(chargeValidator)
-        const gapChargeMinutes = Helper.CARDTOCARD_MINUTE_LIMIT
         const lastChargeTransaction = await Transaction.query()
           .where('type', type)
           .where('to_type', 'user')
           .where('to_id', user?.id)
-          .where('created_at', '>', DateTime.now().minus({ minutes: gapChargeMinutes }).toJSDate())
+          .where(
+            'created_at',
+            '>',
+            DateTime.now().minus({ minutes: gapTransactionMinutes }).toJSDate()
+          )
           .first()
 
         if (lastChargeTransaction) {
           return response.status(Helper.ERROR_STATUS).json({
             status: 'danger',
             message: __('gap_requests_is_*', {
-              item: `${gapChargeMinutes} ${__('minute')}`,
+              item: `${gapTransactionMinutes} ${__('minute')}`,
             }),
           })
         }
@@ -91,7 +95,6 @@ export default class TransactionsController {
         break
       case 'cardtocard':
         await request.validateUsing(cardToCardValidator)
-        const gapMinutes = Helper.CARDTOCARD_MINUTE_LIMIT
 
         desc = __('cardtocard_*_from_*_to_*', {
           item1: `${asPrice(amount)} ${__('currency')}`,
@@ -102,14 +105,18 @@ export default class TransactionsController {
           .where('type', type)
           .where('to_type', 'user')
           .where('to_id', user?.id)
-          .where('created_at', '>', DateTime.now().minus({ minutes: gapMinutes }).toJSDate())
+          .where(
+            'created_at',
+            '>',
+            DateTime.now().minus({ minutes: gapTransactionMinutes }).toJSDate()
+          )
           .first()
 
         if (lastTransaction) {
           return response.status(Helper.ERROR_STATUS).json({
             status: 'danger',
             message: __('gap_requests_is_*', {
-              item: `${gapMinutes} ${__('minute')}`,
+              item: `${gapTransactionMinutes} ${__('minute')}`,
             }),
           })
         }

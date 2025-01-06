@@ -77,7 +77,7 @@ class Helper {
   public static CALL_SPEED = 1000
   public static CLEAR_TRANSACTION_DAY = 0
   public static CLEAR_INACTIVE_USERS_DAY = 0
-  public static CARDTOCARD_MINUTE_LIMIT = 5
+  public static CARDTOCARD_MINUTE_LIMIT = 1
   public static WINWHEEL_HOUR_LIMIT = 24
   public static WITHDRAW_HOUR_LIMIT = 24
   public static REF_COMMISSION_PERCENT = 3
@@ -365,6 +365,11 @@ class Helper {
         key: 'clear_period_day',
         value: 60,
         title: __('clear_period_title'),
+      },
+      {
+        key: 'cardtocard_minute_limit',
+        value: 1,
+        title: __('cardtocard_minute_limit'),
       },
       // {
       //   key: 'enamad',
