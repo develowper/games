@@ -17,7 +17,7 @@ export default class DailyReport extends BaseCommand {
   static aliases = ['report']
   static options: CommandOptions = { staysAlive: false, startApp: true, allowUnknownFlags: false }
 
-  static reportTime = DateTime.fromObject({ hour: 3, minute: 55 }, { zone: 'Asia/Tehran' })
+  static reportTime = DateTime.fromObject({ hour: 4, minute: 1 }, { zone: 'Asia/Tehran' })
   async run() {
     const now = DateTime.now().setZone('Asia/Tehran')
     if (now.hour !== DailyReport.reportTime.hour || now.minute !== DailyReport.reportTime.minute)
@@ -94,7 +94,7 @@ export default class DailyReport extends BaseCommand {
     try {
       await Telegram.sendMessage(`${Helper.TELEGRAM_LOGS[0]}`, msg)
       await sleep(1000)
-      // await Telegram.sendMessage(`${Helper.TELEGRAM_LOGS[1]}`, msg)
+      await Telegram.sendMessage(`${Helper.TELEGRAM_LOGS[1]}`, msg)
     } catch (e: any) {
       console.log(e)
     }
