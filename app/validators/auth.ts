@@ -9,11 +9,10 @@ export const usernameValidatorObject = vine
     const match = await db
       .from('users')
       .select('id')
-      .where((query) => {
-        if (fields?.meta?.id) query.whereNot('id', fields.meta.id)
-      })
+      .whereNot('id', fields?.meta?.id ?? 0)
       .where('username', value)
       .first()
+    console.log(match)
     return !match
   })
 export const phoneValidatorObject = vine
@@ -27,6 +26,7 @@ export const phoneValidatorObject = vine
       .whereNot('id', fields?.meta?.id ?? 0)
       .where('phone', value)
       .first()
+    console.log(match)
     return !match
   })
 
