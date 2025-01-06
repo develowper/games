@@ -9,7 +9,7 @@ const TransactionController = () => import('../../app/controllers/api/transactio
 const BotController = () => import('../../app/controllers/bot_controller.js')
 
 export default () => {
-  router.any('api/transaction/done', [TransactionController, 'done']).as('api.transaction.done')
+  router.any('api/payment/done', [TransactionController, 'done']).as('api.payment.done')
   router.any('api/bot/telegram/update', [BotController, 'getUpdates']).as('api.bot.telegram.update')
 
   //auth
