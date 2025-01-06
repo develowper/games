@@ -271,7 +271,7 @@ export default class Transaction extends BaseModel {
           if (!error && result.data?.code === 101) {
             return {
               status: 'danger',
-              message: Helper.t('factor_payed_before'),
+              message: __('factor_payed_before'),
               order_id: request.input('Authority'),
             }
           }

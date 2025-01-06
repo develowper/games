@@ -365,12 +365,11 @@ export default class TransactionsController {
       const userType = user instanceof Admin ? 'admin' : 'user'
 
       const column = `${transaction.toType}Id`
-
       if (status === 'success') {
         if (transaction.type === 'charge') {
           const financial = await Helper.FINANCIAL_MODELS[transaction.toType].firstOrNew(
-            { column: transaction.toId },
-            { column: transaction.toId }
+            { [column]: transaction.toId },
+            { [column]: transaction.toId }
           )
           financial.merge({
             balance: (financial.balance ?? 0) + transaction.amount,
