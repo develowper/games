@@ -78,7 +78,7 @@ export default class UserController {
     return response.json({
       status: 'success',
       token: tokenData.value!.release(),
-      user: user,
+      ...{ user },
       message: i18n.t('messages.welcome'),
     })
   }
