@@ -10,6 +10,7 @@ import User from '#models/user'
 import Setting from '#models/setting'
 import Telegram from '#services/telegram_service'
 import app from '@adonisjs/core/services/app'
+import Transaction from '#models/transaction'
 
 export default class DailyReport extends BaseCommand {
   static commandName = 'report:daily'
@@ -20,7 +21,10 @@ export default class DailyReport extends BaseCommand {
   static reportTime = DateTime.fromObject({ hour: 4, minute: 5 }, { zone: 'Asia/Tehran' })
   async run() {
     const now = DateTime.now().setZone('Asia/Tehran')
-    if (now.hour !== DailyReport.reportTime.hour || now.minute !== DailyReport.reportTime.minute) {
+    if (
+      now.hour !== DailyReport.reportTime.hour ||
+      [0, 1, 2, 3, 4].includes(now.minute) //cron runs every 5 minutes
+    ) {
       process.exit()
       return
     }
@@ -29,6 +33,7 @@ export default class DailyReport extends BaseCommand {
 
     let ufsLen = 0
     let logsLen = 0
+    let transLen = 0
     let msg = ''
     const options: any = {
       calendar: 'persian',
@@ -51,6 +56,13 @@ export default class DailyReport extends BaseCommand {
       logsLen = logs.length
       logs?.forEach((item: Log) => item.delete())
 
+      const trans = await Transaction.query()
+        .where('type', 'charge')
+        .whereNull('payed_at')
+        .where('created_at', '<', now.minus({ hours: 1 }).toJSDate())
+      transLen = trans.length
+      trans?.forEach((item: Transaction) => item.delete())
+
       const ufs = await UserFinancial.query()
         .whereNotIn(
           'user_id',
@@ -67,6 +79,7 @@ export default class DailyReport extends BaseCommand {
     msg += '♻️ دوره پاکسازی: ' + clearPeriodDay + ' روز ' + '\n'
     msg += '🚹 کاربران پاک شده: ' + ufsLen + '\n'
     msg += '🛄 گزارشات پاک شده: ' + logsLen + '\n'
+    msg += '🚮 تراکنش های پاک شده: ' + transLen + '\n'
     msg += '\u200F➖➖➖➖➖➖➖➖➖➖➖\n'
 
     const uc = await User.query()
