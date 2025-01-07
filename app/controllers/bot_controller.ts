@@ -379,7 +379,7 @@ export default class BotController {
             balance: asPrice(
               (await AgencyFinancial.findBy('agency_id', this.user?.agencyId))?.balance
             ),
-            logsToday: await Log.query().where('created_at', now.startOf('day').toJSDate()),
+            logsToday: await Log.query().where('date', now.startOf('day').toJSDate()),
           }
 
           msg = '🔵 کاربران: ' + `${stat.users[0].$extras.total}` + '\n'
