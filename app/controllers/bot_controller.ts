@@ -13,6 +13,8 @@ import drive from '@adonisjs/drive/services/main'
 import Daberna from '#models/daberna'
 import { Agent } from 'node:http'
 import AgencyFinancial from '#models/agency_financial'
+import { DateTime } from 'luxon'
+import Log from '#models/log'
 
 export default class BotController {
   public user: User | Admin | null
@@ -370,15 +372,30 @@ export default class BotController {
             await this.getKeyboard('user_main')
           )
         } else if (text === '📊 آمار 📊') {
+          const now = DateTime.now()
           const stat = {
             users: await User.query().count('* as total'),
             games: await Daberna.query().count('* as total'),
             balance: asPrice(
               (await AgencyFinancial.findBy('agency_id', this.user?.agencyId))?.balance
             ),
+            logsToday: await Log.query().where('created_at', now.startOf('day').toJSDate()),
           }
+          msg = '    〰️〰️کارت ها〰️〰️    ' + '\n'
 
-          msg = '🔵 کاربران: ' + `${stat.users[0].$extras.total}` + '\n'
+          msg += stat.logsToday
+            .map((item: Log) => {
+              let tmp = ''
+              tmp += ' 🎴نوع: ' + item.type + '\n'
+              tmp += ' 🔵بازی: ' + item.gameCount + '\n'
+              tmp += ' 🟣کارت: ' + item.cardCount + '\n'
+              tmp += ' 🟢سود: ' + asPrice(item.profit ?? 0) + '\n'
+              tmp += '\u200F➖➖➖➖➖➖➖➖➖➖➖'
+              return tmp
+            })
+            .join('\n')
+
+          msg += '🔵 کاربران: ' + `${stat.users[0].$extras.total}` + '\n'
           msg += '🟣 بازی ها: ' + `${stat.games[0].$extras.total}` + '\n'
           msg += '🟢 موجودی: ' + `${stat.balance ?? '-'}` + '\n'
           res = await Telegram.sendMessage(
