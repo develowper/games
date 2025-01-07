@@ -76,7 +76,7 @@ export default class Telegram {
           if (data.amount > 0) msg += '🟢🟢🟢🛒 یک تراکنش انجام شد\n'
           else msg += '🟠🟠🟠🛒 یک پلن خریداری شد\n'
           msg += `🆔 شناسه کاربر: ${us?.id ?? '-'}\n`
-          msg += `👤 نام\n${us?.fullName ?? '-'}\n`
+          msg += `👤 نام\n${us?.fullName ?? us?.username ?? '-'}\n`
           msg += `📱 شماره تماس\n${us?.phone ?? '-'}\n`
           msg += `⭐ نوع\n${data.title ?? '-'}\n`
           msg += `📊 مقدار\n${data.amount ?? '-'}\n`
