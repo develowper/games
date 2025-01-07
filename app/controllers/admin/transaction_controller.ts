@@ -60,7 +60,7 @@ export default class TransactionController {
         data.payedAt = now
         await data.save()
         await uf.save()
-        await User.query().where('user_id', uf.userId).update({ lastTransaction: data.payedAt })
+        await User.query().where('id', uf.userId).update({ lastTransaction: data.payedAt })
 
         return response.send({
           status: 'success',

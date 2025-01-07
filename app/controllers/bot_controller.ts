@@ -381,7 +381,12 @@ export default class BotController {
             ),
             logsToday: await Log.query().where('created_at', now.startOf('day').toJSDate()),
           }
-          msg = '    〰️〰️کارت ها〰️〰️    ' + '\n'
+
+          msg = '🔵 کاربران: ' + `${stat.users[0].$extras.total}` + '\n'
+          msg += '🟣 بازی ها: ' + `${stat.games[0].$extras.total}` + '\n'
+          msg += '🟢 موجودی: ' + `${stat.balance ?? '-'}` + '\n'
+
+          msg += '    〰️〰️کارت ها〰️〰️    ' + '\n'
 
           msg += stat.logsToday
             .map((item: Log) => {
@@ -395,9 +400,6 @@ export default class BotController {
             })
             .join('\n')
 
-          msg += '🔵 کاربران: ' + `${stat.users[0].$extras.total}` + '\n'
-          msg += '🟣 بازی ها: ' + `${stat.games[0].$extras.total}` + '\n'
-          msg += '🟢 موجودی: ' + `${stat.balance ?? '-'}` + '\n'
           res = await Telegram.sendMessage(
             fromId,
             msg,
