@@ -6,6 +6,7 @@ import UserFinancial from '../../models/user_financial.js'
 import hash from '@adonisjs/core/services/hash'
 import Setting from '#models/setting'
 import { DateTime } from 'luxon'
+import Telegram from '#services/telegram_service'
 
 export default class UserController {
   async update({ response, request, auth }) {
@@ -75,6 +76,8 @@ export default class UserController {
     const user = await User.create({ ...data, agencyId: 1, agencyLevel: 0, isActive: true })
     const tokenData = await User.accessTokens.create(user)
     const financial = await UserFinancial.create({ userId: user.id, balance: 0 })
+
+    await Telegram.log(null, 'user_created', user)
     return response.json({
       status: 'success',
       token: tokenData.value!.release(),
