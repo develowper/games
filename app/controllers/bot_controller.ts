@@ -170,6 +170,18 @@ export default class BotController {
           messageId,
           await this.getKeyboard('user_main')
         )
+      } else if (text === 'لغو ثبت نام ❌') {
+        //
+        msg = 'ثبت نام لغو شد'
+        this.updateUserStorage(null)
+        await User.deleteAllInfo(this.user)
+        res = await Telegram.sendMessage(
+          fromId,
+          msg,
+          this.MODE_MARKDOWN,
+          messageId,
+          await this.getKeyboard('user_main')
+        )
       } else if (text === '🤖تماس با ما🤖') {
         //
         msg = '✏️ *جهت ارتباط با پشتیبانی از لینک های زیر استفاده نمایید*'
@@ -266,6 +278,7 @@ export default class BotController {
         keyboard = await this.getKeyboard('cancel')
 
         res = await Telegram.sendMessage(fromId, msg, this.MODE_MARKDOWN, null, keyboard)
+        //
       } else if (this.storage === 'send-password') {
         res = await this.validate(this.storage, { password: text })
         if (res.status == 'success') {
@@ -280,29 +293,54 @@ export default class BotController {
           messageId,
           res?.keyboard
         )
+      } else if (this.storage === 'register-password') {
+        res = await this.validate(this.storage, { password: text })
+        if (res.status == 'success') {
+          res.msg = '🟢' + i18n.t('messages.registered_successfully')
+
+          const ref = await Referral.findBy('invited_id', fromId)
+          if (ref?.inviterId) {
+            const inviter = await User.findBy('telegram_id', ref?.inviterId)
+            if (inviter) {
+              this.user.inviterId = inviter.id
+              this.user.agencyId = inviter.agencyId
+              this.user.agencyLevel = inviter.agencyLevel
+              inviter.refCount++
+              await inviter.save()
+            }
+          }
+
+          this.updateUserStorage(null)
+          Telegram.log(null, 'user_created', this.user)
+        }
+
+        res = await Telegram.sendMessage(
+          fromId,
+          res?.msg,
+          this.MODE_MARKDOWN,
+          messageId,
+          res?.keyboard
+        )
       } else if (text === 'ثبت نام✅') {
         //
         if (this.user) return
         this.user = new User()
-        const ref = await Referral.findBy('invited_id', fromId)
         this.user.telegramId = fromId
 
-        this.user.username = `U${username ?? firstName}` /* ?? username ?? firstName*/
+        this.user.username = `U${DateTime.now().toMillis()}` /* ?? username ?? firstName*/
         this.user.password = await hash.make(username ?? firstName)
         this.user.agencyId = 1
         this.user.agencyLevel = 0
         this.user.refId = await User.makeRefCode()
-        if (ref?.inviterId) {
-          const inviter = await User.findBy('telegram_id', ref?.inviterId)
-          if (inviter) {
-            this.user.inviterId = inviter.id
-            this.user.agencyId = inviter.agencyId
-            this.user.agencyLevel = inviter.agencyLevel
-            inviter.refCount++
-            inviter.save()
-          }
-        }
+
         this.user.related('financial').create({ balance: 0 })
+        res = await Telegram.sendMessage(
+          fromId,
+          'در صورتی که قبلا در اپلیکیشن ثبت نام کرده اید ثبت نام را لغو کرده و از داخل اپلیکیشن قسمت پروفایل، اتصال به تلگرام را بزنید. ',
+          null,
+          null,
+          null
+        )
         msg = 'نام کاربری را وارد کنید:'
         this.updateUserStorage('register-username')
         res = await Telegram.sendMessage(
@@ -310,7 +348,7 @@ export default class BotController {
           msg,
           this.MODE_MARKDOWN,
           messageId,
-          (keyboard = await this.getKeyboard('cancel'))
+          (keyboard = await this.getKeyboard('cancel_register'))
         )
       } else if (this.storage === 'register-username') {
         //
@@ -318,14 +356,14 @@ export default class BotController {
         res = await this.validate(this.storage, { username: text })
         if (res.status == 'success') {
           res.msg = 'رمز عبور را وارد کنید:'
-          this.updateUserStorage('send-password')
+          this.updateUserStorage('register-password')
         }
         res = await Telegram.sendMessage(
           fromId,
           res.msg,
           this.MODE_MARKDOWN,
           messageId,
-          await this.getKeyboard('cancel')
+          await this.getKeyboard('cancel_register')
         )
       } else if (text === '👤حساب کاربری👤') {
         //
@@ -488,14 +526,21 @@ export default class BotController {
           resize_keyboard: true,
         }
         break
+      case 'cancel_register':
+        tmp = {
+          keyboard: [[{ text: 'لغو ثبت نام ❌' }]],
+          resize_keyboard: true,
+        }
+        break
     }
     return JSON.stringify(tmp)
   }
 
   private updateUserStorage(data: any) {
     if (!this.user) return
+
     this.user.storage = data
-    this.user?.save()
+    await this.user?.save()
   }
 
   private async validate(type: any, data: any): Promise<any> {
@@ -508,6 +553,16 @@ export default class BotController {
     try {
       switch (type) {
         case 'send-password':
+          schema = vine.object({
+            password: vine.string().regex(/^(?=.*[A-Za-z])[A-Za-z\d]{5,}$/),
+          })
+          msg = await vine
+            .compile(schema)
+            .validate(data, { messagesProvider: this.messagesProvider })
+          this.user.password = data.password
+          keyboard = keyboardUser
+          break
+        case 'register-password':
           schema = vine.object({
             password: vine.string().regex(/^(?=.*[A-Za-z])[A-Za-z\d]{5,}$/),
           })

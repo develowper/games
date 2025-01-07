@@ -103,6 +103,7 @@
   "*_successfully": "با موفقیت {item} شد",
   "updated_successfully": "با موفقیت بروزرسانی شد",
   "created_successfully": "با موفقیت ساخته شد",
+  "registered_successfully": "با موفقیت ثبت نام شدید",
   "remove_*_?": "از حذف {item} اطمینان دارید؟",
   "sure_to_*_?": "از {item} اطمینان دارید؟",
   "validate.min": " حداقل مقدار {item} {value} است",

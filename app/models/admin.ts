@@ -89,7 +89,7 @@ export default class Admin extends compose(BaseModel, AuthFinder) {
     inertiaError(errIncorrect)
   }
   public score
-
+  public inviterId
   @column({ isPrimary: true })
   declare id: number
 
