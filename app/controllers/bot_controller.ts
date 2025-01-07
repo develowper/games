@@ -114,7 +114,7 @@ export default class BotController {
             if (user) {
               this.user = user
               this.user.telegramId = fromId
-              this.updateUserStorage(null)
+              await this.updateUserStorage(null)
               msg = '🟢' + i18n.t('messages.connect_successfully')
               res = await Telegram.sendMessage(
                 fromId,
@@ -161,7 +161,7 @@ export default class BotController {
       } else if (text === 'لغو ❌') {
         //
         msg = 'عملیات لغو شد'
-        this.updateUserStorage(null)
+        await this.updateUserStorage(null)
 
         res = await Telegram.sendMessage(
           fromId,
@@ -173,7 +173,7 @@ export default class BotController {
       } else if (text === 'لغو ثبت نام ❌') {
         //
         msg = 'ثبت نام لغو شد'
-        this.updateUserStorage(null)
+        await this.updateUserStorage(null)
         await User.deleteAllInfo(this.user)
         res = await Telegram.sendMessage(
           fromId,
@@ -242,7 +242,7 @@ export default class BotController {
         //
         msg =
           'لطفا دکمه 📱 ارسال شماره تماس 📱 را بزنید. در صورتی که شماره ثبت شده باشد از شما درخواست رمز جدید می شود'
-        this.updateUserStorage('send-contact')
+        await this.updateUserStorage('send-contact')
         res = await Telegram.sendMessage(
           fromId,
           Telegram.markdownV2(msg),
@@ -264,7 +264,7 @@ export default class BotController {
         if (user) {
           this.user = user
           this.user.telegramId = fromId
-          this.updateUserStorage('send-password')
+          await this.updateUserStorage('send-password')
           msg = 'رمز جدید را وارد کنید:'
           keyboard = await this.getKeyboard('cancel')
         } else {
@@ -273,7 +273,7 @@ export default class BotController {
         }
         res = await Telegram.sendMessage(fromId, msg, this.MODE_MARKDOWN, messageId, keyboard)
       } else if (Data === 'send-password') {
-        this.updateUserStorage('send-password')
+        await this.updateUserStorage('send-password')
         msg = 'رمز جدید را وارد کنید:'
         keyboard = await this.getKeyboard('cancel')
 
@@ -310,7 +310,7 @@ export default class BotController {
             }
           }
 
-          this.updateUserStorage(null)
+          await this.updateUserStorage(null)
           Telegram.log(null, 'user_created', this.user)
         }
 
@@ -342,7 +342,7 @@ export default class BotController {
           null
         )
         msg = 'نام کاربری را وارد کنید:'
-        this.updateUserStorage('register-username')
+        await this.updateUserStorage('register-username')
         res = await Telegram.sendMessage(
           fromId,
           msg,
@@ -356,7 +356,7 @@ export default class BotController {
         res = await this.validate(this.storage, { username: text })
         if (res.status == 'success') {
           res.msg = 'رمز عبور را وارد کنید:'
-          this.updateUserStorage('register-password')
+          await this.updateUserStorage('register-password')
         }
         res = await Telegram.sendMessage(
           fromId,
@@ -385,7 +385,7 @@ export default class BotController {
       } else if (this.isAdmin) {
         if (text === '📱 بروز رسانی اپلیکیشن 📱') {
           msg = 'نسخه جدید اپلیکیشن را ارسال نمایید'
-          this.updateUserStorage('admin-update-app')
+          await this.updateUserStorage('admin-update-app')
           res = await Telegram.sendMessage(
             fromId,
             msg,
@@ -401,7 +401,7 @@ export default class BotController {
           } else {
             msg = '🔴' + i18n.t('messages.not_found_*', { item: i18n.t('messages.file') })
           }
-          this.updateUserStorage(null)
+          await this.updateUserStorage(null)
           res = await Telegram.sendMessage(
             fromId,
             msg,
@@ -536,7 +536,7 @@ export default class BotController {
     return JSON.stringify(tmp)
   }
 
-  private updateUserStorage(data: any) {
+  private async updateUserStorage(data: any) {
     if (!this.user) return
 
     this.user.storage = data
