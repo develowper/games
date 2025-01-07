@@ -203,13 +203,13 @@ export default class BotController {
         //
         msg = ''
         const refCommissionPercent = (await Setting.findBy('key', 'ref_commission_percent'))?.value
-        if (refCommissionPercent && Number.parseInt(refCommissionPercent)) {
-          msg +=
-            i18n.t('messages.ref_commission_text', {
-              item: Helper.AGENCY_REF_COUNT /*refCommissionPercent*/,
-            }) + '\n'
-          // res = await Telegram.sendMessage(fromId, msg, this.MODE_MARKDOWN, null, null)
-        } else return
+        // if (refCommissionPercent && Number.parseInt(refCommissionPercent)) {
+        msg +=
+          i18n.t('messages.ref_commission_text', {
+            item: Helper.AGENCY_REF_COUNT /*refCommissionPercent*/,
+          }) + '\n'
+        // res = await Telegram.sendMessage(fromId, msg, this.MODE_MARKDOWN, null, null)
+        // } else return
 
         if (!this.user) {
           msg += '🟠جهت دریافت لینک دعوت خود و کسب درآمد، در ربات ثبت نام کنید' + '\n'
