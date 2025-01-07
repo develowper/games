@@ -318,7 +318,7 @@ export default class Daberna extends BaseModel {
     //all not bot
 
     if (realTotalMoney > 0) {
-      game.save()
+      await game.save()
       room.clearCount++
     }
     // console.log(boards.map((item) => item.card))
