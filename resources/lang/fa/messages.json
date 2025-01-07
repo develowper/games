@@ -201,6 +201,8 @@
   "telegram_channel_without_@": "ایدی کانال تلگرام (بدون  @)",
   "ref_commission_percent": "کمیسیون دعوت کننده از برد دعوت شده (درصد)",
   "ref_commission": "کارمزد بازاریابی",
+  "ref_count": "تعداد دعوت",
+  "invite": "دعوت",
   "register_status": "وضعیت ثبت نام",
   "robot_status": "وضعیت ربات",
   "connect_successfully": "با موفقیت متصل شدید",
