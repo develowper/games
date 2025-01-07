@@ -142,7 +142,7 @@ export default class Telegram {
   }
 
   public static async sendMessage(
-    chat_id: string,
+    chat_id: string | number,
     text: string,
     mode: string | null = null,
     reply: string | null = null,

@@ -16,9 +16,10 @@ import { HttpContext } from '@adonisjs/core/http'
 import db from '@adonisjs/lucid/services/db'
 import { fakerFA as faker } from '@faker-js/faker'
 import vine from '@vinejs/vine'
+import Telegram from '#services/telegram_service'
+import collect from 'collect.js'
 export default function () {
   router.get('test', async () => {
-
     return
     const room = await Room.first()
     room.players = JSON.stringify([

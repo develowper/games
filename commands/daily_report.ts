@@ -11,6 +11,7 @@ import Setting from '#models/setting'
 import Telegram from '#services/telegram_service'
 import app from '@adonisjs/core/services/app'
 import Transaction from '#models/transaction'
+import db from '@adonisjs/lucid/services/db'
 
 export default class DailyReport extends BaseCommand {
   static commandName = 'report:daily'
@@ -18,7 +19,7 @@ export default class DailyReport extends BaseCommand {
   static aliases = ['report']
   static options: CommandOptions = { staysAlive: false, startApp: true, allowUnknownFlags: false }
 
-  static reportTime = DateTime.fromObject({ hour: 4, minute: 0 }, { zone: 'Asia/Tehran' })
+  static reportTime = DateTime.fromObject({ hour: 16, minute: 0 }, { zone: 'Asia/Tehran' })
   async run() {
     const now = DateTime.now().setZone('Asia/Tehran')
     if (now.hour !== DailyReport.reportTime.hour || now.minute !== DailyReport.reportTime.minute) {
@@ -103,6 +104,29 @@ export default class DailyReport extends BaseCommand {
         return tmp
       })
       .join('\n')
+
+    const emojis = ['💖', '💜', '💙']
+    const types = Helper.ROOMS.map((item) => item.type.slice(1))
+    for (let type of types) {
+      let i = 0
+      const users = await db
+        .from('users')
+        .limit(Helper.TOP_USERS_COUNT)
+        .select('username', `today_card_${type}_count as cardCount`)
+        .where(`today_card_${type}_count`, '>', 0)
+        .orderBy(`today_card_${type}_count`, 'desc')
+      msg += `➖➖🃏اتاق ${type}🃏➖➖` + '\n'
+      for (const user of users) {
+        const emoji = emojis[i]
+        i++
+        msg += `${emoji} کاربر ${user.username} با ${user.cardCount} کارت` + '\n'
+      }
+    }
+    const zeroTodayData = types.reduce((acc: any, type) => {
+      acc[`today_card_${type}_count`] = 0
+      return acc
+    }, {})
+    await User.query().update(zeroTodayData)
     // try {
     await Telegram.sendMessage(`${Helper.TELEGRAM_LOGS[0]}`, msg)
     await sleep(1000)
