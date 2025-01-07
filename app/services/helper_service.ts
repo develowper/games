@@ -61,7 +61,7 @@ class Helper {
     telegram: 'https://t.me/paris_admin1',
   }
 
-  public static SOCKET_LINK = `https://${env.get('APP_URL')}:${env.get('PORT')}`
+  public static SOCKET_LINK = `http://${env.get('APP_URL')}:${env.get('PORT')}`
   /*'http://172.16.6.2:3298' ??*/
   public static SOCKET_LINK_CLIENT = `https://${env.get('APP_URL')}` /* ?? '127.0.0.1:3298' ?? ''*/
   public static ERROR_STATUS = 400
