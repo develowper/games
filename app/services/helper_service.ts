@@ -80,6 +80,7 @@ class Helper {
   public static CARDTOCARD_MINUTE_LIMIT = 1
   public static WINWHEEL_HOUR_LIMIT = 24
   public static WITHDRAW_HOUR_LIMIT = 24
+  public static AGENCY_REF_COUNT = 50
   public static REF_COMMISSION_PERCENT = 3
   public static USER_ROLES = ['us', 'bo']
   public static TELEGRAM_LOGS = [72534783, 967072802 /*, 6270272894*/]
