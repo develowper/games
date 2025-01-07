@@ -18,13 +18,10 @@ export default class DailyReport extends BaseCommand {
   static aliases = ['report']
   static options: CommandOptions = { staysAlive: false, startApp: true, allowUnknownFlags: false }
 
-  static reportTime = DateTime.fromObject({ hour: 4, minute: 5 }, { zone: 'Asia/Tehran' })
+  static reportTime = DateTime.fromObject({ hour: 4, minute: 0 }, { zone: 'Asia/Tehran' })
   async run() {
     const now = DateTime.now().setZone('Asia/Tehran')
-    if (
-      now.hour !== DailyReport.reportTime.hour ||
-      [0, 1, 2, 3, 4].includes(now.minute) //cron runs every 5 minutes
-    ) {
+    if (now.hour !== DailyReport.reportTime.hour || now.minute !== DailyReport.reportTime.minute) {
       process.exit()
       return
     }
