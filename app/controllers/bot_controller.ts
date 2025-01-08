@@ -426,25 +426,20 @@ export default class BotController {
 
           msg += '    〰️〰️کارت ها〰️〰️    ' + '\n'
 
-          msg += stat.logsToday
-            .map((item: Log) => {
-              let tmp = ''
-              tmp += ' 🎴نوع: ' + item.type + '\n'
-              tmp += ' 🔵بازی: ' + item.gameCount + '\n'
-              tmp += ' 🟣کارت: ' + item.cardCount + '\n'
-              tmp += ' 🟢سود: ' + asPrice(item.profit ?? 0) + '\n'
-              tmp += '\u200F➖➖➖➖➖➖➖➖➖➖➖'
-              return tmp
-            })
-            .join('\n')
-
-          res = await Telegram.sendMessage(
-            fromId,
-            msg,
-            null,
-            null,
-            await this.getKeyboard('user_main')
-          )
+          // msg += stat.logsToday
+          //   .map((item: Log) => {
+          //     let tmp = ''
+          //     tmp += ' 🎴نوع: ' + item.type + '\n'
+          //     tmp += ' 🔵بازی: ' + item.gameCount + '\n'
+          //     tmp += ' 🟣کارت: ' + item.cardCount + '\n'
+          //     tmp += ' 🟢سود: ' + asPrice(item.profit ?? 0) + '\n'
+          //     tmp += '\u200F➖➖➖➖➖➖➖➖➖➖➖'
+          //     return tmp
+          //   })
+          //   .join('\n')
+          msg += (await Log.roomsTable(Helper.ROOMS.map((item) => item.type.slice(1)))) + '\n'
+          msg += '🅿🅰🆁🅸🆂' + '\n'
+          await Telegram.sendMessage(fromId, msg, null, null, await this.getKeyboard('user_main'))
         }
       }
     }

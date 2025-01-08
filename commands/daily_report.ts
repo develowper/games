@@ -1,15 +1,13 @@
 import { BaseCommand } from '@adonisjs/core/ace'
 import type { CommandOptions } from '@adonisjs/core/types/ace'
-import Helper, { asPrice, getSettings, sleep } from '#services/helper_service'
+import Helper, { getSettings, sleep } from '#services/helper_service'
 import { DateTime } from 'luxon'
 import Log from '#models/log'
 import UserFinancial from '#models/user_financial'
 import collect from 'collect.js'
 import User from '#models/user'
 
-import Setting from '#models/setting'
 import Telegram from '#services/telegram_service'
-import app from '@adonisjs/core/services/app'
 import Transaction from '#models/transaction'
 import db from '@adonisjs/lucid/services/db'
 
@@ -83,30 +81,29 @@ export default class DailyReport extends BaseCommand {
     const uc = await User.query()
       .where('created_at', '>', now.minus({ hours: 24 }).toJSDate())
       .count('* as total')
-    const logsToday = await Log.query().where(
-      'created_at',
-      '>',
-      now.minus({ hours: 24 }).toJSDate()
-    )
+
+    const types = Helper.ROOMS.map((item) => item.type.slice(1))
 
     msg += '                📊 آمار امروز' + '\n'
     msg += '👤 کاربران جدید: ' + (uc[0]?.$extras.total ?? 0) + '\n'
-    msg += '         〰️〰️کارت ها〰️〰️' + '\n'
+    // msg += '         〰️〰️کارت ها〰️〰️' + '\n'
 
-    msg += logsToday
-      .map((item: Log) => {
-        let tmp = ''
-        tmp += ' 🎴نوع: ' + item.type + '\n'
-        tmp += ' 🔵بازی: ' + item.gameCount + '\n'
-        tmp += ' 🟣کارت: ' + item.cardCount + '\n'
-        tmp += ' 🟢سود: ' + asPrice(item.profit ?? 0) + '\n'
-        tmp += '\u200F➖➖➖➖➖➖➖➖➖➖➖'
-        return tmp
-      })
-      .join('\n')
+    // msg +=
+    //   logsToday
+    //     .map((item: Log) => {
+    //       let tmp = ''
+    //       tmp += ' 🎴نوع: ' + item.type + '\n'
+    //       tmp += ' 🔵بازی: ' + item.gameCount + '\n'
+    //       tmp += ' 🟣کارت: ' + item.cardCount + '\n'
+    //       tmp += ' 🟢سود: ' + asPrice(item.profit ?? 0) + '\n'
+    //       tmp += '\u200F➖➖➖➖➖➖➖➖➖➖➖'
+    //       return tmp
+    //     })
+    //     .join('\n') + '\n'
 
+    msg += '\n' + (await Log.roomsTable(types)) + '\n'
+    //rating
     const emojis = ['💖', '💜', '💙']
-    const types = Helper.ROOMS.map((item) => item.type.slice(1))
     for (let type of types) {
       let i = 0
       const users = await db
@@ -122,6 +119,8 @@ export default class DailyReport extends BaseCommand {
         msg += `${emoji} کاربر ${user.username} با ${user.cardCount} کارت` + '\n'
       }
     }
+
+    //reset today cards
     const zeroTodayData = types.reduce((acc: any, type) => {
       acc[`today_card_${type}_count`] = 0
       return acc

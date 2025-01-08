@@ -1,5 +1,8 @@
 import { DateTime } from 'luxon'
 import { BaseModel, column } from '@adonisjs/lucid/orm'
+import { asPrice } from '#services/helper_service'
+import { getBorderCharacters, table } from 'table'
+import collect from 'collect.js'
 
 export default class Log extends BaseModel {
   @column({ isPrimary: true })
@@ -33,12 +36,61 @@ export default class Log extends BaseModel {
     commissionPrice: number,
     date: any
   ) {
-    console.log('add log game ', gameCount)
+    // console.log('add log game ', gameCount)
     if (!gameCount) return
     const log = await Log.firstOrNew({ date: date, type: type })
     log.cardCount = (log.cardCount ?? 0) + cardCount
     log.gameCount = (log.gameCount ?? 0) + gameCount
     log.profit = (log.profit ?? 0) + commissionPrice
     log.save()
+  }
+
+  static async roomsTable(types: any[]) {
+    let msg = ''
+    const now = DateTime.now()
+    const logsToday = collect(
+      await Log.query().where('created_at', '>', now.minus({ hours: 24 }).toJSDate())
+    )
+    //\u200E for LTR \u200F for RTL
+    const tableData: any = [
+      ['اتاق', 'تعداد بازی', 'تعداد کارت', 'سود'].map((item) => `\u200E${item}`),
+    ]
+    // const tableData: any = [['Room', 'Game', 'Card', 'Profit']]
+
+    for (const t of types) {
+      const row = logsToday.where('type', `d${t}`).first() ?? {
+        type: `d${t}`,
+        gameCount: 0,
+        cardCount: 0,
+        profit: 0,
+      }
+      tableData.push([`${row.type}`, row.gameCount, row.cardCount, asPrice(row.profit)])
+    }
+    const tableConfig = {
+      border: getBorderCharacters(`ramac`),
+      drawHorizontalLine: () => true,
+      drawVerticalLine: () => false,
+      columnDefault: {
+        paddingLeft: 1,
+        paddingRight: 1,
+        alignment: 'center',
+        width: 12,
+      },
+
+      columns: [
+        {
+          width: 12,
+          alignment: 'center',
+        },
+        { alignment: 'center' },
+        { alignment: 'center' },
+        { alignment: 'center' },
+      ],
+      header: {
+        alignment: 'center',
+        content: 'گزارش اتاق ها',
+      },
+    }
+    return table(tableData, tableConfig)
   }
 }
