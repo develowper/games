@@ -19,6 +19,11 @@ import { storage } from '#start/globals'
 import { fa as faker } from '@faker-js/faker'
 import type { LocaleDefinition } from '@faker-js/faker'
 import { io } from 'socket.io-client'
+import { Encryption } from '@adonisjs/core/encryption'
+
+const encryption = new Encryption({
+  secret: env.get('ENC_KEY', ''),
+})
 
 class Helper {
   static socket: any
@@ -61,7 +66,7 @@ class Helper {
     telegram: 'https://t.me/paris_admin1',
   }
 
-  public static SOCKET_LINK = `http://${env.get('APP_URL')}:${env.get('PORT')}`
+  public static SOCKET_LINK = `https://${env.get('APP_URL')}`
   /*'http://172.16.6.2:3298' ??*/
   public static SOCKET_LINK_CLIENT = `https://${env.get('APP_URL')}` /* ?? '127.0.0.1:3298' ?? ''*/
   public static ERROR_STATUS = 400
@@ -592,6 +597,10 @@ class Helper {
   static async sleep(time: number) {
     return new Promise((resolve) => setTimeout(resolve, time))
   }
+
+  static async decrypt(str: any) {
+    return encryption.decrypt(str)
+  }
 }
 
 // export default Helper
@@ -620,5 +629,6 @@ export const {
   startsWith,
   myMap,
   sleep,
+  decrypt,
 } = Helper
 export default Helper

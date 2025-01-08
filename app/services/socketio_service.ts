@@ -27,7 +27,6 @@ declare module 'socket.io' {
     context: HttpContext
   }
 }
-export type SocketMiddleware = Parameters<SocketIo['io']['use']>[0]
 export default class SocketIo {
   private user: any
   private socket
@@ -55,8 +54,11 @@ export default class SocketIo {
       const token = socket.handshake.auth.token ?? socket.handshake.headers.token
       const roomType = socket.handshake.headers['request-room']
 
-      if (token) this.user = await this.getTokenUser({ socket, token })
-      else this.user = await this.getSessionUser(socket)
+      if (token) {
+        this.user = await this.getTokenUser({ socket, token })
+      } else {
+        this.user = await this.getSessionUser(socket)
+      }
       // else this.user = this.authenticateSessionUser({ socket })
 
       if (roomType) {
