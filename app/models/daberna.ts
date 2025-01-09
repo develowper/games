@@ -21,13 +21,13 @@ export default class Daberna extends BaseModel {
     serialize: (value: string) => JSON.parse(value) ?? [],
     // consume: (value: any) => JSON.stringify(value)
   })
-  declare boards: any[]
+  declare boards: any
 
   @column({
     serialize: (value: string) => JSON.parse(value) ?? [],
     // consume: (value: any) => JSON.stringify(value)
   })
-  declare numbers: number[]
+  declare numbers: any
 
   @column({
     serialize: (value: string) => JSON.parse(value) ?? [],
@@ -44,6 +44,10 @@ export default class Daberna extends BaseModel {
   declare cardCount: number
   @column()
   declare playerCount: number
+  @column()
+  declare realTotalMoney: number
+  @column()
+  declare realPrize: number
 
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime
@@ -289,7 +293,7 @@ export default class Daberna extends BaseModel {
 
     // console.log('realPrize', realPrize)
 
-    const commissionPrice = Math.floor(realTotalMoney - realPrize) /* +
+    const commissionPrice = Math.floor(realTotalMoney - realPrize - refCommissionPrice) /* +
       (jokerInGame
         ? Number.parseInt(collect(winners).where('user_id', jokerId).sum('prize').toString())
         : 0)*/
@@ -300,6 +304,8 @@ export default class Daberna extends BaseModel {
       type: room.type,
       boards: JSON.stringify(boards),
       numbers: JSON.stringify(playedNumbers),
+      realTotalMoney: realTotalMoney,
+      realPrize: realPrize,
       winners: JSON.stringify(
         winners.map((i) => {
           i.prize = winnerPrize
