@@ -360,6 +360,21 @@
                     <ArrowsUpDownIcon class="w-4 h-4" />
                   </div>
                 </th>
+                <th
+                  scope="col"
+                  class="px-2 py-3 cursor-pointer duration-300 hover:text-gray-500 hover:scale-[105%]"
+                  @click="
+                    (params.order_by = 'created_at'),
+                      (params.dir = params.dir == 'ASC' ? 'DESC' : 'ASC'),
+                      (params.page = 1),
+                      getData()
+                  "
+                >
+                  <div class="flex items-center justify-center">
+                    <span class="px-2"> {{ __('created_at') }} </span>
+                    <ArrowsUpDownIcon class="w-4 h-4" />
+                  </div>
+                </th>
               </tr>
             </thead>
             <tbody class=" ">
@@ -461,6 +476,7 @@
                     {{ __('settlement') }}
                   </button>
                 </td>
+                <td>{{ toShamsi(d.createdAt, true) }}</td>
                 <td class="px-2 py-4">
                   <div>{{ __(d.gateway) || '_' }}</div>
                 </td>
