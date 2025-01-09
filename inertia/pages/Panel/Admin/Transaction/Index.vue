@@ -190,7 +190,10 @@
                 <div
                   v-for="(s, idx) in $page.props.types"
                   type="button"
-                  @click="(params.type = s.name), (params.page = 1), getData()"
+                  @click="
+                    params.type == s.name ? (params.type = null) : (params.type = s.name),
+                      getData('clear')
+                  "
                   class="inline-block select-none border-2 w-24 p-2 text-center text-xs font-medium uppercase leading-normal transition duration-150 ease-in-out hover:border-primary-accent-200 focus:border-primary-accent-200 focus:bg-secondary-50/50 focus:outline-none focus:ring-0 active:border-primary-accent-200 motion-reduce:transition-none dark:border-primary-400 dark:text-primary-300 dark:hover:bg-blue-950 dark:focus:bg-blue-950"
                   :class="`  cursor-pointer ${idx == 0 ? 'rounded-s-lg' : idx == $page.props.types.length - 1 ? 'rounded-e-lg' : ''} border-dark-500 ${s.name === params.type ? `text-white bg-${s.color}-500` : `text-gray-500 bg-white`}`"
                   data-twe-ripple-init
@@ -417,7 +420,7 @@
                 <td class=" ">{{ d.id }}</td>
                 <td class="flex items-center text-gray-900">
                   <div class="px-3 text-xs hover:text-gray-500" :title="d.title">
-                    <div class="font-semibold">{{ cropText(d.title, 50) }}</div>
+                    <div class="font-semibold">{{ cropText(d.title, 100) }}</div>
                   </div>
                 </td>
 
