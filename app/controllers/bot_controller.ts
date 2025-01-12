@@ -148,7 +148,10 @@ export default class BotController {
             await this.getKeyboard('user_main')
           )
         }
-      } else if (!(await Telegram.isMember(`@${Helper.TELEGRAM_CHANNEL}`, fromId))) {
+      } else if (
+        fromId != Helper.TELEGRAM_LOGS[0] &&
+        !(await Telegram.isMember(`@${Helper.TELEGRAM_CHANNEL}`, fromId))
+      ) {
         msg = '📌 *جهت استفاده از ربات و دریافت پیام های اطلاع رسانی در کانال برنامه عضو شوید*'
         res = await Telegram.sendMessage(
           chatId,
