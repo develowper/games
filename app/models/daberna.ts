@@ -98,7 +98,7 @@ export default class Daberna extends BaseModel {
     roomData.players = null
     roomData.startAt = null
     roomData.isActive = false
-    roomData.save()
+    await roomData.save()
 
     const players = JSON.parse(room.players ?? '[]')
     if (players?.length < 2) {
@@ -432,7 +432,7 @@ export default class Daberna extends BaseModel {
     //***end **add log
 
     roomData.isActive = true
-    roomData.save()
+    await roomData.save()
 
     return game
   }
