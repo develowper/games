@@ -9,6 +9,7 @@ import collect from 'collect.js'
 import app from '@adonisjs/core/services/app'
 import Setting from '#models/setting'
 import Log from '#models/log'
+import Telegram from '#services/telegram_service'
 
 export default class Daberna extends BaseModel {
   static table = 'daberna'
@@ -100,6 +101,7 @@ export default class Daberna extends BaseModel {
     // roomData.isActive = false
     await roomData.save()
 
+    console.log('players', room.players.length)
     const players = JSON.parse(room.players ?? '[]')
     if (players?.length < 2) {
       return null
@@ -335,6 +337,7 @@ export default class Daberna extends BaseModel {
     if (realTotalMoney > 0) {
       await game.save()
       room.clearCount++
+      Telegram.sendMessage(Helper.TELEGRAM_LOGS[0], `game ${game.id}`)
     }
     // console.log(boards.map((item) => item.card))
     const af = await AgencyFinancial.find(1)
