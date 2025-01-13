@@ -206,7 +206,7 @@ export default class Telegram {
     }
   }
 
-  public static async logAdmins(msg: string, mode: any = null, topic: any = this.TOPIC_LOGS) {
+  public static async logAdmins(msg: string, mode: any = null, topic: any = null) {
     let res: any = null
     for (let i = 0; i < Helper.TELEGRAM_LOGS.length; i++) {
       const log = Helper.TELEGRAM_LOGS[i]
