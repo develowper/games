@@ -88,8 +88,17 @@ export default class Daberna extends BaseModel {
     return card
   }
 
-  public static async makeGame(room: Room) {
+  public static async makeGame(roomData: Room) {
     if (!app.isReady) return
+
+    const room = roomData
+
+    roomData.playerCount = 0
+    roomData.cardCount = 0
+    roomData.players = null
+    roomData.startAt = null
+    roomData.isActive = false
+    roomData.save()
 
     const players = JSON.parse(room.players ?? '[]')
     if (players?.length < 2) {
@@ -422,11 +431,8 @@ export default class Daberna extends BaseModel {
 
     //***end **add log
 
-    room.playerCount = 0
-    room.cardCount = 0
-    room.players = null
-    room.startAt = null
-    room.save()
+    roomData.isActive = true
+    roomData.save()
 
     return game
   }
