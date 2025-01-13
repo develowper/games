@@ -48,8 +48,8 @@ export default class Transaction extends BaseModel {
     toId,
     amount,
     agencyId,
-    gateway = null,
-    title = null
+    gateway: string | null = null,
+    title: string | null = null
   ): Promise<Transaction> {
     // const i18n = i18nManager.locale(env.get('LOCALE', ''))
     //

@@ -351,7 +351,7 @@ export default class Daberna extends BaseModel {
         af.agencyId
       )
     }
-
+    let title
     for (const w of rowWinners) {
       const user = users.where('id', w.user_id).first()
       if (!user) continue
@@ -364,7 +364,11 @@ export default class Daberna extends BaseModel {
       user.todayPrize += rowWinnerPrize
       user.lastWin = DateTime.now()
       user.save()
-
+      title = __(`*_from_*_to_*`, {
+        item1: __(`row_win`),
+        item2: `${__(`daberna`)} (${game.id})`,
+        item3: `${__(`user`)} (${user.username})`,
+      })
       if (user?.role == 'us') {
         await Transaction.add(
           'row_win',
@@ -373,7 +377,9 @@ export default class Daberna extends BaseModel {
           'user',
           user?.id,
           rowWinnerPrize,
-          user?.agencyId
+          user?.agencyId,
+          null,
+          title
         )
       }
     }
@@ -391,6 +397,11 @@ export default class Daberna extends BaseModel {
       user.lastWin = DateTime.now()
       user?.save()
 
+      title = __(`*_from_*_to_*`, {
+        item1: __(`win`),
+        item2: `${__(`daberna`)} (${game.id})`,
+        item3: `${__(`user`)} (${user.username})`,
+      })
       if (user?.role == 'us') {
         await Transaction.add(
           'win',
@@ -399,7 +410,9 @@ export default class Daberna extends BaseModel {
           'user',
           user?.id,
           winnerPrize,
-          user?.agencyId
+          user?.agencyId,
+          null,
+          title
         )
       }
     }
