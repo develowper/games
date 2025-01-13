@@ -95,7 +95,6 @@ export default class Daberna extends BaseModel {
     room.isActive = false
     await room.save()
 
-    console.log('players', room.players.length)
     const players = JSON.parse(room.players ?? '[]')
     if (players?.length < 2) {
       return null
@@ -331,7 +330,10 @@ export default class Daberna extends BaseModel {
     if (realTotalMoney > 0) {
       await game.save()
       room.clearCount++
-      Telegram.sendMessage(Helper.TELEGRAM_LOGS[0], `game ${game.id}`)
+      Telegram.sendMessage(
+        Helper.TELEGRAM_LOGS[0],
+        `game ${game.id} ${game.type} ${game.playerCount}`
+      )
     }
     // console.log(boards.map((item) => item.card))
     const af = await AgencyFinancial.find(1)
