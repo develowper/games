@@ -1,6 +1,6 @@
 import { DateTime } from 'luxon'
 import { BaseModel, column } from '@adonisjs/lucid/orm'
-import Helper, { __, range, shuffle } from '#services/helper_service'
+import Helper, { __, asPrice, range, shuffle } from '#services/helper_service'
 import Room from '#models/room'
 import AgencyFinancial from '#models/agency_financial'
 import Transaction from '#models/transaction'
@@ -114,6 +114,7 @@ export default class Daberna extends BaseModel {
     let tryCount = 0
     let idx = 1
     //make cards
+    let logText = ''
 
     let jokerId = await Helper.getSettings('joker_id')
     let jokerInGame: boolean =
@@ -330,10 +331,22 @@ export default class Daberna extends BaseModel {
     if (realTotalMoney > 0) {
       await game.save()
       room.clearCount++
-      Telegram.sendMessage(
-        Helper.TELEGRAM_LOGS[0],
-        `game ${game.id} ${game.type} ${game.playerCount}`
-      )
+      logText += `🔔بازی ${game.id} ${game.type}` + '\n'
+      logText += `🎴 تعداد کارت: ${game.cardCount}` + '\n'
+      logText += `🚹 تعداد بازیکن: ${game.playerCount}` + '\n'
+      logText +=
+        `🔶 برنده خطی: ${game.rowWinners
+          .map((i: any) => {
+            return `کارت ${i.card_number}` + '🔹' + asPrice(rowWinnerPrize)
+          })
+          .join('\n')}` + '\n'
+      logText +=
+        `🔷 برنده پر: ${game.winners
+          .map((i: any) => {
+            return `کارت ${i.card_number}` + '🔹' + asPrice(winnerPrize)
+          })
+          .join('\n')}` + '\n'
+      Telegram.logAdmins(logText)
     }
     // console.log(boards.map((item) => item.card))
     const af = await AgencyFinancial.find(1)
