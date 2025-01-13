@@ -431,7 +431,7 @@ export default class Daberna extends BaseModel {
 
     //***end **add log
 
-    await roomData.save()
+    await room.save()
 
     return game
   }
