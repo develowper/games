@@ -691,7 +691,7 @@ export default {
             this.data[params.idx].payedAt = response.data.payed_at
           }
           if (response.data.removed) {
-            this.getData()
+            this.getData(true)
           }
         })
 
