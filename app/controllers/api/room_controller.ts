@@ -27,7 +27,7 @@ export default class RoomController {
 
   async get({ response, request }: HttpContext) {
     let query = Room.query()
-    query = query.where('is_active', true)
+    // query = query.where('is_active', true)
     if (request.input('id')) query = query.where('id', request.input('id'))
     const data = await query
     return response.json({ data: data.map((item) => item.serialize()) })
@@ -37,7 +37,7 @@ export default class RoomController {
     const user = auth.user as User
     const roomType = request.input('room_type')
     const cardCount = Number.parseInt(request.input('card_count'))
-    const room = await Room.query().where('type', roomType).first()
+    const room = await Room.query().where('is_active', true).where('type', roomType).first()
 
     if (!room || Number.isNaN(cardCount)) {
       return response
