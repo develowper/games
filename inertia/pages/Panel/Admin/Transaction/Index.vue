@@ -690,6 +690,9 @@ export default {
           if (response.data.payed_at) {
             this.data[params.idx].payedAt = response.data.payed_at
           }
+          if (response.data.removed) {
+            this.getData()
+          }
         })
 
         .catch((error) => {

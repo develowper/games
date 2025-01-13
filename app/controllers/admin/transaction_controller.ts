@@ -68,6 +68,15 @@ export default class TransactionController {
           payed_at: data.payedAt,
         })
         break
+
+      case 'remove':
+        await data.delete()
+        return response.send({
+          status: 'success',
+          removed: true,
+          message: __('removed_successfully'),
+          payed_at: data.payedAt,
+        })
     }
   }
   async create({ request, response, auth, i18n }: HttpContext) {
