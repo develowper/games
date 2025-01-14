@@ -120,6 +120,17 @@ export default class TransactionsController {
             }),
           })
         }
+        const cards: { active: number; number: string; name: string }[] = JSON.parse(
+          (await getSettings('card_to_card')) ?? '[]'
+        )
+        if (!collect(cards).where('active', 1).first()) {
+          return response.status(Helper.ERROR_STATUS).json({
+            status: 'danger',
+            message: __('is_inactive_*', {
+              item: __('cardtocard'),
+            }),
+          })
+        }
 
         await Transaction.create({
           agencyId: user?.agencyId,
