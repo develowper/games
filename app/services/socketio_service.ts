@@ -122,6 +122,7 @@ export default class SocketIo {
     // var room = SocketIo.wsIo.sockets.adapter.rooms[room]
 
     SocketIo.wsIo?.to(`${room}`).emit(event, data)
+    SocketIo.wsIo?.socketsLeave(room)
   }
   public async emit(event: string, data: any) {
     emitter.emit('custom', { ...data, event: event })
