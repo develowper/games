@@ -500,7 +500,7 @@
                       (params.cmnd = 'withdraw'),
                         (params.description = __('wallet_withdraw_*_from_*', {
                           item1: `${asPrice(`${params.amount}`)} ${__('currency')}`,
-                          item2: `${__('user')} (${params.id})`,
+                          item2: `${__('user')} (${params.username || params.id})`,
                           item3: `${__('settlement')}`,
                         }))
                     "
@@ -517,7 +517,7 @@
                       (params.cmnd = 'charge'),
                         (params.description = __('wallet_charge_*_*_for_*', {
                           item1: `${asPrice(`${params.amount}`)} ${__('currency')}`,
-                          item2: `${__('user')} (${params.id})`,
+                          item2: `${__('user')} (${params.username || params.id})`,
                           item3: `${__('cardtocard')}`,
                         }))
                     "
@@ -699,13 +699,13 @@ export default {
       if (this.params.cmnd === 'withdraw')
         this.params.description = __('wallet_withdraw_*_from_*', {
           item1: `${asPrice(`${this.params.amount}`)} ${__('currency')}`,
-          item2: `${__('user')} (${this.params.id})`,
+          item2: `${__('user')} (${this.params.username || this.params.id})`,
           item3: `${__('settlement')}`,
         })
       else if (this.params.cmnd === 'charge')
         this.params.description = __('wallet_charge_*_*_for_*', {
           item1: `${asPrice(`${this.params.amount}`)} ${__('currency')}`,
-          item2: `${__('user')} (${this.params.id})`,
+          item2: `${__('user')} (${this.params.username || this.params.id})`,
           item3: `${__('cardtocard')}`,
         })
     },
