@@ -165,7 +165,9 @@ export default class SocketIo {
 
           if (room.playerCount > 1 && room.secondsRemaining == room.maxSeconds) {
             const game = await Daberna.makeGame(room)
-            SocketIo.wsIo?.to(`room-${room.type}`).emit('game-start', game)
+
+            // SocketIo.wsIo?.to(`room-${room.type}`).emit('game-start', game)
+            await this.emitToRoom(`room-${room.type}`, 'game-start', game)
           }
         }
         // clearInterval(SocketIo.timer)
