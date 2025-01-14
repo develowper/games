@@ -121,7 +121,7 @@ export default class SocketIo {
   public async emitToRoom(room: string, event: string, data: any) {
     // var room = SocketIo.wsIo.sockets.adapter.rooms[room]
 
-    SocketIo.wsIo?.to(`${room}`).emit(event, data)
+    SocketIo.wsIo?.to(`${room}`).volatile.emit(event, data)
   }
   public async emit(event: string, data: any) {
     emitter.emit('custom', { ...data, event: event })
@@ -167,7 +167,7 @@ export default class SocketIo {
 
             // SocketIo.wsIo?.to(`room-${room.type}`).emit('game-start', game)
             await this.emitToRoom(`room-${room.type}`, 'game-start', game)
-            SocketIo.wsIo?.in(`room-${room.type}`).socketsLeave(`room-${room.type}`)
+            // SocketIo.wsIo?.in(`room-${room.type}`).socketsLeave(`room-${room.type}`)
           }
         }
         // clearInterval(SocketIo.timer)
