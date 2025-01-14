@@ -378,6 +378,11 @@ class Helper {
         value: 1,
         title: __('cardtocard_minute_limit'),
       },
+      {
+        key: 'ref_commission_text',
+        velue: __('ref_text'),
+        title: __('ref_commission_text'),
+      },
       // {
       //   key: 'enamad',
       //   value: Helper.ENAMAD,

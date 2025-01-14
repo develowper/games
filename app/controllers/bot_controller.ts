@@ -217,12 +217,9 @@ export default class BotController {
       } else if (text === '💶 کسب درآمد 💶') {
         //
         msg = ''
-        const refCommissionPercent = (await Setting.findBy('key', 'ref_commission_percent'))?.value
+        const refCommissionText = (await Setting.findBy('key', 'ref_commission_text'))?.value
         // if (refCommissionPercent && Number.parseInt(refCommissionPercent)) {
-        msg +=
-          i18n.t('messages.ref_commission_text', {
-            item: Helper.AGENCY_REF_COUNT /*refCommissionPercent*/,
-          }) + '\n'
+        msg += refCommissionText + '\n'
         // res = await Telegram.sendMessage(fromId, msg, this.MODE_MARKDOWN, null, null)
         // } else return
 
