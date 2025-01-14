@@ -335,13 +335,13 @@ export default class Daberna extends BaseModel {
       logText += `🎴 تعداد کارت: ${game.cardCount}` + '\n'
       logText += `🚹 تعداد بازیکن: ${game.playerCount}` + '\n'
       logText +=
-        `🔶 برنده خطی: ${game.rowWinners
+        `🔶 برنده خطی: ${rowWinners
           .map((i: any) => {
             return `کارت ${i.card_number}` + '🔹' + asPrice(rowWinnerPrize)
           })
           .join('\n')}` + '\n'
       logText +=
-        `🔷 برنده پر: ${game.winners
+        `🔷 برنده پر: ${winners
           .map((i: any) => {
             return `کارت ${i.card_number}` + '🔹' + asPrice(winnerPrize)
           })
