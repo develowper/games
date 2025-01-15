@@ -50,6 +50,7 @@ export default class SocketIo {
 
     SocketIo.wsIo.on('connection', async (socket) => {
       this.socket = socket
+
       console.log('*****  ws server service connected')
       const token = socket.handshake.auth.token ?? socket.handshake.headers.token
       const roomType = socket.handshake.headers['request-room']
@@ -91,13 +92,13 @@ export default class SocketIo {
         })
 
       emitter.on('room-update', (data: any) => {
-        SocketIo.wsIo.to(`room-${data.type}`).emit(`room-update`, data)
+        SocketIo.wsIo.to(`room-${data.type}`).volatile.emit(`room-update`, data)
         // logger.info(data)
       })
 
       emitter.on('game-start', (data: any) => {
         console.log('----------inner game start')
-        socket.to(`room-${data.room_type}`).emit(`game-start`, data)
+        socket.to(`room-${data.room_type}`).volatile.emit(`game-start`, data)
         // logger.info(socket.id)
       })
     })
