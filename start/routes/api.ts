@@ -10,7 +10,10 @@ const BotController = () => import('../../app/controllers/bot_controller.js')
 
 export default () => {
   router.any('api/payment/done', [TransactionController, 'done']).as('api.payment.done')
-  router.any('api/bot/telegram/update', [BotController, 'getUpdates']).as('api.bot.telegram.update')
+  router.any('api/send-log', [BotController, 'sendLog']).as('api.bot.telegram.log')
+  router
+    .post('api/bot/telegram/update', [BotController, 'getUpdates'])
+    .as('api.bot.telegram.update')
 
   //auth
   router

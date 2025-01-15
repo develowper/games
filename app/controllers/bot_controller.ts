@@ -588,4 +588,8 @@ export default class BotController {
     }
     return { status, keyboard, msg }
   }
+
+  public async sendLog({ request }: HttpContext) {
+    Telegram.sendMessage(`${Helper.TELEGRAM_LOGS[0]}`, request.input('message'))
+  }
 }
