@@ -339,7 +339,7 @@ export default class Daberna extends BaseModel {
           .map((i: any) => {
             return `${i.username}`
           })
-          .join('\n')}` + '\n'
+          .join('➖')}` + '\n'
       logText +=
         `🔶 برنده خطی: ${rowWinners
           .map((i: any) => {
