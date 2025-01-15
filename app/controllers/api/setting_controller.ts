@@ -45,6 +45,7 @@ export default class SettingController {
       charge_title: settings.first((item) => item.key == 'charge_title')?.value,
       card_to_card_title: settings.first((item) => item.key == 'card_to_card_title')?.value,
       withdraw_title: settings.first((item) => item.key == 'withdraw_title')?.value,
+      room_refresh_time: Helper.ROOM_REFRESH_TIME,
       call_speed: Helper.CALL_SPEED,
       rooms: Helper.ROOMS,
       ticket_statuses: Helper.TICKET_STATUSES,
