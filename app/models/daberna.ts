@@ -97,6 +97,8 @@ export default class Daberna extends BaseModel {
 
     const players = JSON.parse(room.players ?? '[]')
     if (players?.length < 2) {
+      room.isActive = true
+      await room.save()
       return null
     }
     const info = Helper.DABERNA
