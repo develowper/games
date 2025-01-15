@@ -167,7 +167,7 @@ export default class SocketIo {
 
             // SocketIo.wsIo?.to(`room-${room.type}`).emit('game-start', game)
             await this.emitToRoom(`room-${room.type}`, 'game-start', game)
-            // SocketIo.wsIo?.in(`room-${room.type}`).socketsLeave(`room-${room.type}`)
+            SocketIo.wsIo?.in(`room-${room.type}`).socketsLeave(`room-${room.type}`)
           }
         }
         // clearInterval(SocketIo.timer)
