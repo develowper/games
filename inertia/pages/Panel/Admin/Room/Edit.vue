@@ -215,6 +215,23 @@
               </div>
               <div class="my-4">
                 <TextInput
+                  id="bot_percent"
+                  type="number"
+                  :placeholder="`${__('bot_speed')} (${__('percent')})`"
+                  classes="  "
+                  v-model="form.bot_percent"
+                  autocomplete="bot_percent"
+                  :error="form.errors.bot_percent"
+                >
+                  <template v-slot:prepend>
+                    <div class="p-3">
+                      <ChevronUpDownIcon class="h-5 w-5" />
+                    </div>
+                  </template>
+                </TextInput>
+              </div>
+              <div class="my-4">
+                <TextInput
                   id="row_win_percent"
                   type="number"
                   :placeholder="`${__('row_win_commission')} (${__('percent')})`"
@@ -321,6 +338,7 @@ export default {
         commission_percent: null,
         row_win_percent: null,
         win_percent: null,
+        bot_percent: null,
         rwp: null,
         status: null,
         _method: 'patch',
@@ -376,6 +394,7 @@ export default {
     this.form.commission_percent = this.data.commissionPercent
     this.form.row_win_percent = this.data.rowWinPercent
     this.form.win_percent = this.data.winPercent
+    this.form.bot_percent = this.data.botPercent
     this.form.rwp = this.data.rwp
   },
   methods: {

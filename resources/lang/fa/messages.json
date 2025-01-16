@@ -89,6 +89,8 @@
   "commission_percent": "درصد کمیسیون",
   "row_win_percent": "درصد بردخطی",
   "win_percent": "درصد بردکامل",
+  "bot_percent": "درصد ربات",
+  "bot_speed": "سرعت ربات",
   "new_user": "کاربر جدید",
   "create_user": "کاربر جدید",
   "register_info": "ثبت اطلاعات",

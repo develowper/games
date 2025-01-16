@@ -304,6 +304,20 @@
                   scope="col"
                   class="px-2 py-3 cursor-pointer duration-300 hover:text-gray-500 hover:scale-[105%]"
                   @click="
+                    (params.order_by = 'bot_percent'),
+                      (params.dir = params.dir == 'ASC' ? 'DESC' : 'ASC'),
+                      getData('clear')
+                  "
+                >
+                  <div class="flex items-center justify-center">
+                    <span class="px-2"> {{ __('bot_speed') }} </span>
+                    <ArrowsUpDownIcon class="w-4 h-4" />
+                  </div>
+                </th>
+                <th
+                  scope="col"
+                  class="px-2 py-3 cursor-pointer duration-300 hover:text-gray-500 hover:scale-[105%]"
+                  @click="
                     (params.order_by = 'is_active'),
                       (params.dir = params.dir == 'ASC' ? 'DESC' : 'ASC'),
                       (params.page = 1),
@@ -409,6 +423,9 @@
                 </td>
                 <td class="px-2 py-4">
                   <div>{{ d.winPercent }}</div>
+                </td>
+                <td class="px-2 py-4">
+                  <div>{{ d.botPercent }}</div>
                 </td>
 
                 <td class="px-2 py-4" data-te-dropdown-ref>
