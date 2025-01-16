@@ -117,6 +117,7 @@ export default class RoomController {
         data.commissionPercent = request.input('commission_percent')
         data.winPercent = request.input('win_percent')
         data.rowWinPercent = request.input('row_win_percent')
+        data.botPercent = request.input('bot_percent')
         data.rwp = request.input('rwp')
 
         data.isActive = request.input('status') == 'active'
