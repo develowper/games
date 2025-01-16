@@ -27,6 +27,7 @@ export default class extends BaseSchema {
       table.tinyint('row_win_percent').unsigned().defaultTo(Helper.DABERNA.rowWinPercent)
       table.tinyint('win_percent').unsigned().defaultTo(Helper.DABERNA.winPercent)
       table.timestamps()
+      table.tinyint('bot_percent').unsigned()
     })
 
     createRooms()

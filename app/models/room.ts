@@ -38,6 +38,8 @@ export default class Room extends BaseModel {
   declare starterId: number
 
   @column()
+  declare botPercent: number
+  @column()
   declare cardPrice: number
   @column()
   declare clearCount: number
