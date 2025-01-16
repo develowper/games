@@ -245,7 +245,7 @@
                   "
                 >
                   <div class="flex items-center justify-center">
-                    <span class="px-2"> {{ __('invite') }} </span>
+                    <span class="px-2"> {{ __('role') }} </span>
                     <ArrowsUpDownIcon class="w-4 h-4" />
                   </div>
                 </th>
