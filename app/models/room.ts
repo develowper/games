@@ -155,8 +155,9 @@ export default class Room extends BaseModel {
 
     if (!botUser /*|| beforeIds.includes(user?.id)*/) return
 
-    const cardCount = userCardCount ?? [1, 2, 3][Math.floor(Math.random() * 3)]
-
+    let cardCount = userCardCount ?? [1, 2, 3][Math.floor(Math.random() * 3)]
+    if (room.maxCardsCount - room.cardCount <= 3)
+      cardCount = userCardCount ?? room.maxCardsCount - room.cardCount
     if (room.setUserCardsCount(cardCount, botUser)) {
       room.playerCount++
       botUser.playCount++
