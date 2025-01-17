@@ -471,6 +471,7 @@ export default class TransactionController {
     const type = request.input('type')
     const dir = request.input('dir') ?? 'DESC'
     const payedAt = request.input('payed_at')
+    const paginate = request.input('paginate') ?? Helper.PAGINATE
     const sort = request.input('order_by') ?? 'created_at'
 
     let query = Transaction.query()
@@ -495,6 +496,6 @@ export default class TransactionController {
       else query.whereNull('payed_at')
     }
 
-    return response.json(await query.orderBy(sort, dir).paginate(page, Helper.PAGINATE))
+    return response.json(await query.orderBy(sort, dir).paginate(page, paginate))
   }
 }
