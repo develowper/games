@@ -438,18 +438,20 @@ export default class Daberna extends BaseModel {
       }
     }
     for (const user of inviterUsers) {
-      const financial = user.financial
-      financial.balance += refCommissionPrice
-      financial.save()
-      await Transaction.add(
-        'ref_commission',
-        'daberna',
-        game.id,
-        'user',
-        user.id,
-        refCommissionPrice,
-        user?.agencyId
-      )
+      if(refCommissionPrice>0) {
+        const financial = user.financial
+        financial.balance += refCommissionPrice
+        financial.save()
+        await Transaction.add(
+          'ref_commission',
+          'daberna',
+          game.id,
+          'user',
+          user.id,
+          refCommissionPrice,
+          user?.agencyId
+        )
+      }
     }
 
     //*****add log
