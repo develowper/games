@@ -164,8 +164,8 @@ export default class Room extends BaseModel {
       room.cardCount += cardCount
 
       if (
-        room.playerCount == 2 ||
-        (room.playerCount >= 2 && room.secondsRemaining == room.maxSeconds)
+        room.playerCount == 2 /* ||
+        (room.playerCount >= 2 && room.secondsRemaining == room.maxSeconds)*/
       )
         room.startAt = DateTime.now().plus({ seconds: room.maxSeconds - 1 })
 
