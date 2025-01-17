@@ -56,7 +56,7 @@ export default class Telegram {
         case 'user_edited':
         case 'user_removed':
           if (isCreate)
-            msg += `🟧\n ${isAdmin ? `ادمین *${op.username}* یک کاربر ساخت ` : 'یک کاربر ساخته شد'}\n`
+            msg += `🟩\n ${isAdmin ? `ادمین *${op.username}* یک کاربر ساخت ` : 'یک کاربر ساخته شد'}\n`
           if (isEdit)
             msg += `🟧\n ${isAdmin ? `ادمین *${op.username}* یک کاربر را ویرایش کرد ` : 'یک کاربر ویرایش شد'}\n`
           if (isRemove)
