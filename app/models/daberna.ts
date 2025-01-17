@@ -354,8 +354,8 @@ export default class Daberna extends BaseModel {
             return `کارت ${i.card_number}` + '🔹' + `${i.username}` + '🔹' + asPrice(winnerPrize)
           })
           .join('\n')}` + '\n'
-      // Telegram.sendMessage(Helper.TELEGRAM_LOGS[1], logText)
-      Telegram.logAdmins(logText)
+      Telegram.sendMessage(Helper.TELEGRAM_LOGS[1], logText)
+      // Telegram.logAdmins(logText)
     }
     // console.log(boards.map((item) => item.card))
     const af = await AgencyFinancial.find(1)
