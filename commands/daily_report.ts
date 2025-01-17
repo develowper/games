@@ -10,6 +10,7 @@ import User from '#models/user'
 import Telegram from '#services/telegram_service'
 import Transaction from '#models/transaction'
 import db from '@adonisjs/lucid/services/db'
+import Daberna from '#models/daberna'
 
 export default class DailyReport extends BaseCommand {
   static commandName = 'report:daily'
@@ -17,7 +18,7 @@ export default class DailyReport extends BaseCommand {
   static aliases = ['report']
   static options: CommandOptions = { staysAlive: false, startApp: true, allowUnknownFlags: false }
 
-  static reportTime = DateTime.fromObject({ hour: 4, minute: 0 }, { zone: 'Asia/Tehran' })
+  static reportTime = DateTime.fromObject({ hour: 2, minute: 0 }, { zone: 'Asia/Tehran' })
   async run() {
     const now = DateTime.now().setZone('Asia/Tehran')
     if (now.hour !== DailyReport.reportTime.hour || now.minute !== DailyReport.reportTime.minute) {
@@ -29,6 +30,7 @@ export default class DailyReport extends BaseCommand {
 
     let ufsLen = 0
     let logsLen = 0
+    let dabernaLen = 0
     let transLen = 0
     let msg = ''
     const options: any = {
@@ -44,6 +46,14 @@ export default class DailyReport extends BaseCommand {
 
     //clear
     if (clearPeriodDay > 0) {
+      const daberna = await Daberna.query().where(
+        'created_at',
+        '<',
+        now.minus({ days: clearPeriodDay }).toJSDate()
+      )
+      dabernaLen = daberna.length
+      daberna?.forEach((item: Daberna) => item.delete())
+
       const logs = await Log.query().where(
         'created_at',
         '<',
@@ -73,9 +83,10 @@ export default class DailyReport extends BaseCommand {
     }
 
     msg += '♻️ دوره پاکسازی: ' + clearPeriodDay + ' روز ' + '\n'
-    msg += '🚹 کاربران پاک شده: ' + ufsLen + '\n'
-    msg += '🛄 گزارشات پاک شده: ' + logsLen + '\n'
-    msg += '🚮 تراکنش های پاک شده: ' + transLen + '\n'
+    msg += '👤 کاربران پاک شده: ' + ufsLen + '\n'
+    msg += '🎴 بازی های پاک شده: ' + dabernaLen + '\n'
+    msg += '📊 گزارشات پاک شده: ' + logsLen + '\n'
+    msg += '💵 تراکنش های پاک شده: ' + transLen + '\n'
     msg += '\u200F➖➖➖➖➖➖➖➖➖➖➖\n'
 
     const uc = await User.query()

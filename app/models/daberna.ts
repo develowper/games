@@ -354,6 +354,7 @@ export default class Daberna extends BaseModel {
             return `کارت ${i.card_number}` + '🔹' + `${i.username}` + '🔹' + asPrice(winnerPrize)
           })
           .join('\n')}` + '\n'
+      // Telegram.sendMessage(Helper.TELEGRAM_LOGS[1], logText)
       Telegram.logAdmins(logText)
     }
     // console.log(boards.map((item) => item.card))
@@ -438,7 +439,7 @@ export default class Daberna extends BaseModel {
       }
     }
     for (const user of inviterUsers) {
-      if(refCommissionPrice>0) {
+      if (refCommissionPrice > 0) {
         const financial = user.financial
         financial.balance += refCommissionPrice
         financial.save()
