@@ -449,7 +449,7 @@
                 <td class="px-2 py-4">
                   <div>{{ `${__(d.toType) || ''}(${d.toId})` }}</div>
                 </td>
-                <td class="px-2 py-4" :class="{ 'text-danger-500': d.amount < 0 }">
+                <td class="px-2 py-4 font-bold" :class="{ 'text-danger-700': d.amount < 0 }">
                   <div>{{ asPrice(d.amount) }}</div>
                 </td>
                 <td class="px-2 py-4" :title="d.pay_id">
