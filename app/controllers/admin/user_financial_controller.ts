@@ -20,7 +20,7 @@ export default class UserFinancialController {
     const dir = request.input('dir') ?? 'DESC'
     const payedAt = request.input('payed_at')
     const sort = `${forTable}.${request.input('order_by') ?? 'created_at'}`
-
+    const paginate = request.input('paginate') ?? Helper.PAGINATE
     let query = db.from('users').join('user_financials', (query) => {
       query.on('users.id', '=', 'user_financials.user_id')
       // .andOnVal('user_logins.created_at', '>', '2020-10-09')
@@ -52,6 +52,6 @@ export default class UserFinancialController {
       query.where('users.id', userId)
     }
 
-    return response.json(await query.orderBy(sort, dir).paginate(page, Helper.PAGINATE))
+    return response.json(await query.orderBy(sort, dir).paginate(page, paginate))
   }
 }
