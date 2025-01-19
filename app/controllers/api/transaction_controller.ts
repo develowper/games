@@ -57,7 +57,7 @@ export default class TransactionsController {
 
         desc = __('wallet_charge_*_by_*', {
           item1: `${asPrice(`${amount}`)} ${__('currency')}`,
-          item2: `${__(fromType)} (${fromId})`,
+          item2: `${__(fromType)} (${user?.username ?? fromId})`,
         })
         const res = await Transaction.makePayUrl(
           orderId,
