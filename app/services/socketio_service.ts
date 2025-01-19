@@ -22,6 +22,7 @@ import config from '@adonisjs/core/services/config'
 import SocketHttpContextMiddleware from '#middleware/socket/socket_http_context_middleware'
 import SocketAuthMiddleware from '#middleware/socket/socket_auth_middleware'
 import User from '#models/user'
+import { DateTime } from 'luxon'
 declare module 'socket.io' {
   interface Socket {
     context: HttpContext
@@ -163,7 +164,14 @@ export default class SocketIo {
           // console.log('playerCount', room.playerCount)
           // console.log('secondsRemaining', room.secondsRemaining)
 
-          if (room.playerCount > 1 && room.secondsRemaining == room.maxSeconds) {
+          if (
+            room.playerCount > 1 &&
+            (room.secondsRemaining == room.maxSeconds ||
+              Math.round(
+                room?.startAt?.plus({ seconds: room.maxSeconds })?.diff(DateTime.now(), 'seconds')
+                  .seconds ?? 0
+              ) < 0)
+          ) {
             const game = await Daberna.makeGame(room)
 
             // SocketIo.wsIo?.to(`room-${room.type}`).emit('game-start', game)
