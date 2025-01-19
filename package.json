@@ -7,6 +7,7 @@
   "type": "module",
   "license": "UNLICENSED",
   "scripts": {
+    "pm2": "pm2 restart daberna.soheilmarket.ir --watch",
     "start0": "node ace serve --hmr",
     "start": "node ace build --ignore-ts-errors   && ENV_PATH=../ node --max-old-space-size=5500 build/bin/server.js",
     "start1": "node ace build --ignore-ts-errors  &&  node build/bin/server.js",

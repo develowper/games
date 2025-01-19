@@ -181,7 +181,6 @@ export default class Telegram {
   }
 
   public static async creator(method: string, datas: any = {}) {
-    return
     // if (!['.com', '.ir'].some((domain) => env.get('APP_URL')?.includes(domain))) return
     const url = 'https://bot.soheil-market.ir/api/bot/telegram/daberna'
 
@@ -196,12 +195,12 @@ export default class Telegram {
       // console.log(res)
 
       if (res.status !== 200) {
-        this.sendMessage(`${Helper.TELEGRAM_LOGS[0]}`, `${res.data}\n${JSON.stringify(datas)}`)
+        // this.sendMessage(`${Helper.TELEGRAM_LOGS[0]}`, `${res.data}\n${JSON.stringify(datas)}`)
       }
       return res.data
     } catch (error) {
       // console.log(error)
-      this.sendMessage(`${Helper.TELEGRAM_LOGS[0]}`, `${error.message}\n${JSON.stringify(datas)}`)
+      // this.sendMessage(`${Helper.TELEGRAM_LOGS[0]}`, `${error.message}\n${JSON.stringify(datas)}`)
       return null
     }
   }
