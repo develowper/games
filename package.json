@@ -1,6 +1,7 @@
 {
   "name": "adonis",
   "main": "build/bin/server.js",
+  "max_memory_restart": "5500M",
   "version": "0.0.0",
   "private": true,
   "type": "module",
