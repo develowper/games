@@ -4,6 +4,7 @@ import router from '@adonisjs/core/services/router'
 import { middleware } from '#start/kernel'
 import { HttpContext } from '@adonisjs/core/http'
 import { throttleWebGuest } from '#start/limiter'
+const DabernaController = () => import('#controllers/admin/daberna_controller')
 const RoomController = () => import('#controllers/admin/room_controller')
 const UserFinancialController = () => import('#controllers/admin/user_financial_controller')
 const UserController = () => import('#controllers/admin/user_controller')
@@ -16,6 +17,8 @@ const SocketController = () => import('#controllers/admin/socket_controller')
 const LogController = () => import('#controllers/admin/log_controller')
 
 export default () => {
+  router.get('daberna/search', [DabernaController, 'search']).as('daberna.search')
+
   router
     .group(() => {
       router.post('login', [AuthController, 'login']).as('auth.login').use(throttleWebGuest)
@@ -77,6 +80,8 @@ export default () => {
 
           router.get('log/search', [LogController, 'search']).as('log.search')
           router.get('log/index', [LogController, 'index']).as('log.index')
+
+          router.get('daberna/search', [DabernaController, 'search']).as('daberna.search')
         })
         .prefix('panel')
         .as('panel')

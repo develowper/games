@@ -264,6 +264,14 @@
                     <ArrowsUpDownIcon class="w-4 h-4" />
                   </div>
                 </th>
+                <th
+                  scope="col"
+                  class="px-2 py-3 cursor-pointer duration-300 hover:text-gray-500 hover:scale-[105%]"
+                >
+                  <div class="flex items-center justify-center">
+                    <span class="px-2"> {{ __('game_statistics') }}</span>
+                  </div>
+                </th>
               </tr>
             </thead>
             <tbody class=" ">
@@ -416,7 +424,36 @@
                     </li>
                   </ul>
                 </td>
-
+                <td>
+                  <UserSelector
+                    :colsData="['id', 'type', 'win_prize', 'row_win_prize', 'created_at']"
+                    :labelsData="['game', 'type', 'win_prize', 'row_win_prize', 'created_at']"
+                    :callback="{ created_at: (e) => toShamsi(e, true) }"
+                    :link="route('admin.panel.daberna.search') + `?user_id=${d.id}`"
+                    :label="null"
+                    :error="null"
+                    :id="'user' + d.id"
+                    :preload="null"
+                  >
+                    <template v-slot:selector="props">
+                      <div
+                        :class="props.selectedText ? 'py-2' : 'py-2'"
+                        class="px-4 border border-gray-200 rounded-lg hover:bg-gray-100 cursor-pointer flex items-center"
+                      >
+                        <div class="grow text-sm">
+                          {{ __('view') }}
+                        </div>
+                        <div
+                          v-if="props.selectedText"
+                          class="bg-danger rounded mx-2 cursor-pointer text-white hover:bg-danger-400"
+                          @click.stop="props.clear()"
+                        >
+                          <XMarkIcon class="w-5 h-5" />
+                        </div>
+                      </div>
+                    </template>
+                  </UserSelector>
+                </td>
                 <td class="px-2 py-4">
                   <!-- Actions Group -->
                   <div

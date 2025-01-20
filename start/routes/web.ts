@@ -2,6 +2,7 @@ import router from '@adonisjs/core/services/router'
 
 const AuthController = () => import('#controllers/auth_controller')
 const PanelController = () => import('#controllers/panel_controller')
+const DabernaController = (await import('#controllers/admin/daberna_controller'))?.default
 
 import { middleware } from '#start/kernel'
 import Daberna from '#models/daberna'
@@ -20,6 +21,7 @@ import Telegram from '#services/telegram_service'
 import collect from 'collect.js'
 export default function () {
   router.get('test', async () => {
+    // return DabernaController.search()
     return
     const room = await Room.first()
     room.players = JSON.stringify([
@@ -29,7 +31,7 @@ export default function () {
     room.cardCount = 4
     room.playerCount = 2
     room.save()
-    return room
+    // return room
     return Daberna.makeGame(room)
 
     return await Setting.findBy({ key: 'policy' })
