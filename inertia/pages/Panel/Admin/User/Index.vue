@@ -424,6 +424,7 @@
                     </li>
                   </ul>
                 </td>
+
                 <td>
                   <UserSelector
                     :colsData="['id', 'type', 'win_prize', 'row_win_prize', 'created_at']"
