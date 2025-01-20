@@ -428,7 +428,11 @@
                   <UserSelector
                     :colsData="['id', 'type', 'win_prize', 'row_win_prize', 'created_at']"
                     :labelsData="['game', 'type', 'win_prize', 'row_win_prize', 'created_at']"
-                    :callback="{ created_at: (e) => toShamsi(e, true) }"
+                    :callback="{
+                      created_at: (e) => toShamsi(e, true),
+                      win_prize: (e) => asPrice(e),
+                      row_win_prize: (e) => asPrice(e),
+                    }"
                     :link="route('admin.panel.daberna.search') + `?user_id=${d.id}`"
                     :label="null"
                     :error="null"
