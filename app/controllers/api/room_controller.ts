@@ -82,8 +82,9 @@ export default class RoomController {
       room.cardCount += cardCount
 
       if (
-        (room.playerCount == 2 && userBeforeCardCounts == 0) ||
-        (room.playerCount > 2 && room.secondsRemaining == room.maxSeconds)
+        room.playerCount == 2 &&
+        userBeforeCardCounts == 0 /*||
+        (room.playerCount > 2 && room.secondsRemaining == room.maxSeconds)*/
       )
         room.startAt = DateTime.now().plus({ seconds: room.maxSeconds - 1 })
 
