@@ -122,9 +122,9 @@ export default class RoomController {
         start_with_me: room.startWithMe,
         seconds_remaining: room.playerCount > 1 ? room.secondsRemaining : room.maxSeconds,
         player_count: room.playerCount,
-        user_id: user?.id,
-        username: user?.username,
-        user_card_count: userBeforeCardCounts + cardCount,
+        // user_id: user?.id,
+        // username: user?.username,
+        // user_card_count: userBeforeCardCounts + cardCount,
         card_count: room.cardCount,
       })
       // emitter.emit(`user-${user.id}-info`, { user_balance: userFinancials.balance })
