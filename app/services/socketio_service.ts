@@ -179,7 +179,7 @@ export default class SocketIo {
           }
         }
         // clearInterval(SocketIo.timer)
-      }, 5000)
+      }, 1000)
     })
   }
 
