@@ -127,7 +127,7 @@ export default class RoomController {
         user_card_count: userBeforeCardCounts + cardCount,
         card_count: room.cardCount,
       })
-      emitter.emit(`user-${user.id}-info`, { user_balance: userFinancials.balance })
+      // emitter.emit(`user-${user.id}-info`, { user_balance: userFinancials.balance })
 
       // Daberna.startRooms([room])
     }
