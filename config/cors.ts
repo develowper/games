@@ -11,7 +11,7 @@ const corsConfig = defineConfig({
   origin: ['https://pwa.soheilmarket.ir'],
   methods: ['GET', 'HEAD', 'POST', 'PUT', 'DELETE'],
   headers: true,
-  exposeHeaders: [],
+  exposeHeaders: ['request-room'],
   credentials: true,
   maxAge: 90,
 })
