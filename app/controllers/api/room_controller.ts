@@ -129,7 +129,7 @@ export default class RoomController {
       })
       emitter.emit(`user-${user.id}-info`, { user_balance: userFinancials.balance })
 
-      Daberna.startRooms([room])
+      // Daberna.startRooms([room])
     }
   }
 }
