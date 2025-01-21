@@ -42,7 +42,8 @@ export default class SocketIo {
     // console.log('*********   socket service inited ')
     SocketIo.wsIo = new Server(server.getNodeServer(), {
       cors: {
-        origin: ["'https://daberna.soheilmarket.ir'", 'https://pwa.soheilmarket.ir'],
+        origin: '*',
+        // origin: ["'https://daberna.soheilmarket.ir'", 'https://pwa.soheilmarket.ir'],
       },
     })
 
