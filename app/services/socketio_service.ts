@@ -43,6 +43,7 @@ export default class SocketIo {
     SocketIo.wsIo = new Server(server.getNodeServer(), {
       cors: {
         origin: '*',
+        allowedHeaders: ['request-room'],
         // origin: ["'https://daberna.soheilmarket.ir'", 'https://pwa.soheilmarket.ir'],
       },
     })
