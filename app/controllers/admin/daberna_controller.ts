@@ -38,9 +38,7 @@ export default class DabernaController {
       i.id = item.id
       i.type = item.type
       i.created_at = item.createdAt
-      i.card_count = JSON.parse(item.boards)
-        .filter((u) => u.user_id == userId)
-        .length()
+      i.card_count = JSON.parse(item.boards).filter((u) => u.user_id == userId).length
       i.win_prize = JSON.parse(item.winners)
         .filter((u) => u.user_id == userId)
         .reduce((sum, item) => sum + item.prize, 0)
