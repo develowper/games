@@ -517,6 +517,7 @@ export default class Daberna extends BaseModel {
       // console.log(`players ${room.playerCount}`, `time ${room.secondsRemaining}`)
 
       if (
+        room.isActive &&
         room.playerCount > 1 &&
         (room.secondsRemaining == room.maxSeconds || room.cardCount >= room.maxCardsCount)
       ) {
