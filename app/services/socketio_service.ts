@@ -165,12 +165,12 @@ export default class SocketIo {
           // console.log('secondsRemaining', room.secondsRemaining)
 
           const startAt = room?.startAt
-          console.log(
-            room.type,
-            startAt?.plus({ seconds: room.maxSeconds })?.diff(DateTime.now(), 'seconds')
-          )
-          console.log('startAt', startAt)
-          console.log('startAtPlus', startAt?.plus({ seconds: room.maxSeconds }))
+          // console.log(
+          //   room.type,
+          //   startAt?.plus({ seconds: room.maxSeconds })?.diff(DateTime.now(), 'seconds')
+          // )
+          // console.log('startAt', startAt)
+          // console.log('startAtPlus', startAt?.plus({ seconds: room.maxSeconds }))
           if (
             room.playerCount > 1 &&
             (room.secondsRemaining == room.maxSeconds ||
