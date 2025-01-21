@@ -131,5 +131,7 @@ export default class RoomController {
 
       // Daberna.startRooms([room])
     }
+
+    return response.json({ user_balance: userFinancials?.balance })
   }
 }
