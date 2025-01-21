@@ -166,7 +166,7 @@ export default class SocketIo {
 
           const startAt = room?.startAt
           console.log(
-            'seconds ',
+            room.type,
             startAt?.plus({ seconds: room.maxSeconds })?.diff(DateTime.now(), 'seconds')
           )
           if (
