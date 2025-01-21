@@ -11,7 +11,7 @@ export default class DabernaController {
     const search = request.input('search')
     const dir = request.input('dir') ?? 'DESC'
     let sort = request.input('order_by') ?? 'created_at'
-    sort = ['row_win_prize', 'win_prize'].includes(sort) ? 'id' : sort
+    sort = ['row_win_prize', 'win_prize', 'card_count'].includes(sort) ? 'id' : sort
     let query = Daberna.query()
 
     if (userId) {
@@ -33,10 +33,14 @@ export default class DabernaController {
         created_at: null,
         win_prize: 0,
         row_win_prize: 0,
+        card_count: 0,
       }
       i.id = item.id
       i.type = item.type
       i.created_at = item.createdAt
+      i.card_count = JSON.parse(item.boards)
+        .filter((u) => u.user_id == userId)
+        .length()
       i.win_prize = JSON.parse(item.winners)
         .filter((u) => u.user_id == userId)
         .reduce((sum, item) => sum + item.prize, 0)

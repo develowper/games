@@ -427,8 +427,22 @@
 
                 <td>
                   <UserSelector
-                    :colsData="['id', 'type', 'win_prize', 'row_win_prize', 'created_at']"
-                    :labelsData="['game', 'type', 'win_prize', 'row_win_prize', 'created_at']"
+                    :colsData="[
+                      'id',
+                      'type',
+                      'card_count',
+                      'win_prize',
+                      'row_win_prize',
+                      'created_at',
+                    ]"
+                    :labelsData="[
+                      'game',
+                      'type',
+                      'card_count',
+                      'win_prize',
+                      'row_win_prize',
+                      'created_at',
+                    ]"
                     :callback="{
                       created_at: (e) => toShamsi(e, true),
                       win_prize: (e) => asPrice(e),
