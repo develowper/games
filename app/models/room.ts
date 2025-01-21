@@ -141,6 +141,7 @@ export default class Room extends BaseModel {
     user: User | null = null,
     userCardCount: number | null = null
   ) {
+    if (!room.isActive) return
     const players = JSON.parse(room.players ?? '[]')
     const beforeIds = collect(players).pluck('user_id').toArray()
 

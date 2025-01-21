@@ -72,7 +72,7 @@ export default class DailyReport extends BaseCommand {
       const ufs = await UserFinancial.query()
         .whereNotIn(
           'user_id',
-          collect((await User.findBy('role', 'bo')) ?? [])
+          collect((await User.query().where('role', 'bo').whereNotIn('id', [1, 2, 3, 4, 5])) ?? [])
             .pluck('id')
             .toArray()
         )
