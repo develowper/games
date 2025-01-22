@@ -171,7 +171,7 @@ export default class Room extends BaseModel {
       )
         room.startAt = DateTime.now().plus({ seconds: room.maxSeconds - 1 })
 
-      room.save()
+      await room.save()
 
       switch (room.cardPrice) {
         case 5000:
@@ -192,7 +192,7 @@ export default class Room extends BaseModel {
           break
       }
 
-      botUser.save()
+      await botUser.save()
       // console.log('*************')
       // console.log(room.type)
       // console.log(room.cardCount)
@@ -213,7 +213,7 @@ export default class Room extends BaseModel {
         user_card_count: cardCount,
         card_count: room.cardCount,
       })
-      Daberna.startRooms([room])
+      await Daberna.startRooms([room])
     }
   }
 }

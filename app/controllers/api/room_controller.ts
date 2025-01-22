@@ -88,9 +88,9 @@ export default class RoomController {
       )
         room.startAt = DateTime.now().plus({ seconds: room.maxSeconds - 1 })
 
-      room.save()
+      await room.save()
       userFinancials.balance -= totalPrice
-      userFinancials.save()
+      await userFinancials.save()
 
       switch (room.cardPrice) {
         case 5000:
@@ -111,7 +111,7 @@ export default class RoomController {
           break
       }
 
-      user.save()
+      await user.save()
 
       emitter.emit('room-update', {
         type: roomType,
