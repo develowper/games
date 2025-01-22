@@ -68,7 +68,11 @@ export default class RoomController {
       return sendError(i18n.t('messages.validate.max_room_cards', { value: room.maxCardsCount }))
     }
 
-    const userFinancials = await UserFinancial.firstOrCreate({ userId: user?.id }, { balance: 0 })
+    const userFinancials = await UserFinancial.firstOrCreate(
+      { userId: user?.id },
+      { balance: 0 },
+      { client: trx }
+    )
     const totalPrice = room.cardPrice * cardCount
     // vine.compile(vine.object({
     //   totalPrice: vine.number().max(userFinancials.balance)
@@ -85,66 +89,69 @@ export default class RoomController {
         })
       )
     }
+    try {
+      if (room.setUserCardsCount(userBeforeCardCounts + cardCount)) {
+        if (userBeforeCardCounts == 0) {
+          room.playerCount++
+          user.playCount++
+        }
+        room.cardCount += cardCount
 
-    if (room.setUserCardsCount(userBeforeCardCounts + cardCount)) {
-      if (userBeforeCardCounts == 0) {
-        room.playerCount++
-        user.playCount++
-      }
-      room.cardCount += cardCount
-
-      if (
-        room.playerCount == 2 &&
-        userBeforeCardCounts == 0 /*||
+        if (
+          room.playerCount == 2 &&
+          userBeforeCardCounts == 0 /*||
         (room.playerCount > 2 && room.secondsRemaining == room.maxSeconds)*/
-      )
-        room.startAt = DateTime.now().plus({ seconds: room.maxSeconds - 1 })
+        )
+          room.startAt = DateTime.now().plus({ seconds: room.maxSeconds - 1 })
 
-      await room.useTransaction(trx).save()
+        await room.useTransaction(trx).save()
 
-      userFinancials.balance -= totalPrice
-      await userFinancials.save()
+        userFinancials.balance -= totalPrice
+        await userFinancials.useTransaction(trx).save()
 
-      switch (room.cardPrice) {
-        case 5000:
-          user.card5000Count += cardCount
-          user.todayCard5000Count += cardCount
-          break
-        case 10000:
-          user.card10000Count += cardCount
-          user.todayCard10000Count += cardCount
-          break
-        case 20000:
-          user.card20000Count += cardCount
-          user.todayCard20000Count += cardCount
-          break
-        case 50000:
-          user.card50000Count += cardCount
-          user.todayCard50000Count += cardCount
-          break
+        switch (room.cardPrice) {
+          case 5000:
+            user.card5000Count += cardCount
+            user.todayCard5000Count += cardCount
+            break
+          case 10000:
+            user.card10000Count += cardCount
+            user.todayCard10000Count += cardCount
+            break
+          case 20000:
+            user.card20000Count += cardCount
+            user.todayCard20000Count += cardCount
+            break
+          case 50000:
+            user.card50000Count += cardCount
+            user.todayCard50000Count += cardCount
+            break
+        }
+
+        await user.save()
+
+        emitter.emit('room-update', {
+          type: roomType,
+          cmnd: 'card-added',
+          game_id: room.clearCount,
+          cards: room.cardCount,
+          players: room.players,
+          start_with_me: room.startWithMe,
+          seconds_remaining: room.playerCount > 1 ? room.secondsRemaining : room.maxSeconds,
+          player_count: room.playerCount,
+          // user_id: user?.id,
+          // username: user?.username,
+          // user_card_count: userBeforeCardCounts + cardCount,
+          card_count: room.cardCount,
+        })
+        // emitter.emit(`user-${user.id}-info`, { user_balance: userFinancials.balance })
+
+        // Daberna.startRooms([room])
       }
-
-      await user.save()
-
-      emitter.emit('room-update', {
-        type: roomType,
-        cmnd: 'card-added',
-        game_id: room.clearCount,
-        cards: room.cardCount,
-        players: room.players,
-        start_with_me: room.startWithMe,
-        seconds_remaining: room.playerCount > 1 ? room.secondsRemaining : room.maxSeconds,
-        player_count: room.playerCount,
-        // user_id: user?.id,
-        // username: user?.username,
-        // user_card_count: userBeforeCardCounts + cardCount,
-        card_count: room.cardCount,
-      })
-      // emitter.emit(`user-${user.id}-info`, { user_balance: userFinancials.balance })
-
-      // Daberna.startRooms([room])
+      await trx.commit()
+    } catch (error) {
+      await trx.rollback()
     }
-    await trx.commit()
     return response.json({ user_balance: userFinancials?.balance })
   }
 }
