@@ -113,6 +113,7 @@
   "validate.min_count": " حداقل تعداد {item} {value}  است",
   "validate.max_count": " حداکثر تعداد {item} {value}  است",
   "validate.max_cards": "حداکثر کارت مجاز {value} عدد است",
+  "validate.max_room_cards": "حداکثر کارت مجاز اتاق {value} عدد است",
   "first_login_or_register": "ابتدا وارد شوید یا ثبت نام کنید",
   "not_found_*": "{item} یافت نشد",
   "is_incorrect_*": "{item} نادرست است",

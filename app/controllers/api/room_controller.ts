@@ -57,6 +57,9 @@ export default class RoomController {
     if (userBeforeCardCounts + cardCount > room.maxUserCardsCount) {
       return sendError(i18n.t('messages.validate.max_cards', { value: room.maxUserCardsCount }))
     }
+    if (room.cardCount + cardCount > room.maxCardsCount) {
+      return sendError(i18n.t('messages.validate.max_room_cards', { value: room.maxCardsCount }))
+    }
 
     const userFinancials = await UserFinancial.firstOrCreate({ userId: user?.id }, { balance: 0 })
     const totalPrice = room.cardPrice * cardCount
