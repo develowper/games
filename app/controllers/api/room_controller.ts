@@ -20,6 +20,7 @@ import Daberna from '#models/daberna'
 import i18nManager from '@adonisjs/i18n/services/main'
 import env from '#start/env'
 import { storage } from '../../../resources/js/storage.js'
+import db from '@adonisjs/lucid/services/db'
 
 @inject()
 export default class RoomController {
@@ -75,6 +76,8 @@ export default class RoomController {
     }
 
     if (room.setUserCardsCount(userBeforeCardCounts + cardCount)) {
+      const trx = await db.transaction()
+
       if (userBeforeCardCounts == 0) {
         room.playerCount++
         user.playCount++
@@ -88,7 +91,8 @@ export default class RoomController {
       )
         room.startAt = DateTime.now().plus({ seconds: room.maxSeconds - 1 })
 
-      await room.save()
+      await room.useTransaction(trx).save()
+      await trx.commit()
       userFinancials.balance -= totalPrice
       await userFinancials.save()
 
