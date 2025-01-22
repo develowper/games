@@ -38,9 +38,12 @@ export default class RoomController {
     const user = auth.user as User
     const roomType = request.input('room_type')
     const cardCount = Number.parseInt(request.input('card_count'))
-    const room = await Room.query().where('is_active', true).where('type', roomType).first()
-
     const trx = await db.transaction()
+    const room = await Room.query({ client: trx })
+      .where('is_active', true)
+      .where('type', roomType)
+      .first()
+
     if (!room || Number.isNaN(cardCount)) {
       await trx.commit()
       return response
