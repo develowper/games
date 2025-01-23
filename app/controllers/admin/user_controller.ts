@@ -179,7 +179,7 @@ export default class UserController {
         data.financial.card = request.input('card')
         data.financial.sheba = request.input('sheba')
 
-        data.financial.save()
+        await data.financial.save()
 
         data.fullName = request.input('full_name')
         data.username = request.input('username')
@@ -189,7 +189,7 @@ export default class UserController {
         if (request.input('password')) {
           data.password = request.input('password')
         }
-        data.save()
+        await data.save()
         session.flash('notification', { message: __('updated_successfully'), status: 'success' })
         Telegram.log(null, 'user_edited', data)
 

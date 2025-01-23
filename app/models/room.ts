@@ -213,7 +213,7 @@ export default class Room extends BaseModel {
         user_card_count: cardCount,
         card_count: room.cardCount,
       })
-      await Daberna.startRooms([room])
+      // await Daberna.startRooms([room])
     }
   }
 }

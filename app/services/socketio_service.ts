@@ -177,6 +177,7 @@ export default class SocketIo {
           if (
             room.playerCount > 1 &&
             (room.secondsRemaining == room.maxSeconds ||
+              room.cardCount >= room.maxCardsCount ||
               (startAt?.plus({ seconds: room.maxSeconds })?.diff(DateTime.now(), 'seconds')
                 .seconds ?? 0) < 0)
           ) {
