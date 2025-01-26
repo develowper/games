@@ -37,6 +37,7 @@ export default class UserFinancialController {
       'users.role as role',
       'users.is_active as is_active',
       'users.ref_count as ref_count',
+      'users.telegram_id as telegram_id',
       'users.created_at as created_at',
       'user_financials.balance as balance',
       'user_financials.card as card'
