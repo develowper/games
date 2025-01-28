@@ -22,7 +22,7 @@ import collect from 'collect.js'
 export default function () {
   router.get('test', async () => {
     // return DabernaController.search()
-    return
+    return await User.makeRefCode()
     const room = await Room.first()
     room.players = JSON.stringify([
       { user_id: 2, username: 'mojraj', user_role: 'us', card_count: 2 },

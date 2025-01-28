@@ -53,7 +53,7 @@ export default class UserController {
         username: request.input('username'),
         phone: request.input('phone'),
         isActive: true,
-        password: await hash.make(request.input('password')),
+        password: request.input('password'),
         agencyId: /*request.input('agency_id') ?? */ admin?.agencyId,
         refId: await User.makeRefCode(),
       })
