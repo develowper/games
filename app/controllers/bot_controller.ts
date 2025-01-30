@@ -380,7 +380,8 @@ export default class BotController {
         res = await Telegram.sendMessage(
           fromId,
           msg,
-          this.MODE_MARKDOWN,
+          null,
+          // this.MODE_MARKDOWN,
           null,
           await this.getKeyboard('user_profile')
         )
