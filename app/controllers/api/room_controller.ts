@@ -2,7 +2,7 @@
 
 import type { HttpContext } from '@adonisjs/core/http'
 import Room from '#models/room'
-import { asPrice, sendError, __ } from '#services/helper_service'
+import { asPrice, sendError, __, getRandomBetween } from '#services/helper_service'
 import UserFinancial from '#models/user_financial'
 import { inject } from '@adonisjs/core'
 import Helper from '#services/helper_service'
@@ -30,7 +30,16 @@ export default class RoomController {
     let query = Room.query()
     // query = query.where('is_active', true)
     if (request.input('id')) query = query.where('id', request.input('id'))
-    const data = await query
+    let data = await query
+
+    data = data.map((item: Room) => {
+      if (item.type == 'd5000') item.playerCount = getRandomBetween(70, 120)
+      else if (item.type == 'd10000') item.playerCount = getRandomBetween(50, 100)
+      else if (item.type == 'd20000') item.playerCount = getRandomBetween(0, 50)
+      else if (item.type == 'd50000') item.playerCount = getRandomBetween(0, 10)
+      return item
+    })
+
     return response.json({ data: data.map((item) => item.serialize()) })
   }
 

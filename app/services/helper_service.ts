@@ -607,6 +607,9 @@ class Helper {
   static async decrypt(str: any) {
     return encryption.decrypt(str)
   }
+  static getRandomBetween(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min
+  }
 }
 
 // export default Helper
@@ -636,5 +639,6 @@ export const {
   myMap,
   sleep,
   decrypt,
+  getRandomBetween,
 } = Helper
 export default Helper
