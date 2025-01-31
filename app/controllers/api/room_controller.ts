@@ -34,8 +34,8 @@ export default class RoomController {
 
     data = data.map((item: Room) => {
       if (item.type == 'd5000') item.playerCount = getRandomBetween(70, 120)
-      else if (item.type == 'd10000') item.playerCount = getRandomBetween(50, 100)
-      else if (item.type == 'd20000') item.playerCount = getRandomBetween(0, 50)
+      else if (item.type == 'd10000') item.playerCount = getRandomBetween(40, 70)
+      else if (item.type == 'd20000') item.playerCount = getRandomBetween(10, 20)
       else if (item.type == 'd50000') item.playerCount = getRandomBetween(0, 10)
       return item
     })
