@@ -53,6 +53,12 @@ export default class RoomController {
       .where('type', roomType)
       .first()
 
+    if (!user.isActive) {
+      await trx.commit()
+      return response
+        .status(Helper.ERROR_STATUS)
+        .json({ message: i18n.t('messages.is_inactive_*', { item: i18n.t('messages.user') }) })
+    }
     if (!room || Number.isNaN(cardCount)) {
       await trx.commit()
       return response

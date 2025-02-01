@@ -32,6 +32,14 @@ export default class TransactionsController {
     const now = DateTime.now()
     let desc
     const gapTransactionMinutes = await getSettings('cardtocard_minute_limit')
+
+    if (!user.isActive) {
+      return response.status(Helper.ERROR_STATUS).json({
+        status: 'danger',
+        message: i18n.t('messages.is_inactive_*', { item: i18n.t('messages.user') }),
+      })
+    }
+
     switch (type) {
       case 'charge':
         await request.validateUsing(chargeValidator)

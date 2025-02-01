@@ -311,7 +311,7 @@ export default class BotController {
               await inviter.save()
             }
           }
-
+          this.user.ip = request.ip()
           await this.updateUserStorage(null)
           Telegram.log(null, 'user_created', this.user)
         }

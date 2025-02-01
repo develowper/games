@@ -22,6 +22,7 @@ export default class User extends compose(BaseModel, AuthFinder) {
   static rememberMeTokens = DbRememberMeTokensProvider.forModel(User)
 
   public serializeExtras = true
+  public ip: any
 
   @hasMany(() => Post)
   declare posts: HasMany<typeof Post>
