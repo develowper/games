@@ -43,6 +43,7 @@ router.use([
   () => import('#middleware/detect_user_locale_middleware'),
   () => import('#middleware/initialize_bouncer_middleware'),
   () => import('#middleware/silent_auth_middleware'),
+  () => import('#middleware/block_ip_middleware')
 ])
 
 /**
