@@ -17,6 +17,7 @@ import Setting from '../../models/setting.js'
 import UserFinancial from '../../models/user_financial.js'
 import collect from 'collect.js'
 import AgencyFinancial from '../../models/agency_financial.js'
+import Daberna from '#models/daberna'
 export default class TransactionsController {
   //
   async create({ request, response, auth, i18n }: HttpContext) {
@@ -193,6 +194,20 @@ export default class TransactionsController {
             message: __('try_*_*_later', { item1: `${hour}`, item2: `${min}` }),
           })
         }
+
+        const played = await Daberna.query()
+          .where('boards', 'like', `%id":${fromId},%`)
+          .count('* as total')
+        const playedCount = played[0]?.$extras.total ?? 0
+        if (playedCount < Helper.PLAY_COUNT_FOR_ACTIVE_WINWHEEL)
+          return response.status(Helper.ERROR_STATUS).json({
+            status: 'danger',
+            message: __('you_most_play_*_for_winwheel_yours_*', {
+              item1: Helper.PLAY_COUNT_FOR_ACTIVE_WINWHEEL,
+              item2: playedCount,
+            }),
+          })
+
         const randomIndex = Math.floor(Math.random() * winWheel.labels.length)
         const winLabel = Number.parseInt(`${winWheel.labels[randomIndex].value}`)
 

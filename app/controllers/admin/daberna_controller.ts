@@ -15,7 +15,7 @@ export default class DabernaController {
     let query = Daberna.query()
 
     if (userId) {
-      query.where('boards', 'like', `%id":${userId}%`)
+      query.where('boards', 'like', `%id":${userId},%`)
     }
     if (search)
       query.where((q) =>
