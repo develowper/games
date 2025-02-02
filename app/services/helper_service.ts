@@ -92,6 +92,10 @@ class Helper {
   public static USER_ROLES = ['us', 'bo']
   public static TELEGRAM_LOGS = [72534783, 967072802 /*, 6270272894*/]
   public static ADMIN_ROLES = ['go', 'ad']
+  public static BLOCK_IPS = [
+    /*'94.24.99.175', '5.121.179.55', '91.108.5.21', '45.32.192.18'*/
+  ]
+
   public static USER_STATUSES = [
     { name: 'active', color: 'green' },
     { name: 'inactive', color: 'red' },

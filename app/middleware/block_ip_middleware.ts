@@ -1,14 +1,15 @@
 import type { HttpContext } from '@adonisjs/core/http'
 import type { NextFn } from '@adonisjs/core/types/http'
+import Helper from '#services/helper_service'
 
 export default class BlockIpMiddleware {
-  private blockedIps = ['94.24.99.175']
+  private blockedIps = Helper.BLOCK_IPS
   async handle(ctx: HttpContext, next: NextFn) {
     /**
      * Middleware logic goes here (before the next call)
      */
     if (this.blockedIps.includes(ctx.request.ip())) {
-      return ctx.response.unauthorized({ message: 'حساب شما مسدود شده است' })
+      return ctx.response.unauthorized({ message: 'You Are In BlackList' })
     }
 
     /**
