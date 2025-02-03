@@ -25,7 +25,11 @@ export default class UserController {
       case 'user':
         if (fullName && user?.fullName && fullName != user?.fullName)
           return response.badRequest({
-            message: __('not_editable_*', { item: __('full_name') }),
+            message: __('only_editable_by_admin_*', { item: __('full_name') }),
+          })
+        if (username && user?.username && username != user?.username)
+          return response.badRequest({
+            message: __('only_editable_by_admin_*', { item: __('username') }),
           })
         user
           ?.merge({
