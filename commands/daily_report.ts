@@ -65,9 +65,15 @@ export default class DailyReport extends BaseCommand {
       const trans = await Transaction.query()
         .where('type', 'charge')
         .whereNull('payed_at')
-        .where('created_at', '<', now.minus({ hours: 1 }).toJSDate())
+        .where('created_at', '<', now.minus({ days: clearPeriodDay }).toJSDate())
       transLen = trans.length
       trans?.forEach((item: Transaction) => item.delete())
+
+      const emptyTrans = await Transaction.query()
+        .where('type', 'charge')
+        .whereNull('payed_at')
+        .where('created_at', '<', now.minus({ hours: 1 }).toJSDate())
+      emptyTrans?.forEach((item: Transaction) => item.delete())
 
       const ufs = await UserFinancial.query()
         .whereNotIn(
