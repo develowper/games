@@ -47,20 +47,20 @@ export default class RoomController {
     const user = auth.user as User
     const roomType = request.input('room_type')
     const cardCount = Number.parseInt(request.input('card_count'))
-    const trx = await db.transaction()
-    const room = await Room.query({ client: trx })
+    // const trx = await db.transaction()
+    const room = await Room.query(/*{ client: trx }*/)
       .where('is_active', true)
       .where('type', roomType)
       .first()
 
     if (!user.isActive) {
-      await trx.commit()
+      // await trx.commit()
       return response
         .status(Helper.ERROR_STATUS)
         .json({ message: i18n.t('messages.is_inactive_*', { item: i18n.t('messages.user') }) })
     }
     if (!room || Number.isNaN(cardCount)) {
-      await trx.commit()
+      // await trx.commit()
       return response
         .status(Helper.ERROR_STATUS)
         .json({ message: i18n.t('messages.not_found_*', { item: i18n.t('messages.game_room') }) })
@@ -75,18 +75,18 @@ export default class RoomController {
     const userBeforeCardCounts = room.getUserCardCount()
 
     if (userBeforeCardCounts + cardCount > room.maxUserCardsCount) {
-      await trx.commit()
+      // await trx.commit()
       return sendError(i18n.t('messages.validate.max_cards', { value: room.maxUserCardsCount }))
     }
     if (room.cardCount + cardCount > room.maxCardsCount) {
-      await trx.commit()
+      // await trx.commit()
       return sendError(i18n.t('messages.validate.max_room_cards', { value: room.maxCardsCount }))
     }
 
     const userFinancials = await UserFinancial.firstOrCreate(
       { userId: user?.id },
-      { balance: 0 },
-      { client: trx }
+      { balance: 0 } /*,
+      { client: trx }*/
     )
     const totalPrice = room.cardPrice * cardCount
     // vine.compile(vine.object({
@@ -94,7 +94,7 @@ export default class RoomController {
     // },)).validate({ totalPrice })
 
     if (userFinancials.balance < totalPrice) {
-      await trx.commit()
+      // await trx.commit()
       // userFinancials.balance = 100000
       // userFinancials.save()
       return sendError(
@@ -119,10 +119,12 @@ export default class RoomController {
         )
           room.startAt = DateTime.now().plus({ seconds: room.maxSeconds - 1 })
 
-        await room.useTransaction(trx).save()
+        await room.save()
+        // await room.useTransaction(trx).save()
 
         userFinancials.balance -= totalPrice
-        await userFinancials.useTransaction(trx).save()
+        // await userFinancials.useTransaction(trx).save()
+        await userFinancials.save()
 
         switch (room.cardPrice) {
           case 5000:
@@ -163,9 +165,9 @@ export default class RoomController {
 
         // Daberna.startRooms([room])
       }
-      await trx.commit()
+      // await trx.commit()
     } catch (error) {
-      await trx.rollback()
+      // await trx.rollback()
     }
     return response.json({ user_balance: userFinancials?.balance })
   }
