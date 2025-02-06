@@ -37,7 +37,9 @@ export default class SettingController {
     const supportLinks = JSON.parse(
       settings.first((item: any) => item && item.key == 'support_links')?.value ?? '[]'
     )
-
+    console.log(cards)
+    console.log('****')
+    console.log(collect(cards).where('active', 1).random())
     return response.json({
       winwheel: JSON.parse(winWheel?.value),
       card_to_card: collect(cards).where('active', 1).random(),
