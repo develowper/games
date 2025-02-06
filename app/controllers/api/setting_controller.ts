@@ -39,7 +39,9 @@ export default class SettingController {
     )
     console.log(cards)
     console.log('****')
-    console.log(collect(cards).where('active', 1).random())
+    console.log(collect(cards).random())
+    console.log('****')
+    console.log(collect(cards).where('active', '1').random())
     return response.json({
       winwheel: JSON.parse(winWheel?.value),
       card_to_card: collect(cards).where('active', 1).random(),
