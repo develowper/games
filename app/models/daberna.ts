@@ -370,7 +370,13 @@ export default class Daberna extends BaseModel {
         'agency',
         af.agencyId,
         commissionPrice,
-        af.agencyId
+        af.agencyId,
+        null,
+        __(`*_from_*_to_*`, {
+          item1: __(`commission`),
+          item2: `${__(`daberna`)}${room.cardPrice} (${game.id})`,
+          item3: `${__(`agency`)} (${af.agencyId})`,
+        })
       )
     }
     let title
@@ -388,7 +394,7 @@ export default class Daberna extends BaseModel {
       user.save()
       title = __(`*_from_*_to_*`, {
         item1: __(`row_win`),
-        item2: `${__(`daberna`)} (${game.id})`,
+        item2: `${__(`daberna`)}${room.cardPrice} (${game.id})`,
         item3: `${__(`user`)} (${user.username})`,
       })
       if (user?.role == 'us') {
@@ -421,7 +427,7 @@ export default class Daberna extends BaseModel {
 
       title = __(`*_from_*_to_*`, {
         item1: __(`win`),
-        item2: `${__(`daberna`)} (${game.id})`,
+        item2: `${__(`daberna`)}${room.cardPrice} (${game.id})`,
         item3: `${__(`user`)} (${user.username})`,
       })
       if (user?.role == 'us') {
