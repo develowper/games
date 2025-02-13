@@ -95,12 +95,13 @@ export default class Daberna extends BaseModel {
     room.isActive = false
     await room.save()
 
-    const players = JSON.parse(room.players ?? '[]')
+    let players = JSON.parse(room.players ?? '[]')
     if (players?.length < 2) {
       room.isActive = true
       await room.save()
       return null
     }
+    players = shuffle(players)
     const info = Helper.DABERNA
     let numbers: number[] = shuffle(range(info.min, info.max))
     const numbersLen = numbers.length
