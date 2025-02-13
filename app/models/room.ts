@@ -115,7 +115,7 @@ export default class Room extends BaseModel {
     const beforeExists = collect(parsed).first((item: any) => item.user_id == user.id)
 
     if (!beforeExists) {
-      parsed.unshift({
+      parsed.push({
         user_id: user.id,
         username: user.username,
         user_role: user.role,
