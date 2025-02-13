@@ -60,7 +60,9 @@ export default class SocketIo {
       const roomType =
         socket.handshake.headers['request-room'] ?? socket.handshake.query['request-room']
 
-      console.log(socket.handshake.query)
+      // console.log(socket.handshake.query)
+      // console.log(roomType)
+      // console.log('**********')
       if (token) {
         this.user = await this.getTokenUser({ socket, token })
       } else {
