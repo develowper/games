@@ -95,13 +95,13 @@ export default class Daberna extends BaseModel {
     room.isActive = false
     await room.save()
 
-    let players = JSON.parse(room.players ?? '[]')
+    const players = JSON.parse(room.players ?? '[]')
     if (players?.length < 2) {
       room.isActive = true
       await room.save()
       return null
     }
-    players = shuffle(players)
+
     const info = Helper.DABERNA
     let numbers: number[] = shuffle(range(info.min, info.max))
     const numbersLen = numbers.length
@@ -116,6 +116,7 @@ export default class Daberna extends BaseModel {
     // }
     let tryCount = 0
     let idx = 1
+    let idxs = shuffle(range(1, room.cardCount))
     //make cards
     let logText = ''
 
@@ -128,7 +129,7 @@ export default class Daberna extends BaseModel {
         .fill(0)
         .forEach((i) => {
           boards.push({
-            card_number: idx++,
+            card_number: idxs.pop(),
             level: i,
             user_id: player.user_id,
             username: player.username,
@@ -137,6 +138,7 @@ export default class Daberna extends BaseModel {
           })
         })
     })
+
     // return boards.map((item) =>
     //   item.card
     //     .flat()
