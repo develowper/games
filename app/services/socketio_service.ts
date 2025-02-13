@@ -43,7 +43,8 @@ export default class SocketIo {
     SocketIo.wsIo = new Server(server.getNodeServer(), {
       cors: {
         origin: '*',
-        allowedHeaders: ['request-room'],
+        allowedHeaders: '*',
+        // allowedHeaders: ['request-room'],
         // origin: ["'https://daberna.soheilmarket.ir'", 'https://pwa.soheilmarket.ir'],
       },
     })
@@ -58,7 +59,7 @@ export default class SocketIo {
       const token = socket.handshake.auth.token ?? socket.handshake.headers.token
       const roomType = socket.handshake.headers['request-room']
 
-      // console.log(socket.handshake.headers)
+      console.log(socket.handshake.headers)
       if (token) {
         this.user = await this.getTokenUser({ socket, token })
       } else {
