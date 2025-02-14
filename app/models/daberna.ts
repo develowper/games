@@ -342,7 +342,7 @@ export default class Daberna extends BaseModel {
       logText +=
         `🧍🏼‍♂️ بازیکنان: ${players
           .map((i: any) => {
-            return `${i.username}`
+            return `${i.username}[${i.card_count}]`
           })
           .join('➖')}` + '\n'
       logText +=
@@ -357,6 +357,7 @@ export default class Daberna extends BaseModel {
             return `کارت ${i.card_number}` + '🔹' + `${i.username}` + '🔹' + asPrice(winnerPrize)
           })
           .join('\n')}` + '\n'
+      Telegram.sendMessage(Helper.TELEGRAM_LOGS[0], logText)
       Telegram.sendMessage(Helper.TELEGRAM_LOGS[1], logText)
       // Telegram.logAdmins(logText)
     }
