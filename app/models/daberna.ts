@@ -202,6 +202,12 @@ export default class Daberna extends BaseModel {
         const sameRowAndFullWinnerPolicy =
           tmpWinners.length > 0 &&
           tmpRowWinners.some((item) => item.user_id === tmpWinners[0].user_id)
+
+        if (sameRowAndFullWinnerPolicy) {
+          console.log(tmpWinners)
+          console.log('************')
+          console.log(tmpRowWinners)
+        }
         // if (tmpWinners.length > 0) {
         //   console.log('jokerPolicy', jokerPolicy)
         //   console.log('jokerPolicy', jokerPolicy)
@@ -211,7 +217,11 @@ export default class Daberna extends BaseModel {
           iterator = numbersLen
           break
         }
-        if ((rw && (rowWinnerPolicy || winnerPolicy)) || jokerPolicy) {
+        if (
+          (rw && (rowWinnerPolicy || winnerPolicy)) ||
+          jokerPolicy ||
+          sameRowAndFullWinnerPolicy
+        ) {
           //undo
           const num = playedNumbers.pop()
           undoNumber = num
