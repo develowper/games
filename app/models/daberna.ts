@@ -346,6 +346,7 @@ export default class Daberna extends BaseModel {
       await game.save()
       room.clearCount++
       logText += `🔔بازی ${game.id} ${game.type}` + '\n'
+      logText += `🔁 تعداد تلاش: ${tryCount}` + '\n'
       logText += `🎴 تعداد کارت: ${game.cardCount}` + '\n'
       logText += `🚹 تعداد بازیکن: ${game.playerCount}` + '\n'
       logText +=
