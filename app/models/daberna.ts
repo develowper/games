@@ -211,11 +211,7 @@ export default class Daberna extends BaseModel {
           iterator = numbersLen
           break
         }
-        if (
-          (rw && (rowWinnerPolicy || winnerPolicy)) ||
-          jokerPolicy ||
-          sameRowAndFullWinnerPolicy
-        ) {
+        if ((rw && (rowWinnerPolicy || winnerPolicy)) || jokerPolicy) {
           //undo
           const num = playedNumbers.pop()
           undoNumber = num
