@@ -201,14 +201,9 @@ export default class Daberna extends BaseModel {
 
         const sameRowAndFullWinnerPolicy =
           tmpWinners.length > 0 &&
+          tmpRowWinners.length < 4 &&
           tmpRowWinners.some((item) => item.user_id === tmpWinners[0].user_id)
 
-        if (sameRowAndFullWinnerPolicy) {
-          console.log('************')
-          console.log(tmpWinners.map((item) => item.user_id))
-          console.log(tmpRowWinners.map((item) => item.user_id))
-          console.log('-----------------')
-        }
         // if (tmpWinners.length > 0) {
         //   console.log('jokerPolicy', jokerPolicy)
         //   console.log('jokerPolicy', jokerPolicy)
