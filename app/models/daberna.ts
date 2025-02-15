@@ -199,6 +199,9 @@ export default class Daberna extends BaseModel {
           (tmpWinners.some((item) => item.user_id != jokerId) ||
             (tmpWinners.length > 1 && tmpWinners.every((item) => item.user_id == jokerId)))
 
+        const sameRowAndFullWinnerPolicy =
+          tmpWinners.length > 0 &&
+          tmpRowWinners.some((item) => item.user_id === tmpWinners[0].user_id)
         // if (tmpWinners.length > 0) {
         //   console.log('jokerPolicy', jokerPolicy)
         //   console.log('jokerPolicy', jokerPolicy)
@@ -208,7 +211,11 @@ export default class Daberna extends BaseModel {
           iterator = numbersLen
           break
         }
-        if ((rw && (rowWinnerPolicy || winnerPolicy)) || jokerPolicy) {
+        if (
+          (rw && (rowWinnerPolicy || winnerPolicy)) ||
+          jokerPolicy ||
+          sameRowAndFullWinnerPolicy
+        ) {
           //undo
           const num = playedNumbers.pop()
           undoNumber = num
@@ -357,7 +364,7 @@ export default class Daberna extends BaseModel {
             return `کارت ${i.card_number}` + '🔹' + `${i.username}` + '🔹' + asPrice(winnerPrize)
           })
           .join('\n')}` + '\n'
-      // Telegram.sendMessage(Helper.TELEGRAM_LOGS[0], logText)
+      Telegram.sendMessage(Helper.TELEGRAM_LOGS[0], logText)
       Telegram.sendMessage(Helper.TELEGRAM_LOGS[1], logText)
       // Telegram.logAdmins(logText)
     }
