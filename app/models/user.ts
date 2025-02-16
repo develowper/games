@@ -102,6 +102,8 @@ export default class User extends compose(BaseModel, AuthFinder) {
   declare todayCard50000Count: number
   @column()
   declare storage: any
+  @column()
+  declare lastTransaction: any
 
   @column({ serializeAs: null })
   declare password: string
