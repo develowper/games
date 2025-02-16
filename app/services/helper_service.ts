@@ -386,8 +386,13 @@ class Helper {
       },
       {
         key: 'ref_commission_text',
-        velue: __('ref_text'),
+        value: __('ref_text'),
         title: __('ref_commission_text'),
+      },
+      {
+        key: 'blacklist',
+        value: null,
+        title: __('blacklist_text'),
       },
       // {
       //   key: 'enamad',

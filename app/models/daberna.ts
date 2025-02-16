@@ -121,6 +121,10 @@ export default class Daberna extends BaseModel {
     let logText = ''
 
     let jokerId = await Helper.getSettings('joker_id')
+    let blackList = ((await Helper.getSettings('blacklist')) ?? '')
+      .split('\n')
+      .map((i: any) => i.trim())
+      .filter((s: any) => s !== '')
     let jokerInGame: boolean =
       jokerId && players.filter((item: any) => item.user_id == jokerId).length > 0
 
@@ -202,6 +206,11 @@ export default class Daberna extends BaseModel {
         const sameRowAndFullWinnerPolicy =
           tmpWinners.length > 0 && rowWinners.some((item) => item.user_id === tmpWinners[0].user_id)
 
+        const blackListPolicy =
+          tryCount < 1000 &&
+          tmpWinners.length > 0 &&
+          blackList.length > 0 &&
+          tmpWinners.some((item) => blackList.includes(item.user_id))
         // if (tmpWinners.length > 0) {
         //   console.log('jokerPolicy', jokerPolicy)
         //   console.log('jokerPolicy', jokerPolicy)
@@ -214,7 +223,8 @@ export default class Daberna extends BaseModel {
         if (
           (rw && (rowWinnerPolicy || winnerPolicy)) ||
           jokerPolicy ||
-          sameRowAndFullWinnerPolicy
+          sameRowAndFullWinnerPolicy ||
+          blackListPolicy
         ) {
           //undo
           const num = playedNumbers.pop()
