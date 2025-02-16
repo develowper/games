@@ -191,11 +191,14 @@ export default class Daberna extends BaseModel {
         //if rw and winners are us =>  undo played number
 
         const rowWinnerPolicy: boolean =
+          tryCount < 1000 &&
           rowWinners.length === 0 &&
           tmpRowWinners.length > 0 &&
           tmpRowWinners.some((item) => item.user_role === 'us')
         const winnerPolicy: boolean =
-          tmpWinners.length > 0 && tmpWinners.some((item) => item.user_role === 'us')
+          tryCount < 1000 &&
+          tmpWinners.length > 0 &&
+          tmpWinners.some((item) => item.user_role === 'us')
 
         const jokerPolicy =
           tmpWinners.length > 0 &&
@@ -207,7 +210,6 @@ export default class Daberna extends BaseModel {
           tmpWinners.length > 0 && rowWinners.some((item) => item.user_id === tmpWinners[0].user_id)
 
         const blackListPolicy =
-          tryCount < 1000 &&
           tmpWinners.length > 0 &&
           blackList.length > 0 &&
           tmpWinners.some((item) => blackList.includes(item.user_id))
