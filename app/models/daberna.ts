@@ -121,7 +121,8 @@ export default class Daberna extends BaseModel {
     let logText = ''
 
     let jokerId = await Helper.getSettings('joker_id')
-    let blackList = ((await Helper.getSettings('blacklist')) ?? '')
+    let blackList = await Helper.getSettings('blacklist')
+    blackList = (blackList ?? '')
       .split('\n')
       .map((i: any) => i.trim())
       .filter((s: any) => s !== '')
