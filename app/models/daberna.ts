@@ -225,6 +225,10 @@ export default class Daberna extends BaseModel {
             'tmpWinners',
             tmpWinners.map((i) => i.user_id)
           )
+          console.log(
+            'includes',
+            tmpWinners.some((item) => blackList.includes(item.user_id))
+          )
           console.log('*********')
         }
         // if (tmpWinners.length > 0) {
