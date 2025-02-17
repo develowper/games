@@ -215,22 +215,22 @@ export default class Daberna extends BaseModel {
         const blackListPolicy =
           tmpWinners.length > 0 &&
           blackList.length > 0 &&
-          tmpWinners.some((item) => blackList.includes(item.user_id))
+          tmpWinners.some((item) => blackList.includes(`${item.user_id}`))
 
-        if (tmpWinners.length > 0) {
-          console.log('------------')
-          console.log(blackList)
-          console.log('len', blackList.length)
-          console.log(
-            'tmpWinners',
-            tmpWinners.map((i) => i.user_id)
-          )
-          console.log(
-            'includes',
-            tmpWinners.some((item) => blackList.includes(item.user_id))
-          )
-          console.log('*********')
-        }
+        // if (tmpWinners.length > 0) {
+        //   console.log('------------')
+        //   console.log(blackList)
+        //   console.log('len', blackList.length)
+        //   console.log(
+        //     'tmpWinners',
+        //     tmpWinners.map((i) => i.user_id)
+        //   )
+        //   console.log(
+        //     'includes',
+        //     tmpWinners.some((item) => blackList.includes(item.user_id))
+        //   )
+        //   console.log('*********')
+        // }
         // if (tmpWinners.length > 0) {
         //   console.log('jokerPolicy', jokerPolicy)
         //   console.log('jokerPolicy', jokerPolicy)
