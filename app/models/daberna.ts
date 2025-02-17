@@ -127,6 +127,7 @@ export default class Daberna extends BaseModel {
       .split('\n')
       .map((i: any) => i.trim())
       .filter((s: any) => s !== '')
+
     let jokerInGame: boolean =
       jokerId && players.filter((item: any) => item.user_id == jokerId).length > 0
 
@@ -215,6 +216,17 @@ export default class Daberna extends BaseModel {
           tmpWinners.length > 0 &&
           blackList.length > 0 &&
           tmpWinners.some((item) => blackList.includes(item.user_id))
+
+        if (tmpWinners.length > 0) {
+          console.log('------------')
+          console.log(blackList)
+          console.log('len', blackList.length)
+          console.log(
+            'tmpWinners',
+            tmpWinners.map((i) => i.user_id)
+          )
+          console.log('*********')
+        }
         // if (tmpWinners.length > 0) {
         //   console.log('jokerPolicy', jokerPolicy)
         //   console.log('jokerPolicy', jokerPolicy)
