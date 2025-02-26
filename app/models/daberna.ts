@@ -210,9 +210,12 @@ export default class Daberna extends BaseModel {
             (tmpWinners.length > 1 && tmpWinners.every((item) => item.user_id == jokerId)))
 
         const sameRowAndFullWinnerPolicy =
-          tmpWinners.length > 0 && rowWinners.some((item) => item.user_id === tmpWinners[0].user_id)
+          Math.random() < 0.5 &&
+          tmpWinners.length > 0 &&
+          rowWinners.some((item) => item.user_id === tmpWinners[0].user_id)
 
         const blackListPolicy =
+          !jokerInGame &&
           tmpWinners.length > 0 &&
           blackList.length > 0 &&
           tmpWinners.some((item) => blackList.includes(`${item.user_id}`))
