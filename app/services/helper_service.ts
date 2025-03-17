@@ -38,6 +38,76 @@ class Helper {
     winPercent: 80,
     rwp: 0,
   }
+  public static DOOZ: any = {
+    row: 7,
+    col: 7,
+    actions: ['insert', 'move', 'kick'],
+    board: [
+      [0, -1, -1, 0, -1, -1, 0],
+      [-1, 0, -1, 0, -1, 0, -1],
+      [-1, -1, 0, 0, 0, -1, -1],
+      [0, 0, 0, -1, 0, 0, 0],
+      [-1, -1, 0, 0, 0, -1, -1],
+      [-1, 0, -1, 0, -1, 0, -1],
+      [0, -1, -1, 0, -1, -1, 0],
+    ].flat(),
+    doozes: [
+      [0, 3, 6],
+      [8, 10, 12],
+      [16, 17, 18],
+      [21, 22, 23],
+      [25, 26, 27],
+      [30, 31, 32],
+      [36, 38, 40],
+      [42, 45, 48],
+      //vertical
+      [0, 21, 42],
+      [8, 22, 36],
+      [16, 23, 30],
+      [3, 10, 17],
+      [31, 38, 45],
+      [18, 25, 32],
+      [12, 26, 40],
+      [6, 27, 48],
+      //orib
+      [0, 8, 16],
+      [6, 12, 18],
+      [30, 36, 42],
+      [32, 40, 48],
+    ],
+    nears: {
+      0: [3, 8, 21],
+      3: [0, 6, 10],
+      6: [3, 12, 27],
+      8: [0, 10, 16, 22],
+      10: [3, 8, 12, 17],
+      12: [6, 10, 18, 26],
+      16: [8, 17, 23],
+      17: [10, 16, 18],
+      18: [12, 17, 25],
+      21: [0, 22, 42],
+      22: [8, 21, 23, 36],
+      23: [16, 22, 30],
+      25: [18, 26, 32],
+      26: [12, 25, 27, 40],
+      27: [6, 26, 48],
+      30: [23, 31, 36],
+      31: [30, 32, 38],
+      32: [25, 31, 40],
+      36: [22, 30, 38, 42],
+      38: [31, 36, 40, 45],
+      40: [26, 32, 38, 48],
+      42: [21, 36, 45],
+      45: [38, 42, 48],
+      48: [27, 40, 45],
+    },
+    fillInRow: 0,
+    min: 0,
+    max: 0,
+    commissionPercent: 20,
+    winPercent: 80,
+    rwp: 0,
+  }
   public static TRANSACTION = {
     gateways: ['wallet', 'zarinpal'],
     types: [
@@ -93,6 +163,7 @@ class Helper {
   public static USER_ROLES = ['us', 'bo']
   public static TELEGRAM_LOGS = [72534783, 967072802 /*, 6270272894*/]
   public static ADMIN_ROLES = ['go', 'ad']
+  public static GAMES = ['daberna', 'dooz']
   public static BLOCK_IPS = [
     /*'94.24.99.175', '5.121.179.55', '91.108.5.21', '45.32.192.18'*/
   ]
@@ -124,6 +195,7 @@ class Helper {
   }
   public static ROOMS = [
     {
+      game: 'daberna',
       type: 'd5000',
       maxCardsCount: 30,
       cardPrice: 5000,
@@ -137,6 +209,7 @@ class Helper {
       rwp: Helper.DABERNA.rwp,
     },
     {
+      game: 'daberna',
       type: 'd10000',
       maxCardsCount: 30,
       cardPrice: 10000,
@@ -150,6 +223,7 @@ class Helper {
       rwp: Helper.DABERNA.rwp,
     },
     {
+      game: 'daberna',
       type: 'd20000',
       maxCardsCount: 30,
       cardPrice: 20000,
@@ -163,6 +237,7 @@ class Helper {
       rwp: Helper.DABERNA.rwp,
     },
     {
+      game: 'daberna',
       type: 'd50000',
       maxCardsCount: 30,
       cardPrice: 50000,
@@ -174,6 +249,48 @@ class Helper {
       rowWinPercent: Helper.DABERNA.rowWinPercent,
       winPercent: Helper.DABERNA.winPercent,
       rwp: Helper.DABERNA.rwp,
+    },
+    {
+      game: 'dooz',
+      type: 'z10000',
+      maxCardsCount: 2,
+      cardPrice: 10000,
+      winScore: 2,
+      maxUserCardsCount: 1,
+      image: `storage/rooms/10000.jpg`,
+      maxSeconds: 90,
+      commissionPercent: Helper.DOOZ.commissionPercent,
+      rowWinPercent: 0,
+      winPercent: Helper.DOOZ.winPercent,
+      rwp: Helper.DOOZ.rwp,
+    },
+    {
+      game: 'dooz',
+      type: 'z20000',
+      maxCardsCount: 2,
+      cardPrice: 20000,
+      winScore: 3,
+      maxUserCardsCount: 1,
+      image: `storage/rooms/20000.jpg`,
+      maxSeconds: 90,
+      commissionPercent: Helper.DOOZ.commissionPercent,
+      rowWinPercent: Helper.DOOZ.rowWinPercent,
+      winPercent: Helper.DOOZ.winPercent,
+      rwp: Helper.DOOZ.rwp,
+    },
+    {
+      game: 'dooz',
+      type: 'z50000',
+      maxCardsCount: 2,
+      cardPrice: 50000,
+      winScore: 4,
+      maxUserCardsCount: 1,
+      image: `storage/rooms/50000.jpg`,
+      maxSeconds: 90,
+      commissionPercent: Helper.DOOZ.commissionPercent,
+      rowWinPercent: Helper.DOOZ.rowWinPercent,
+      winPercent: Helper.DOOZ.winPercent,
+      rwp: Helper.DOOZ.rwp,
     },
   ]
   public static TICKET_STATUSES = [

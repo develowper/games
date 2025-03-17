@@ -23,6 +23,7 @@ import SocketHttpContextMiddleware from '#middleware/socket/socket_http_context_
 import SocketAuthMiddleware from '#middleware/socket/socket_auth_middleware'
 import User from '#models/user'
 import { DateTime } from 'luxon'
+import Dooz from '#models/dooz'
 declare module 'socket.io' {
   interface Socket {
     context: HttpContext
@@ -32,7 +33,8 @@ export default class SocketIo {
   private user: any
   private socket
   public static wsIo: Server
-  public static timer
+  public static timer1
+  public static timer2
   constructor(/*protected app: ApplicationService*/) {
     // console.log('*********   socket service created ')
     // console.log(Daberna.makeCard())
@@ -55,7 +57,7 @@ export default class SocketIo {
     SocketIo.wsIo.on('connection', async (socket) => {
       this.socket = socket
 
-      console.log('*****  ws server service connected')
+      console.log(`*****  ws server service connected ${socket.id}`)
       const token = socket.handshake.auth.token ?? socket.handshake.headers.token
       const roomType =
         socket.handshake.headers['request-room'] ?? socket.handshake.query['request-room']
@@ -88,6 +90,63 @@ export default class SocketIo {
 
         // RoomController.startGame(await Room.query().where('id', 1))
       }
+
+      socket.on('join-room', async (data) => {
+        // logger.info(data)
+        if (!data) return
+        socket.join(`room-${data?.type}`)
+        // const room = await Room.query().where('type', data?.type).first()
+        // console.log('before add players:', room.playerCount)
+        // await room.setUser(this.user, 'add')
+        // console.log('after add players:', room.playerCount)
+        socket.emit(`joined-room`, data)
+      })
+      socket.on('leave-room', async (data) => {
+        // logger.info(data)
+        if (!data) return
+        socket.leave(`room-${data?.type}`)
+        const room = await Room.query().where('type', data?.type).first()
+        await room.setUser(this.user, 'remove')
+        // console.log('before add players:', room.playerCount)
+        // socket.removeAllListeners()
+        console.log(`leave room ${data?.type} socket:`, socket.id)
+        // const room = await Room.query().where('type', data?.type).first()
+        // console.log('before remove players:', room.playerCount)
+        // await room.setUser(this.user, 'remove')
+        // console.log('after remove players:', room.playerCount)
+        socket.emit('left-room', data)
+      })
+
+      let games = ['dooz']
+      games.forEach((game: any) => {
+        socket.on(`join-${game}`, async (data) => {
+          // logger.info(data)
+          console.log(' >---join---< ', `${game}-${data?.id}`)
+          if (!data?.id) return
+          const roomSockets = await SocketIo.wsIo?.in(`${game}-${data?.id}`).fetchSockets()
+          roomSockets.forEach((s) => {
+            const userId = s.handshake.headers['user-id'] ?? s.handshake.query['user-id']
+            console.log('before user id in game', userId, this.user?.id)
+            if (userId == this.user.id) {
+              console.log('leave', `${game}-${data?.id}`)
+              s.leave(`${game}-${data?.id}`)
+              // s.disconnect()
+            }
+          })
+          socket.join(`${game}-${data?.id}`)
+          socket.emit(`joined-${game}`, await Dooz.find(data?.id))
+          // const roomSockets2 = await SocketIo.wsIo?.in(`${game}-${data?.id}`).fetchSockets()
+          // console.log(' >---game sockets---< ', roomSockets2.length)
+        })
+        socket.on(`leave-${game}`, async (data) => {
+          // logger.info(data)
+          console.log(' >---leave---< ', `${game}-${data?.id}`)
+          if (!data) return
+          socket.leave(`${game}-${data?.id}`)
+          socket.removeAllListeners(`${game}-${data?.id}`)
+          socket.emit(`left-${game}`, data)
+        })
+      })
 
       // socket.on('request-room', async (data) => {
       //   // logger.info(data)
@@ -149,21 +208,26 @@ export default class SocketIo {
     storage.run(state, async () => {
       app.listen('SIGTERM', () => {
         console.log('****sigterm****')
-        clearInterval(SocketIo.timer)
+        clearInterval(SocketIo.timer1)
+        clearInterval(SocketIo.timer2)
       })
 
-      SocketIo.timer = setInterval(async () => {
-        for (let room of await Room.query().where('is_active', true)) {
+      SocketIo.timer1 = setInterval(async () => {
+        if (app.isTerminated || app.isTerminating) {
+          clearInterval(SocketIo.timer1)
+          return
+        }
+        for (let room of await Room.query().where('game', 'daberna').where('is_active', true)) {
           // console.log(`players ${room.playerCount}`, `time ${room.secondsRemaining}`)
           // console.log(__('transactions'))
-
+          if (app.isTerminated || app.isTerminating) {
+            clearInterval(SocketIo.timer1)
+            return
+          }
           if (await getSettings('robot_is_active')) {
             if ((room.botPercent ?? 0 / 100) >= Math.random() * 100) await Room.addBot(room)
           }
-          if (app.isTerminated || app.isTerminating) {
-            clearInterval(SocketIo.timer)
-            break
-          }
+
           //
 
           // console.log('**************')
@@ -194,6 +258,43 @@ export default class SocketIo {
         }
         // clearInterval(SocketIo.timer)
       }, 2000)
+
+      //timer dooz
+      SocketIo.timer2 = setInterval(async () => {
+        if (app.isTerminated || app.isTerminating) {
+          clearInterval(SocketIo.timer2)
+          return
+        }
+        for (let room of await Room.query().whereNot('game', 'daberna').where('is_active', true)) {
+          // console.log(`players ${room.playerCount}`, `time ${room.secondsRemaining}`)
+          // console.log(__('transactions'))
+
+          if ((await getSettings('robot_is_active')) && room.playerCount <= room.maxCardsCount) {
+            if ((room.botPercent ?? 0 / 100) >= Math.random() * 100)
+              await Room.addBot(room, null, 1)
+          }
+
+          const startAt = room?.startAt
+          if (room.playerCount > 1) {
+            if (room.game == 'dooz') {
+              const game: Dooz = await Dooz.makeGame(room)
+              if (game) {
+                await this.emitToRoom(`room-${room.type}`, 'game-start', {
+                  id: game.id,
+                  p1: game.p1Id,
+                  p2: game.p2Id,
+                })
+              }
+            }
+          }
+        }
+        //robot game players
+        for (let dooz of await Dooz.query().whereNull('winner_id').where('turn_role', 'bo')) {
+          const game = await Dooz.playBot(dooz)
+        }
+
+        // clearInterval(SocketIo.timer2)
+      }, 5000)
     })
   }
 
