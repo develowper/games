@@ -12,6 +12,7 @@ import Daberna from '#models/daberna'
 // @inject()
 export default class Room extends BaseModel {
   private auth: any
+
   constructor() {
     super()
     this.auth = HttpContext.get()?.auth
@@ -20,7 +21,13 @@ export default class Room extends BaseModel {
   declare id: number
 
   @column()
+  declare page: string
+
+  @column()
   declare type: string
+
+  @column()
+  declare game: string
 
   @column()
   declare title: string
@@ -102,7 +109,7 @@ export default class Room extends BaseModel {
 
   public getUserCardCount() {
     const user = this.auth?.user
-    const result: any = collect(JSON.parse(this.players) ?? []).first(
+    const result: any = collect(JSON.parse(this.players ?? '[]') ?? []).first(
       (item: any) => item.user_id == user?.id
     )
 
@@ -135,6 +142,35 @@ export default class Room extends BaseModel {
 
     return true
   }
+  public async setUser(us: any = null, cmnd = 'add') {
+    const user = us ?? this.auth?.user
+    let res: any[] = []
+    const parsed: any = JSON.parse(this.players ?? '[]') ?? []
+    const beforeExists = collect(parsed).first(
+      (item: any) => item.user_id == (user.id ?? user.user_id)
+    )
+    res = parsed
+
+    if (!beforeExists && cmnd === 'add') {
+      parsed.push({
+        user_id: user.id,
+        username: user.username,
+        user_role: user.role,
+      })
+      res = parsed
+    } else if (beforeExists && cmnd === 'remove') {
+      res = collect(parsed)
+        .filter((item: any) => item.user_id != (user.id ?? user.user_id))
+        .toArray()
+    }
+    this.cardCount = res.length
+    this.playerCount = this.cardCount
+
+    this.players = JSON.stringify(res)
+    await this.save()
+
+    return res
+  }
 
   public static async addBot(
     room: Room,
@@ -155,7 +191,6 @@ export default class Room extends BaseModel {
         .first())
 
     if (!botUser /*|| beforeIds.includes(user?.id)*/) return
-
     let cardCount = userCardCount ?? [1, 2, 3][Math.floor(Math.random() * 3)]
     if (room.maxCardsCount - room.cardCount <= 0) return
     if (room.maxCardsCount - room.cardCount <= 3)
@@ -164,7 +199,7 @@ export default class Room extends BaseModel {
       room.playerCount++
       botUser.playCount++
       room.cardCount += cardCount
-
+      // room.playerCount = JSON.parse(room.players ?? '[]').length
       if (
         room.playerCount == 2 /* ||
         (room.playerCount >= 2 && room.secondsRemaining == room.maxSeconds)*/
@@ -172,7 +207,6 @@ export default class Room extends BaseModel {
         room.startAt = DateTime.now().plus({ seconds: room.maxSeconds - 1 })
 
       await room.save()
-
       switch (room.cardPrice) {
         case 5000:
           botUser.card5000Count += cardCount
