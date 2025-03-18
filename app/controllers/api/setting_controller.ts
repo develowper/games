@@ -4,14 +4,15 @@ import { inject } from '@adonisjs/core'
 import Setting from '../../models/setting.js'
 import { collect } from 'collect.js'
 import { json } from 'stream/consumers'
-
+import Room from '#models/room'
 @inject()
 export default class SettingController {
   // constructor(protected helper: Helper) {
 
   // }
 
-  async get({ response }: HttpContext) {
+  async get({ response, request, i18n }: HttpContext) {
+    const appVersion = request.input('version') ?? 1
     const settings = collect(
       await Setting.query().whereIn('key', [
         'support_links',
@@ -37,8 +38,15 @@ export default class SettingController {
     const supportLinks = JSON.parse(
       settings.first((item: any) => item && item.key == 'support_links')?.value ?? '[]'
     )
+    const games = await Room.query().select(['game']).distinct('game').where('is_active', true)
 
     return response.json({
+      games: games.map((item) => {
+        return {
+          title: i18n.t(`messages.${item.game}`),
+          type: item.game,
+        }
+      }),
       winwheel: JSON.parse(winWheel?.value),
       card_to_card: collect(cards).where('active', '1').random(),
       policy: policy,
