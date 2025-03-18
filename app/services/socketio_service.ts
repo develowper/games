@@ -289,7 +289,13 @@ export default class SocketIo {
           }
         }
         //robot game players
-        for (let dooz of await Dooz.query().whereNull('winner_id').where('turn_role', 'bo')) {
+        for (let dooz of await Dooz.query()
+          .whereNull('winner_id')
+          .where((q) =>
+            q
+              .orWhere('turn_role', 'bo')
+              .orWhere('updated_at', '<', DateTime.now().minus({ seconds: 30 }).toJSDate())
+          )) {
           const game = await Dooz.playBot(dooz)
         }
 
