@@ -5,6 +5,7 @@ import Room from '#models/room'
 import collect from 'collect.js'
 import User from '#models/user'
 import SocketIo from '#services/socketio_service'
+import Telegram from '#services/telegram_service'
 
 export default class Dooz extends BaseModel {
   static table = 'dooz'
@@ -477,7 +478,10 @@ export default class Dooz extends BaseModel {
   }
   static async updateSockets(game) {
     SocketIo.wsIo?.in(`dooz-${game.id}`).volatile.emit('dooz-update', { game: game })
-    if (game.winnerId) SocketIo.wsIo?.socketsLeave(`dooz-${game.id}`)
+    if (game.winnerId) {
+      SocketIo.wsIo?.socketsLeave(`dooz-${game.id}`)
+      Telegram.sendMessage(`${Helper.TELEGRAM_LOGS[0]}`, game)
+    }
     const roomSockets = await SocketIo.wsIo?.in(`dooz-${game?.id}`).fetchSockets()
     console.log('socets len', roomSockets.length)
   }
