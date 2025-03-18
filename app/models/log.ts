@@ -58,7 +58,6 @@ export default class Log extends BaseModel {
       ['اتاق', 'تعداد بازی', 'تعداد کارت', 'سود'].map((item) => `\u200E${item}`),
     ]
     // const tableData: any = [['Room', 'Game', 'Card', 'Profit']]
-
     for (const t of types) {
       console.log('type', t, logsToday.where('type', `${t}`).first())
       const row = logsToday.where('type', `${t}`).first() ?? {
