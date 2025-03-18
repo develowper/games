@@ -335,20 +335,20 @@ export default class Daberna extends BaseModel {
       Number.parseInt(collect(players).where('user_role', 'us').sum('card_count').toString()) ?? 0
     const realTotalMoney = realCardCount * room.cardPrice
 
-    // console.log('realTotalMoney', realTotalMoney)
+    if (room.type == 'd5000') console.log('realCardCount', realCardCount)
+    if (room.type == 'd5000') console.log('realTotalMoney', realTotalMoney)
 
     const realPrize =
       collect(winners).where('user_role', 'us').count() * winnerPrize +
       collect(rowWinners).where('user_role', 'us').count() * rowWinnerPrize
 
-    // console.log('realPrize', realPrize)
+    if (room.type == 'd5000') console.log('realPrize', realPrize)
 
     const commissionPrice = Math.floor(realTotalMoney - realPrize - refCommissionPrice) /* +
       (jokerInGame
         ? Number.parseInt(collect(winners).where('user_id', jokerId).sum('prize').toString())
         : 0)*/
-
-    // console.log('commissionPrice', commissionPrice)
+    if (room.type == 'd5000') console.log('commissionPrice', commissionPrice)
 
     const game = new Daberna().fill({
       type: room.type,
