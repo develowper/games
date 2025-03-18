@@ -58,8 +58,8 @@ export default class Log extends BaseModel {
     // const tableData: any = [['Room', 'Game', 'Card', 'Profit']]
 
     for (const t of types) {
-      const row = logsToday.where('type', `d${t}`).first() ?? {
-        type: `d${t}`,
+      const row = logsToday.where('type', `${t}`).first() ?? {
+        type: `${t}`,
         gameCount: 0,
         cardCount: 0,
         profit: 0,

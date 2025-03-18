@@ -99,7 +99,7 @@ export default class DailyReport extends BaseCommand {
       .where('created_at', '>', now.minus({ hours: 24 }).toJSDate())
       .count('* as total')
 
-    const types = Helper.ROOMS.map((item) => item.type.slice(1))
+    const types = Helper.ROOMS.map((item) => item.type)
 
     msg += '                📊 آمار امروز' + '\n'
     msg += '👤 کاربران جدید: ' + (uc[0]?.$extras.total ?? 0) + '\n'
@@ -121,7 +121,7 @@ export default class DailyReport extends BaseCommand {
     msg += '\n' + (await Log.roomsTable(types)) + '\n'
     //rating
     const emojis = ['💖', '💜', '💙']
-    for (let type of types) {
+    for (let type of Helper.ROOMS.map((item) => item.type.slice(1))) {
       let i = 0
       const users = await db
         .from('users')
