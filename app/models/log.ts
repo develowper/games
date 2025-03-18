@@ -51,6 +51,8 @@ export default class Log extends BaseModel {
     const logsToday = collect(
       await Log.query().where('created_at', '>', now.minus({ hours: 24 }).toJSDate())
     )
+    console.log('types', types)
+
     //\u200E for LTR \u200F for RTL
     const tableData: any = [
       ['اتاق', 'تعداد بازی', 'تعداد کارت', 'سود'].map((item) => `\u200E${item}`),
@@ -58,6 +60,7 @@ export default class Log extends BaseModel {
     // const tableData: any = [['Room', 'Game', 'Card', 'Profit']]
 
     for (const t of types) {
+      console.log('type', t, logsToday.where('type', `${t}`).first())
       const row = logsToday.where('type', `${t}`).first() ?? {
         type: `${t}`,
         gameCount: 0,
