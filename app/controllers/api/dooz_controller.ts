@@ -24,7 +24,7 @@ import db from '@adonisjs/lucid/services/db'
 import Dooz from '#models/dooz'
 
 @inject()
-export default class GameController {
+export default class DoozController {
   // constructor(protected helper: Helper) {}
 
   async find({ response, request, auth, i18n }: HttpContext) {
@@ -32,6 +32,7 @@ export default class GameController {
     const roomType = request.input('room_type')
     // const trx = await db.transaction()
     const room = await Room.query(/*{ client: trx }*/)
+      .where('game', 'dooz')
       .where('is_active', true)
       .where('type', roomType)
       .first()
