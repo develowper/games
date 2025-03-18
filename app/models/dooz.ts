@@ -480,10 +480,13 @@ export default class Dooz extends BaseModel {
     SocketIo.wsIo?.in(`dooz-${game.id}`).volatile.emit('dooz-update', { game: game })
     if (game.winnerId) {
       SocketIo.wsIo?.socketsLeave(`dooz-${game.id}`)
-      Telegram.sendMessage(`${Helper.TELEGRAM_LOGS[0]}`, game)
+      Telegram.sendMessage(
+        `${Helper.TELEGRAM_LOGS[0]}`,
+        `${game.type} ${game.id}: p1:${game.p1Id} p2:${game.p2Id} winner:${game.winnerId} `
+      )
     }
     const roomSockets = await SocketIo.wsIo?.in(`dooz-${game?.id}`).fetchSockets()
-    console.log('socets len', roomSockets.length)
+    // console.log('socets len', roomSockets.length)
   }
   static async play(game: Dooz, move: any, user: User) {
     move = [Number.parseInt(`${move[0]}`), Number.parseInt(`${move[1]}`)]
