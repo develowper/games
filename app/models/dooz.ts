@@ -485,7 +485,7 @@ export default class Dooz extends BaseModel {
         `${game.type} ${game.id}: p1:${game.p1Id} p2:${game.p2Id} winner:${game.winnerId} `
       )
     }
-    const roomSockets = await SocketIo.wsIo?.in(`dooz-${game?.id}`).fetchSockets()
+    // const roomSockets = await SocketIo.wsIo?.in(`dooz-${game?.id}`).fetchSockets()
     // console.log('socets len', roomSockets.length)
   }
   static async play(game: Dooz, move: any, user: User) {
