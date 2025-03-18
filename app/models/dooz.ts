@@ -50,12 +50,16 @@ export default class Dooz extends BaseModel {
 
   static async makeGame(room) {
     let roomPlayers = collect(JSON.parse(room.players ?? '[]'))
-
+    const realPlayersCount = roomPlayers.where('user_role', 'us').count()
+    const updatedAt = room?.updatedAt
+    const diff =
+      updatedAt?.plus({ seconds: room.maxSeconds })?.diff(DateTime.now(), 'seconds').seconds ?? 0
     // console.log('room players', roomPlayers.count())
     // console.log('room user players', roomPlayers.where('user_role', 'us').count())
     //checks users connected to socket
 
-    if (roomPlayers.count() < 2 || roomPlayers.where('user_role', 'us').count() == 0) return
+    if (roomPlayers.count() < 2 || realPlayersCount == 0 || (realPlayersCount == 1 && diff > 0))
+      return
     const roomSockets = await SocketIo.wsIo?.in(`room-${room.type}`).fetchSockets()
     console.log(`room-sockets`, roomSockets.length)
 
