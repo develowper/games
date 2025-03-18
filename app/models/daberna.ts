@@ -335,6 +335,8 @@ export default class Daberna extends BaseModel {
       Number.parseInt(collect(players).where('user_role', 'us').sum('card_count').toString()) ?? 0
     const realTotalMoney = realCardCount * room.cardPrice
 
+    if (room.type == 'd5000')
+      console.log('realCardCount', collect(players).where('user_role', 'us').sum('card_count'))
     if (room.type == 'd5000') console.log('realCardCount', realCardCount)
     if (room.type == 'd5000') console.log('realTotalMoney', realTotalMoney)
 
