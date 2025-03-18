@@ -7,6 +7,7 @@ const SettingController = () => import('../../app/controllers/api/setting_contro
 const RoomController = () => import('../../app/controllers/api/room_controller.js')
 const TransactionController = () => import('../../app/controllers/api/transaction_controller.js')
 const BotController = () => import('../../app/controllers/bot_controller.js')
+const DoozController = () => import('../../app/controllers/api/dooz_controller.js')
 
 export default () => {
   router.any('api/payment/done', [TransactionController, 'done']).as('api.payment.done')
@@ -29,6 +30,8 @@ export default () => {
       router.post('room/join', [RoomController, 'payAndJoin']).as('room.join')
       router.post('transaction/create', [TransactionController, 'create']).as('transaction.create')
       router.get('transaction/search', [TransactionController, 'search']).as('transaction.search')
+      router.get('dooz/find', [DoozController, 'find']).as('game.find')
+      router.post('dooz/play', [DoozController, 'play']).as('game.play')
     })
     // .use(middleware.checkServerStatus)
     .use(
