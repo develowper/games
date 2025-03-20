@@ -29,6 +29,8 @@ export default class extends BaseSchema {
         .inTable('users')
         .onDelete('CASCADE')
       table.bigInteger('turn_id').unsigned()
+      table.smallint('p1_fail_count').unsigned().defaultTo(0)
+      table.smallint('p2_fail_count').unsigned().defaultTo(0)
       table.enum('turn_role', Helper.USER_ROLES).nullable()
       table.json('state')
       table.integer('real_total_money').unsigned().defaultTo(0)

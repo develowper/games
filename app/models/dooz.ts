@@ -15,6 +15,10 @@ export default class Dooz extends BaseModel {
   declare p1Id: number
   @column({ columnName: 'p2_id' })
   declare p2Id: number
+  @column({ columnName: 'p1_fail_count' })
+  declare p1FailCount: number
+  @column({ columnName: 'p2_fail_count' })
+  declare p2FailCount: number
   @column()
   declare winnerId: number
   @column()
@@ -169,6 +173,10 @@ export default class Dooz extends BaseModel {
     const opId = game.p1Id == meId ? game.p2Id : game.p1Id
     const meInfo = state[meId]
     const opInfo = state[opId]
+    if (meInfo.user_role == 'us') {
+      if (game.p1Id == meId) game.p1FailCount++
+      else game.p2FailCount++
+    }
     // state['board'][32].owner = null
     // state['board'][40].owner = null
     // game.state = JSON.stringify(state)
@@ -477,6 +485,8 @@ export default class Dooz extends BaseModel {
       game.turnRole = meInfo['user_role']
     }
     game.state = JSON.stringify(state)
+    if (game.p1FailCount > 3) game.winnerId = game.p1Id
+    if (game.p2FailCount > 3) game.winnerId = game.p2Id
     await game.save()
     Dooz.updateSockets(game)
     return game
