@@ -594,7 +594,7 @@ export default class Dooz extends BaseModel {
             state[meId]['in'] == 3
               ? state[meId]['allowed']
               : Helper.DOOZ.nears[idx].filter((item) => state['board'][item].owner == null)
-          console.log(`meAllowed from ${idx}`, state['board'][idx].allowed)
+          // console.log(`meAllowed from ${idx}`, state['board'][idx].allowed)
         }
       }
       state[meId]['allowed'] = []
@@ -608,7 +608,7 @@ export default class Dooz extends BaseModel {
             state[opId]['in'] == 3
               ? state[opId]['allowed']
               : Helper.DOOZ.nears[idx].filter((item) => state['board'][item].owner == null)
-          console.log(`opAllowed from ${idx}`, state['board'][idx].allowed)
+          // console.log(`opAllowed from ${idx}`, state['board'][idx].allowed)
         }
       }
       state[opId]['allowed'] = []
