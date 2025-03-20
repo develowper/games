@@ -485,8 +485,8 @@ export default class Dooz extends BaseModel {
       game.turnRole = meInfo['user_role']
     }
     game.state = JSON.stringify(state)
-    if (game.p1FailCount > 3) game.winnerId = game.p1Id
-    if (game.p2FailCount > 3) game.winnerId = game.p2Id
+    if (game.p1FailCount > 3) game.winnerId = game.p2Id
+    if (game.p2FailCount > 3) game.winnerId = game.p1Id
     await game.save()
     Dooz.updateSockets(game)
     return game
