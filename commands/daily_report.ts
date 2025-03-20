@@ -140,7 +140,7 @@ export default class DailyReport extends BaseCommand {
     }
 
     //reset today cards
-    const zeroTodayData = types.reduce((acc: any, type) => {
+    const zeroTodayData = filteredTypes.reduce((acc: any, type) => {
       acc[`today_card_${type}_count`] = 0
       return acc
     }, {})
