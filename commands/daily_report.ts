@@ -153,7 +153,7 @@ export default class DailyReport extends BaseCommand {
     // try {
     await Telegram.sendMessage(`${Helper.TELEGRAM_LOGS[0]}`, msg)
     await sleep(1000)
-    await Telegram.sendMessage(`${Helper.TELEGRAM_LOGS[1]}`, msg)
+    // await Telegram.sendMessage(`${Helper.TELEGRAM_LOGS[1]}`, msg)
     // } catch (e: any) {
     //   console.log(e)
     // }
