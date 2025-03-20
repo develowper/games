@@ -118,10 +118,11 @@ export default class DailyReport extends BaseCommand {
     //       return tmp
     //     })
     //     .join('\n') + '\n'
-    console.log(
-      'types',
-      Helper.ROOMS.filter((item) => item.game == 'daberna').map((item) => item.type.slice(1))
-    )
+    const filteredTypes =
+      Helper.ROOMS.filter((item) => item.game == 'daberna').map((item) => item.type.slice(1)) ?? []
+
+    console.log('types', filteredTypes)
+    await Telegram.sendMessage(`${Helper.TELEGRAM_LOGS[0]}`, filteredTypes.join(','))
     msg += '\n' + (await Log.roomsTable(types)) + '\n'
     //rating
     const emojis = ['💖', '💜', '💙']
