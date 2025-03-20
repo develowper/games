@@ -20,7 +20,6 @@ export default class DailyReport extends BaseCommand {
 
   static reportTime = DateTime.fromObject({ hour: 2, minute: 0 }, { zone: 'Asia/Tehran' })
   async run() {
-    console.log('daily')
     const now = DateTime.now().setZone('Asia/Tehran')
     // if (now.hour !== DailyReport.reportTime.hour || now.minute !== DailyReport.reportTime.minute) {
     //   process.exit()
@@ -121,16 +120,11 @@ export default class DailyReport extends BaseCommand {
     const filteredTypes =
       Helper.ROOMS.filter((item) => item.game == 'daberna').map((item) => item.type.slice(1)) ?? []
 
-    console.log('types', filteredTypes)
-    await Telegram.sendMessage(`${Helper.TELEGRAM_LOGS[0]}`, filteredTypes.join(','))
     msg += '\n' + (await Log.roomsTable(types)) + '\n'
-    await Telegram.sendMessage(`${Helper.TELEGRAM_LOGS[0]}`, msg)
 
     //rating
     const emojis = ['💖', '💜', '💙']
     for (let type of filteredTypes) {
-      await Telegram.sendMessage(`${Helper.TELEGRAM_LOGS[0]}`, type)
-
       let i = 0
       const users = await db
         .from('users')
@@ -139,11 +133,14 @@ export default class DailyReport extends BaseCommand {
         .where(`today_card_${type}_count`, '>', 0)
         .orderBy(`today_card_${type}_count`, 'desc')
       msg += `➖➖🃏اتاق ${type}🃏➖➖` + '\n'
-      await Telegram.sendMessage(`${Helper.TELEGRAM_LOGS[0]}`, `➖➖🃏اتاق ${type}🃏➖➖`)
       for (const user of users) {
         const emoji = emojis[i]
         i++
         msg += `${emoji} کاربر ${user.username} با ${user.cardCount} کارت` + '\n'
+        await Telegram.sendMessage(
+          `${Helper.TELEGRAM_LOGS[0]}`,
+          `${emoji} کاربر ${user.username} با ${user.cardCount} کارت`
+        )
       }
     }
 
