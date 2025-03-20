@@ -126,9 +126,7 @@ export default class DailyReport extends BaseCommand {
     msg += '\n' + (await Log.roomsTable(types)) + '\n'
     //rating
     const emojis = ['💖', '💜', '💙']
-    for (let type of Helper.ROOMS.filter((item) => item.game == 'daberna').map((item) =>
-      item.type.slice(1)
-    )) {
+    for (let type of filteredTypes) {
       console.log('type', type)
       let i = 0
       const users = await db
