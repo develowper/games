@@ -121,7 +121,7 @@ export default class DailyReport extends BaseCommand {
       Helper.ROOMS.filter((item) => item.game == 'daberna').map((item) => item.type.slice(1)) ?? []
 
     msg += '\n' + (await Log.roomsTable(types)) + '\n'
-
+    let msg2 = ''
     //rating
     const emojis = ['💖', '💜', '💙']
     for (let type of filteredTypes) {
@@ -132,11 +132,11 @@ export default class DailyReport extends BaseCommand {
         .select('username', `today_card_${type}_count as cardCount`)
         .where(`today_card_${type}_count`, '>', 0)
         .orderBy(`today_card_${type}_count`, 'desc')
-      msg += `➖➖🃏اتاق ${type}🃏➖➖` + '\n'
+      msg2 += `➖➖🃏اتاق ${type}🃏➖➖` + '\n'
       for (const user of users) {
         const emoji = emojis[i]
         i++
-        msg += `${emoji} کاربر ${user.username} با ${user.cardCount} کارت` + '\n'
+        msg2 += `${emoji} کاربر ${user.username} با ${user.cardCount} کارت` + '\n'
       }
     }
 
@@ -148,6 +148,7 @@ export default class DailyReport extends BaseCommand {
     await User.query().update({ ...zeroTodayData, todayPrize: 0 })
     // try {
     await Telegram.sendMessage(`${Helper.TELEGRAM_LOGS[0]}`, msg)
+    await Telegram.sendMessage(`${Helper.TELEGRAM_LOGS[0]}`, msg2)
     await sleep(1000)
     // await Telegram.sendMessage(`${Helper.TELEGRAM_LOGS[1]}`, msg)
     // } catch (e: any) {
