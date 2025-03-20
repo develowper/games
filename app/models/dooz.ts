@@ -162,6 +162,7 @@ export default class Dooz extends BaseModel {
   private startGame(board: any) {}
 
   static async playBot(game: any): any {
+    console.log(`id: ${game.id}`, `p1:${game.p1Id}`, `p2:${game.p2Id}`)
     let state = JSON.parse(game.state)
     const board = state['board']
     const meId = game.turnId
@@ -299,7 +300,7 @@ export default class Dooz extends BaseModel {
               )
 
               if (opTwoPiecesLines.length > 0) {
-                console.log('opTwoPiecesLines', opTwoPiecesLines)
+                // console.log('opTwoPiecesLines', opTwoPiecesLines)
                 //check what lines op can complete dooz
                 for (let line of opTwoPiecesLines) {
                   if (move != null) break
@@ -352,7 +353,7 @@ export default class Dooz extends BaseModel {
                           : Helper.DOOZ.nears[nullIndex].filter(
                               (item: any) => board[item].owner == meId
                             )
-                    console.log('meCanMoveFrom', meCanMoveFrom)
+                    // console.log('meCanMoveFrom', meCanMoveFrom)
 
                     if (meCanMoveFrom.length > 0) {
                       const moveFrom = Number.parseInt(`${meCanMoveFrom[0]}`)
