@@ -137,10 +137,6 @@ export default class DailyReport extends BaseCommand {
         const emoji = emojis[i]
         i++
         msg += `${emoji} کاربر ${user.username} با ${user.cardCount} کارت` + '\n'
-        await Telegram.sendMessage(
-          `${Helper.TELEGRAM_LOGS[0]}`,
-          `${emoji} کاربر ${user.username} با ${user.cardCount} کارت`
-        )
       }
     }
 
