@@ -157,6 +157,6 @@ export default class DailyReport extends BaseCommand {
     // } catch (e: any) {
     //   console.log(e)
     // }
-    process.exit()
+    // process.exit()
   }
 }
