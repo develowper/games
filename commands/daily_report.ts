@@ -145,10 +145,11 @@ export default class DailyReport extends BaseCommand {
       acc[`today_card_${type}_count`] = 0
       return acc
     }, {})
-    await User.query().update({ ...zeroTodayData, todayPrize: 0 })
-    // try {
     await Telegram.sendMessage(`${Helper.TELEGRAM_LOGS[0]}`, msg)
     await Telegram.sendMessage(`${Helper.TELEGRAM_LOGS[0]}`, msg2)
+    await User.query().update({ ...zeroTodayData, todayPrize: 0 })
+    // try {
+
     await sleep(1000)
     // await Telegram.sendMessage(`${Helper.TELEGRAM_LOGS[1]}`, msg)
     // } catch (e: any) {
