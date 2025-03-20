@@ -124,10 +124,13 @@ export default class DailyReport extends BaseCommand {
     console.log('types', filteredTypes)
     await Telegram.sendMessage(`${Helper.TELEGRAM_LOGS[0]}`, filteredTypes.join(','))
     msg += '\n' + (await Log.roomsTable(types)) + '\n'
+    await Telegram.sendMessage(`${Helper.TELEGRAM_LOGS[0]}`, msg)
+
     //rating
     const emojis = ['💖', '💜', '💙']
     for (let type of filteredTypes) {
-      console.log('type', type)
+      await Telegram.sendMessage(`${Helper.TELEGRAM_LOGS[0]}`, type)
+
       let i = 0
       const users = await db
         .from('users')
@@ -136,6 +139,7 @@ export default class DailyReport extends BaseCommand {
         .where(`today_card_${type}_count`, '>', 0)
         .orderBy(`today_card_${type}_count`, 'desc')
       msg += `➖➖🃏اتاق ${type}🃏➖➖` + '\n'
+      await Telegram.sendMessage(`${Helper.TELEGRAM_LOGS[0]}`, `➖➖🃏اتاق ${type}🃏➖➖`)
       for (const user of users) {
         const emoji = emojis[i]
         i++
