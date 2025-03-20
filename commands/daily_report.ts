@@ -21,10 +21,10 @@ export default class DailyReport extends BaseCommand {
   static reportTime = DateTime.fromObject({ hour: 2, minute: 0 }, { zone: 'Asia/Tehran' })
   async run() {
     const now = DateTime.now().setZone('Asia/Tehran')
-    if (now.hour !== DailyReport.reportTime.hour || now.minute !== DailyReport.reportTime.minute) {
-      process.exit()
-      return
-    }
+    // if (now.hour !== DailyReport.reportTime.hour || now.minute !== DailyReport.reportTime.minute) {
+    //   process.exit()
+    //   return
+    // }
 
     const clearPeriodDay = (await getSettings('clear_period_day')) ?? 0
 
@@ -117,13 +117,17 @@ export default class DailyReport extends BaseCommand {
     //       return tmp
     //     })
     //     .join('\n') + '\n'
-
+    console.log(
+      'types',
+      Helper.ROOMS.filter((item) => item.game == 'daberna').map((item) => item.type.slice(1))
+    )
     msg += '\n' + (await Log.roomsTable(types)) + '\n'
     //rating
     const emojis = ['💖', '💜', '💙']
     for (let type of Helper.ROOMS.filter((item) => item.game == 'daberna').map((item) =>
       item.type.slice(1)
     )) {
+      console.log('type', type)
       let i = 0
       const users = await db
         .from('users')
