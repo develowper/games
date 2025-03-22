@@ -8,6 +8,7 @@ const RoomController = () => import('../../app/controllers/api/room_controller.j
 const TransactionController = () => import('../../app/controllers/api/transaction_controller.js')
 const BotController = () => import('../../app/controllers/bot_controller.js')
 const DoozController = () => import('../../app/controllers/api/dooz_controller.js')
+const BlackJackController = () => import('../../app/controllers/api/blackjack_controller.js')
 
 export default () => {
   router.any('api/payment/done', [TransactionController, 'done']).as('api.payment.done')
@@ -30,8 +31,10 @@ export default () => {
       router.post('room/join', [RoomController, 'payAndJoin']).as('room.join')
       router.post('transaction/create', [TransactionController, 'create']).as('transaction.create')
       router.get('transaction/search', [TransactionController, 'search']).as('transaction.search')
-      router.get('dooz/find', [DoozController, 'find']).as('game.find')
-      router.post('dooz/play', [DoozController, 'play']).as('game.play')
+      router.get('dooz/find', [DoozController, 'find']).as('dooz.find')
+      router.post('dooz/play', [DoozController, 'play']).as('dooz.play')
+      router.post('blackjack/join', [BlackJackController, 'join']).as('blackjack.join')
+      router.post('blackjack/update', [BlackJackController, 'update']).as('blackjack.update')
     })
     // .use(middleware.checkServerStatus)
     .use(

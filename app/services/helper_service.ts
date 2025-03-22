@@ -20,6 +20,8 @@ import { fa as faker } from '@faker-js/faker'
 import type { LocaleDefinition } from '@faker-js/faker'
 import { io } from 'socket.io-client'
 import { Encryption } from '@adonisjs/core/encryption'
+import Blackjack from '#models/blackjack'
+import db from '@adonisjs/lucid/services/db'
 
 const encryption = new Encryption({
   secret: env.get('ENC_KEY', ''),
@@ -108,6 +110,70 @@ class Helper {
     winPercent: 80,
     rwp: 0,
   }
+  public static BLACKJACK: any = {
+    actions: ['hit', 'stand', 'double', 'split', 'push', 'blackjack'],
+    coins: [5, 10, 20, 50],
+    cards: [
+      'p1',
+      'p2',
+      'p3',
+      'p4',
+      'p5',
+      'p6',
+      'p7',
+      'p8',
+      'p9',
+      'p10',
+      'pj',
+      'pq',
+      'pk',
+      'd1',
+      'd2',
+      'd3',
+      'd4',
+      'd5',
+      'd6',
+      'd7',
+      'd8',
+      'd9',
+      'd10',
+      'dj',
+      'dq',
+      'dk',
+      'g1',
+      'g2',
+      'g3',
+      'g4',
+      'g5',
+      'g6',
+      'g7',
+      'g8',
+      'g9',
+      'g10',
+      'gj',
+      'gq',
+      'gk',
+      'k1',
+      'k2',
+      'k3',
+      'k4',
+      'k5',
+      'k6',
+      'k7',
+      'k8',
+      'k9',
+      'k10',
+      'kj',
+      'kq',
+      'kk',
+    ],
+    fillInRow: 0,
+    min: 0,
+    max: 0,
+    commissionPercent: 20,
+    winPercent: 80,
+    rwp: 0,
+  }
   public static TRANSACTION = {
     gateways: ['wallet', 'zarinpal'],
     types: [
@@ -163,7 +229,7 @@ class Helper {
   public static USER_ROLES = ['us', 'bo']
   public static TELEGRAM_LOGS = [72534783, 967072802 /*, 6270272894*/]
   public static ADMIN_ROLES = ['go', 'ad']
-  public static GAMES = ['daberna', 'dooz']
+  public static GAMES = ['daberna', 'dooz', 'blackjack']
   public static BLOCK_IPS = [
     /*'94.24.99.175', '5.121.179.55', '91.108.5.21', '45.32.192.18'*/
   ]
@@ -301,6 +367,66 @@ class Helper {
       maxUserCardsCount: 1,
       image: `storage/rooms/50000.jpg`,
       maxSeconds: 90,
+      commissionPercent: Helper.DOOZ.commissionPercent,
+      rowWinPercent: Helper.DOOZ.rowWinPercent,
+      winPercent: Helper.DOOZ.winPercent,
+      rwp: Helper.DOOZ.rwp,
+    },
+    {
+      game: 'blackjack',
+      type: 'b1',
+      title: `${Helper.__('game_desk')} 1`,
+      maxCardsCount: 8,
+      cardPrice: 0,
+      winScore: 1,
+      maxUserCardsCount: 2,
+      image: `storage/rooms/blackjack.jpg`,
+      maxSeconds: 15,
+      commissionPercent: Helper.DOOZ.commissionPercent,
+      rowWinPercent: Helper.DOOZ.rowWinPercent,
+      winPercent: Helper.DOOZ.winPercent,
+      rwp: Helper.DOOZ.rwp,
+    },
+    {
+      game: 'blackjack',
+      type: 'b2',
+      title: `${Helper.__('game_desk')} 2`,
+      maxCardsCount: 8,
+      cardPrice: 0,
+      winScore: 1,
+      maxUserCardsCount: 2,
+      image: `storage/rooms/blackjack.jpg`,
+      maxSeconds: 15,
+      commissionPercent: Helper.DOOZ.commissionPercent,
+      rowWinPercent: Helper.DOOZ.rowWinPercent,
+      winPercent: Helper.DOOZ.winPercent,
+      rwp: Helper.DOOZ.rwp,
+    },
+    {
+      game: 'blackjack',
+      type: 'b3',
+      title: `${Helper.__('game_desk')} 3`,
+      maxCardsCount: 8,
+      cardPrice: 0,
+      winScore: 1,
+      maxUserCardsCount: 2,
+      image: `storage/rooms/blackjack.jpg`,
+      maxSeconds: 15,
+      commissionPercent: Helper.DOOZ.commissionPercent,
+      rowWinPercent: Helper.DOOZ.rowWinPercent,
+      winPercent: Helper.DOOZ.winPercent,
+      rwp: Helper.DOOZ.rwp,
+    },
+    {
+      game: 'blackjack',
+      type: 'b4',
+      title: `${Helper.__('game_desk')} 4`,
+      maxCardsCount: 8,
+      cardPrice: 0,
+      winScore: 1,
+      maxUserCardsCount: 2,
+      image: `storage/rooms/blackjack.jpg`,
+      maxSeconds: 15,
       commissionPercent: Helper.DOOZ.commissionPercent,
       rowWinPercent: Helper.DOOZ.rowWinPercent,
       winPercent: Helper.DOOZ.winPercent,
@@ -619,16 +745,19 @@ class Helper {
     Agency.createMany([{ id: 1, name: __('central'), parentId: null, level: 0 }])
     AgencyFinancial.createMany([{ id: 1, agencyId: 1, balance: 0 }])
   }
-  static createRooms() {
+  static async createRooms() {
     const res = []
-    for (let index = 0; index < Helper.ROOMS.length; index++) {
-      const room = Helper.ROOMS[index]
+    const rooms = Helper.ROOMS.filter((item) => item.game != 'blackjack')
+
+    for (let index = 0; index < rooms.length; index++) {
+      const room = rooms[index]
       res.push({
         type: room.type,
+        game: room.game,
         card_price: room.cardPrice,
         win_score: room.winScore,
         max_seconds: room.maxSeconds,
-        title: Helper.__('room_*', { item: room.cardPrice }),
+        title: room.title ?? Helper.__('room_*', { item: room.cardPrice }),
         max_user_cards_count: room.maxUserCardsCount,
         max_cards_count: room.maxCardsCount,
         image: room.image,
@@ -638,7 +767,34 @@ class Helper {
       })
     }
 
-    Room.createMany(res)
+    await Room.createMany(res)
+  }
+  public static async createBlackJackRooms() {
+    const res = []
+    const rooms = Helper.ROOMS.filter((item) => item.game == 'blackjack')
+    await Room.query().where('game', 'blackjack').delete()
+    await db.rawQuery('ALTER TABLE `rooms` AUTO_INCREMENT = 9')
+    for (let index = 0; index < rooms.length; index++) {
+      const room = rooms[index]
+      const r = await Room.create({
+        game: room.game,
+        type: room.type,
+        card_price: room.cardPrice,
+        win_score: room.winScore,
+        max_seconds: room.maxSeconds,
+        title: `${Helper.__('game_desk')} ${index + 1}`,
+        max_user_cards_count: room.maxUserCardsCount,
+        max_cards_count: room.maxCardsCount,
+        image: room.image,
+        commission_percent: room.commissionPercent,
+        row_win_percent: room.rowWinPercent,
+        win_percent: room.winPercent,
+      })
+
+      await Blackjack.create({
+        type: room.type,
+      })
+    }
   }
   public static log(data: any) {
     logger.info(data)

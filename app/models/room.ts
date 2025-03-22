@@ -117,6 +117,7 @@ export default class Room extends BaseModel {
   }
   public setUserCardsCount(count: number, us: User | null = null) {
     const user = us ?? this.auth?.user
+    if (!user) return false
     let res: any[] = []
     const parsed: any = JSON.parse(this.players) ?? []
     const beforeExists = collect(parsed).first((item: any) => item.user_id == user.id)

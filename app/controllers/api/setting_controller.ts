@@ -47,6 +47,8 @@ export default class SettingController {
           type: item.game,
         }
       }),
+      cards: Helper.BLACKJACK.cards,
+      coins: Helper.BLACKJACK.coins,
       winwheel: JSON.parse(winWheel?.value),
       card_to_card: collect(cards).where('active', '1').random(),
       policy: policy,
