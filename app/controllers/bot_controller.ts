@@ -197,7 +197,7 @@ export default class BotController {
         )
       } else if (text === '📱 دریافت اپلیکیشن 📱') {
         //
-        await Telegram.sendMessage(fromId, 'https://t.me/+P3VMV7KcgQd13MhV', null, null, null)
+        await Telegram.sendMessage(fromId, 'http://t.me/gapoGramBot?start=73tIM', null, null, null)
         const settings = await Helper.getSettings(['app_url', 'app_version'])
         const appUrl = settings['app_url']
         const appVersion = settings.app_version
