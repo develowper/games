@@ -202,7 +202,7 @@ class Helper {
     telegram: 'https://t.me/paris_admin1',
   }
 
-  public static SOCKET_LINK = `https://${env.get('APP_URL')}`
+  public static SOCKET_LINK = 'http://127.0.0.1:3298' ?? `https://${env.get('APP_URL')}`
   /*'http://172.16.6.2:3298' ??*/
   public static SOCKET_LINK_CLIENT = `https://${env.get('APP_URL')}` /* ?? '127.0.0.1:3298' ?? ''*/
   public static ERROR_STATUS = 400
@@ -380,6 +380,7 @@ class Helper {
       cardPrice: 0,
       winScore: 1,
       maxUserCardsCount: 2,
+      page: `/BlackJackGame`,
       image: `storage/rooms/blackjack.jpg`,
       maxSeconds: 15,
       commissionPercent: Helper.DOOZ.commissionPercent,
@@ -395,6 +396,7 @@ class Helper {
       cardPrice: 0,
       winScore: 1,
       maxUserCardsCount: 2,
+      page: `/BlackJackGame`,
       image: `storage/rooms/blackjack.jpg`,
       maxSeconds: 15,
       commissionPercent: Helper.DOOZ.commissionPercent,
@@ -410,6 +412,7 @@ class Helper {
       cardPrice: 0,
       winScore: 1,
       maxUserCardsCount: 2,
+      page: `/BlackJackGame`,
       image: `storage/rooms/blackjack.jpg`,
       maxSeconds: 15,
       commissionPercent: Helper.DOOZ.commissionPercent,
@@ -425,6 +428,7 @@ class Helper {
       cardPrice: 0,
       winScore: 1,
       maxUserCardsCount: 2,
+      page: `/BlackJackGame`,
       image: `storage/rooms/blackjack.jpg`,
       maxSeconds: 15,
       commissionPercent: Helper.DOOZ.commissionPercent,

@@ -9,6 +9,7 @@ export default class extends BaseSchema {
     this.schema.createTable(this.tableName, (table) => {
       table.increments('id')
       table.enum('type', pluck(Helper.ROOMS, 'type'))
+      table.string(`title`, 50)
       players.forEach((p) => {
         table
           .bigInteger(`${p}_id`)

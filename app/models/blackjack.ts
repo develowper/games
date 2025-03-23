@@ -60,6 +60,8 @@ export default class Blackjack extends BaseModel {
   @column()
   declare action: string
   @column()
+  declare title: string
+  @column()
   declare state: string
   @column()
   declare type: string
@@ -77,6 +79,9 @@ export default class Blackjack extends BaseModel {
     const now = DateTime.now()
     let res = false
     if (!user) return false
+    if ([this.p1Id, this.p2Id, this.p3Id, this.p4Id].includes(user.id)) {
+      return true
+    }
     if (this.p1Id == null) {
       this.p1Id = user.id
       this.p1Role = user.role
@@ -110,7 +115,7 @@ export default class Blackjack extends BaseModel {
       this.p4Action2 = null
       res = true
     }
-    // if (res) await this.save()
+    if (res) await this.save()
     return res
   }
 }

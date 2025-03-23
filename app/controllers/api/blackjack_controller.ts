@@ -28,9 +28,10 @@ import Blackjack from '#models/blackjack'
 export default class BlackJackController {
   // constructor(protected helper: Helper) {}
 
-  async join({ response, request, auth, i18n }: HttpContext) {
+  async find({ response, request, auth, i18n }: HttpContext) {
     const user = auth.user as User
     const roomType = request.input('room_type')
+    const cmnd = request.input('cmnd')
     if (!user.isActive) {
       // await trx.commit()
       return response
@@ -43,7 +44,7 @@ export default class BlackJackController {
       .where('is_active', true)
       .where('type', roomType)
       .first()
-    const game = room
+    const game: Blackjack | null = room
       ? await Blackjack.query(/*{ client: trx }*/).where('type', roomType).first()
       : null
     if (!game) {
@@ -52,38 +53,40 @@ export default class BlackJackController {
         .status(Helper.ERROR_STATUS)
         .json({ message: i18n.t('messages.not_found_*', { item: i18n.t('messages.game_room') }) })
     }
-    const userFinancials = await UserFinancial.firstOrCreate(
-      { userId: user?.id },
-      { balance: 0 } /*,
+    if (cmnd == 'join') {
+      const userFinancials = await UserFinancial.firstOrCreate(
+        { userId: user?.id },
+        { balance: 0 } /*,
       { client: trx }*/
-    )
-    if (userFinancials.balance < 5000) {
-      // await trx.commit()
-      // userFinancials.balance = 100000
-      // userFinancials.save()
-      return response /*.status(Helper.ERROR_STATUS)*/
-        .json({
-          status: 'low_balance',
-          message: i18n.t('messages.validate.wallet_min', {
-            item: i18n.t('messages.wallet'),
-            value: `${asPrice('5000')} ${i18n.t('messages.currency')}`,
-          }),
-        })
+      )
+      if (userFinancials.balance < 5000) {
+        // await trx.commit()
+        // userFinancials.balance = 100000
+        // userFinancials.save()
+        return response /*.status(Helper.ERROR_STATUS)*/
+          .json({
+            status: 'low_balance',
+            message: i18n.t('messages.validate.wallet_min', {
+              item: i18n.t('messages.wallet'),
+              value: `${asPrice('5000')} ${i18n.t('messages.currency')}`,
+            }),
+          })
+      }
+      if (!game.p1Id != null && game.p2Id != null && game.p3Id != null && game.p4Id != null) {
+        // await trx.commit()
+        return response
+          .status(Helper.ERROR_STATUS)
+          .json({ message: i18n.t('messages.is_full_*', { item: i18n.t('messages.game_room') }) })
+      }
+      //add user to game
+      const res = await game.setUser(user, 'add')
+      await room.setUser(user, 'add')
     }
-    if (!game.p1Id != null && game.p2Id != null && game.p3Id != null && game.p4Id != null) {
-      // await trx.commit()
-      return response
-        .status(Helper.ERROR_STATUS)
-        .json({ message: i18n.t('messages.is_full_*', { item: i18n.t('messages.game_room') }) })
-    }
-    //add user to game
-    const res = await game.setUser(user, 'add')
-
     // let state = JSON.parse(game.state ?? '{}')
 
     //add to room and wait for game
-    await game.save()
-    return response.json({ status: 'added' })
+
+    return response.json({ status: 'success', game: game })
   }
   async play({ response, request, auth, i18n }: HttpContext) {
     const user = auth.user as User
