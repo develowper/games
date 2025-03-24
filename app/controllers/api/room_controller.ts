@@ -49,6 +49,7 @@ export default class RoomController {
     const user = auth.user as User
     const roomType = request.input('room_type')
     const cardCount = Number.parseInt(request.input('card_count'))
+    const ip = request.ip()
     // const trx = await db.transaction()
     const room = await Room.query(/*{ client: trx }*/)
       .where('is_active', true)
@@ -84,6 +85,13 @@ export default class RoomController {
       // await trx.commit()
       return sendError(i18n.t('messages.validate.max_room_cards', { value: room.maxCardsCount }))
     }
+    const beforeIpExists = collect(JSON.parse(room.players) ?? []).first(
+      (item: any) => ip != null && item.user_ip == ip && item.user_id != user.id
+    )
+    if (beforeIpExists) {
+      // await trx.commit()
+      return sendError(i18n.t('messages.validate.duplicate_*', { value: 'ip' }))
+    }
 
     const userFinancials = await UserFinancial.firstOrCreate(
       { userId: user?.id },
@@ -107,7 +115,7 @@ export default class RoomController {
       )
     }
     try {
-      if (room.setUserCardsCount(userBeforeCardCounts + cardCount)) {
+      if (room.setUserCardsCount(userBeforeCardCounts + cardCount, user, request.ip())) {
         if (userBeforeCardCounts == 0) {
           room.playerCount++
           user.playCount++

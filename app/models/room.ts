@@ -115,7 +115,7 @@ export default class Room extends BaseModel {
 
     return result?.card_count ?? 0
   }
-  public setUserCardsCount(count: number, us: User | null = null) {
+  public setUserCardsCount(count: number, us: User | null = null, ip: any) {
     const user = us ?? this.auth?.user
     if (!user) return false
     let res: any[] = []
@@ -127,6 +127,7 @@ export default class Room extends BaseModel {
         user_id: user.id,
         username: user.username,
         user_role: user.role,
+        user_ip: ip,
         card_count: count,
       })
       res = parsed
@@ -196,7 +197,7 @@ export default class Room extends BaseModel {
     if (room.maxCardsCount - room.cardCount <= 0) return
     if (room.maxCardsCount - room.cardCount <= 3)
       cardCount = userCardCount ?? room.maxCardsCount - room.cardCount
-    if (room.setUserCardsCount(cardCount, botUser)) {
+    if (room.setUserCardsCount(cardCount, botUser, null)) {
       room.playerCount++
       botUser.playCount++
       room.cardCount += cardCount
