@@ -92,6 +92,7 @@ export default class RoomController {
       // await trx.commit()
       return sendError(i18n.t('messages.validate.duplicate_*', { value: 'ip' }))
     }
+
     const userFinancials = await UserFinancial.firstOrCreate(
       { userId: user?.id },
       { balance: 0 } /*,
