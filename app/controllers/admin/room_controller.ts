@@ -8,6 +8,7 @@ import { createRoomValidator, updateRoomValidator } from '#validators/room'
 import Telegram from '#services/telegram_service'
 import hash from '@adonisjs/core/services/hash'
 import User from '#models/user'
+import Blackjack from '#models/blackjack'
 
 export default class RoomController {
   //
@@ -96,6 +97,9 @@ export default class RoomController {
       case 'status':
         data.isActive = isActive
         data.save()
+        if (data.game == 'blackjack') {
+          await Blackjack.query().where('type', data.type).update({ isActive: isActive })
+        }
         Telegram.log(null, 'room_edited', data)
         return response.send({
           status: 'success',

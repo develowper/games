@@ -76,8 +76,8 @@ export default class DoozController {
         .json({
           status: 'low_balance',
           message: i18n.t('messages.validate.wallet_min', {
-            item: i18n.t('messages.wallet'),
-            value: `${asPrice(room.cardPrice)} ${i18n.t('messages.currency')}`,
+
+            item: `${asPrice(room.cardPrice)} ${i18n.t('messages.currency')}`,
           }),
         })
     }

@@ -112,7 +112,7 @@ class Helper {
   }
   public static BLACKJACK: any = {
     actions: ['hit', 'stand', 'double', 'split', 'push', 'blackjack'],
-    coins: [5, 10, 20, 50],
+    coins: [5000, 10000, 20000, 50000],
     cards: [
       'p1',
       'p2',
@@ -170,6 +170,7 @@ class Helper {
     fillInRow: 0,
     min: 0,
     max: 0,
+    maxResponseTime: 90,
     commissionPercent: 20,
     winPercent: 80,
     rwp: 0,
@@ -202,7 +203,7 @@ class Helper {
     telegram: 'https://t.me/paris_admin1',
   }
 
-  public static SOCKET_LINK = `https://${env.get('APP_URL')}`
+  public static SOCKET_LINK = 'http://127.0.0.1:3298' ?? `https://${env.get('APP_URL')}`
   /*'http://172.16.6.2:3298' ??*/
   public static SOCKET_LINK_CLIENT = `https://${env.get('APP_URL')}` /* ?? '127.0.0.1:3298' ?? ''*/
   public static ERROR_STATUS = 400

@@ -142,6 +142,25 @@ export default class Telegram {
     }
   }
 
+  public static async sendPhoto(
+    chatId: string | number,
+    photo: any,
+    caption: any,
+    mode: string | null = null,
+    reply: string | null = null,
+    keyboard: any | null = null,
+    disable_notification: boolean = false,
+    topic: string | null = null
+  ) {
+    return this.creator('sendPhoto', {
+      chat_id: chatId,
+      reply_to_message_id: reply,
+      reply_markup: keyboard,
+      parse_mode: mode,
+      photo: photo,
+      caption: caption,
+    })
+  }
   public static async sendMessage(
     chat_id: string | number,
     text: string,

@@ -30,6 +30,7 @@ export default class User extends compose(BaseModel, AuthFinder) {
   @hasOne(() => UserFinancial)
   declare financial: HasOne<typeof UserFinancial>
   public financialInfo?: UserFinancial
+  public balance: number
 
   public async getUserFinancial() {
     return (await UserFinancial.findBy('user_id', this.id))?.serialize()

@@ -30,6 +30,7 @@ export default class extends BaseSchema {
       table.json('state').nullable()
       table.integer('step').unsigned().defaultTo(0)
       table.timestamps()
+      table.boolean('is_active').defaultTo(true)
     })
     Helper.createBlackJackRooms()
   }

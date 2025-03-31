@@ -34,7 +34,7 @@ export default () => {
       router.get('dooz/find', [DoozController, 'find']).as('dooz.find')
       router.post('dooz/play', [DoozController, 'play']).as('dooz.play')
       router.get('blackjack/find', [BlackJackController, 'find']).as('blackjack.find')
-      router.post('blackjack/update', [BlackJackController, 'update']).as('blackjack.update')
+      router.post('blackjack/play', [BlackJackController, 'play']).as('blackjack.play')
     })
     // .use(middleware.checkServerStatus)
     .use(
