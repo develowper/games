@@ -408,9 +408,10 @@ export default class Blackjack extends BaseModel {
           game.p4Action2,
         ].filter((item) => ['decision_done', null].includes(item)).length == 4
       ) {
+        game.action = 'dealer_decision'
       }
       game.state = JSON.stringify(state)
-      game.action = 'dealer_decision'
+
       await game.save()
     }
     if (game.action == 'set_cards') {
