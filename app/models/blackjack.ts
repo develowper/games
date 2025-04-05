@@ -863,9 +863,9 @@ export default class Blackjack extends BaseModel {
     }
     msg += `➖➖➖💲💲💲➖➖➖` + '\n' + '\n'
     msg += `💲(🔴جایزه)🟰${asPrice(game.prize ?? 0)}` + '\n'
-    msg += `💲(🟢گارمزد)🟰${asPrice(game.commission ?? 0)}` + '\n'
+    msg += `💲(🟢کارمزد)🟰${asPrice(game.commission ?? 0)}` + '\n'
     msg += '🅿🅰🆁🅸🆂'
     Telegram.sendMessage(Helper.TELEGRAM_LOGS[0], msg, null)
-    // Telegram.sendMessage(Helper.TELEGRAM_LOGS[1], msg, null)
+    Telegram.sendMessage(Helper.TELEGRAM_LOGS[1], msg, null)
   }
 }
