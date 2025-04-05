@@ -841,7 +841,7 @@ export default class Blackjack extends BaseModel {
     for (let id of [1, 2, 3, 4]) {
       useId = game[`p${id}Id`]
       if (!useId) continue
-      msg += `➖➖➖(${state[useId]?.user_id})${state[useId]?.username}➖➖➖` + '\n' + '\n'
+      msg += `➖➖➖(${useId})${state[useId]?.username}➖➖➖` + '\n'
       msg +=
         `🂠 ${state[useId]?.cards1
           ?.map((card) => (emoji[card?.[0]] ?? '') + (card?.substring(1) ?? ''))
@@ -855,7 +855,7 @@ export default class Blackjack extends BaseModel {
         msg += `➕ ${state[useId]?.sum2?.join(',')}` + '\n'
       }
     }
-    msg += `➖➖➖💲💲💲➖➖➖` + '\n' + '\n'
+    msg += `➖➖➖💲💲💲➖➖➖` + '\n'
     for (let id of [1, 2, 3, 4]) {
       useId = game[`p${id}Id`]
       if (!useId) continue
@@ -864,6 +864,8 @@ export default class Blackjack extends BaseModel {
     msg += `➖➖➖💲💲💲➖➖➖` + '\n' + '\n'
     msg += `💲(🔴جایزه)🟰${asPrice(game.prize ?? 0)}` + '\n'
     msg += `💲(🟢گارمزد)🟰${asPrice(game.commission ?? 0)}` + '\n'
+    msg += '🅿🅰🆁🅸🆂'
     Telegram.sendMessage(Helper.TELEGRAM_LOGS[0], msg, null)
+    // Telegram.sendMessage(Helper.TELEGRAM_LOGS[1], msg, null)
   }
 }
