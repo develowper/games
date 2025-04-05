@@ -407,7 +407,7 @@ export default class BotController {
           if (fileId) {
             await Setting.query().where('key', 'app_url').update({ value: fileId })
             msg = '🟢' + i18n.t('messages.updated_successfully')
-            // Telegram.logAdmins('🟢نسخه برنامه بروز رسانی شد')
+            Telegram.logAdmins('🟢نسخه برنامه بروز رسانی شد')
           } else {
             msg = '🔴' + i18n.t('messages.not_found_*', { item: i18n.t('messages.file') })
           }
