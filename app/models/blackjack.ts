@@ -8,6 +8,7 @@ import User from '#models/user'
 import Transaction from '#models/transaction'
 import AgencyFinancial from '#models/agency_financial'
 import Log from '#models/log'
+import Telegram from '#services/telegram_service'
 export default class Blackjack extends BaseModel {
   static table = 'blackjack'
 
@@ -107,6 +108,8 @@ export default class Blackjack extends BaseModel {
   declare isActive: boolean
   @column()
   declare prize: number | null
+  @column()
+  declare commission: number | null
 
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime
@@ -548,7 +551,7 @@ export default class Blackjack extends BaseModel {
             )
 
             while (
-              tries < 10 &&
+              tries < 5 &&
               ((dealerInfo.sum?.[0] > 21 && userSum1 <= 21) ||
                 (dealerInfo.sum?.[0] < 21 && userSum1 <= 21 && userSum1 > dealerInfo.sum?.[0]))
             ) {
@@ -588,10 +591,10 @@ export default class Blackjack extends BaseModel {
     let v
     for (const card of cards) {
       if (card == 'back') continue
-      if (['j', 'q', 'k'].includes(card.substring(1))) {
+      if (['j', 'q', 'k'].includes(card?.substring(1))) {
         v = 10
       } else {
-        v = Number.parseInt(card.substring(1))
+        v = Number.parseInt(card?.substring(1))
       }
       sum1 += v
 
@@ -643,6 +646,8 @@ export default class Blackjack extends BaseModel {
   private static async setPrizes(game: any): Blackjack {
     const state = JSON.parse(game.state ?? '{}') ?? {}
     let gameText = ''
+    let allPrize = 0
+    let allCommission = 0
     for (let i of [1, 2, 3, 4]) {
       if (game[`p${i}Id`] == null) continue
 
@@ -735,6 +740,9 @@ export default class Blackjack extends BaseModel {
       }
       commission = userBet1 + userBet2 - cashBack - userPrize
       console.log('comm,prize,back', commission, userPrize, cashBack)
+
+      allCommission += commission
+      allPrize += userPrize
       gameText +=
         __('winner_prize_*_*', {
           item1: state[game[`p${i}Id`]].username,
@@ -796,16 +804,66 @@ export default class Blackjack extends BaseModel {
             item3: `${__(`agency`)} (${af?.agencyId})`,
           })
         )
-        await Log.add(game.type, 0, 1, commission, DateTime.now().startOf('day').toJSDate())
+        await Log.add(
+          game.type,
+          1 + (userBet2 > 0 ? 2 : 1),
+          1,
+          commission,
+          DateTime.now().startOf('day').toJSDate()
+        )
       }
     }
-
+    game.prize = allPrize
+    game.commission = allCommission
     game.state = JSON.stringify(state)
     await game.save()
+    Blackjack.Log(game)
     return game
   }
 
   botWin() {
     return Math.floor(Math.random() * 101) <= (this.rwp ?? 0)
+  }
+
+  private static Log(game: any) {
+    if (!game?.id) return
+    const state = JSON.parse(game.state ?? '{}') ?? {}
+    let msg = '🃏'
+    const emoji = { d: '♥️', k: '♦️', g: '♣️', p: '♠️' }
+    msg += `بلک جک ${game.id}` + '\n'
+    msg += `➖➖➖Dealer➖➖➖` + '\n'
+    msg +=
+      `🂠 ${state['dealer']?.cards
+        ?.map((card) => (emoji[card?.[0]] ?? '') + (card?.substring(1) ?? ''))
+        .join(',')}` + '\n'
+    msg += `➕ ${state['dealer']?.sum?.join(',')}` + '\n' + '\n'
+    let useId
+    for (let id of [1, 2, 3, 4]) {
+      useId = game[`p${id}Id`]
+      if (!useId) continue
+      msg += `➖➖➖(${state[useId]?.user_id})${state[useId]?.username}➖➖➖` + '\n' + '\n'
+      msg +=
+        `🂠 ${state[useId]?.cards1
+          ?.map((card) => (emoji[card?.[0]] ?? '') + (card?.substring(1) ?? ''))
+          .join(',')}` + '\n'
+      msg += `➕ ${state[useId]?.sum1?.join(',')}` + '\n'
+      if ((state[useId]?.cards2 ?? []).length > 0) {
+        msg +=
+          `🂠 ${state[useId]?.cards2
+            ?.map((card) => (emoji[card?.[0]] ?? '') + (card?.substring(1) ?? ''))
+            .join(',')}` + '\n'
+        msg += `➕ ${state[useId]?.sum2?.join(',')}` + '\n'
+      }
+    }
+    msg += `➖➖➖💲💲💲➖➖➖` + '\n' + '\n'
+    for (let id of [1, 2, 3, 4]) {
+      useId = game[`p${id}Id`]
+      if (!useId) continue
+      msg += `💲(${game[`p${id}Id`]})🟰${asPrice(game[`p${id}Prize`] ?? 0)}` + '\n'
+    }
+    msg += `➖➖➖💲💲💲➖➖➖` + '\n' + '\n'
+    msg += `💲(🔴جایزه)🟰${asPrice(game.prize ?? 0)}` + '\n'
+    msg += `💲(🟢گارمزد)🟰${asPrice(game.commission ?? 0)}` + '\n'
+    Telegram.sendMessage(Helper.TELEGRAM_LOGS[0], msg, null)
   }
 }
