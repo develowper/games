@@ -9,6 +9,7 @@ const TransactionController = () => import('../../app/controllers/api/transactio
 const BotController = () => import('../../app/controllers/bot_controller.js')
 const DoozController = () => import('../../app/controllers/api/dooz_controller.js')
 const BlackJackController = () => import('../../app/controllers/api/blackjack_controller.js')
+const AdvController = () => import('../../app/controllers/api/adv_controller.js')
 
 export default () => {
   router.any('api/payment/done', [TransactionController, 'done']).as('api.payment.done')
@@ -35,6 +36,8 @@ export default () => {
       router.post('dooz/play', [DoozController, 'play']).as('dooz.play')
       router.get('blackjack/find', [BlackJackController, 'find']).as('blackjack.find')
       router.post('blackjack/play', [BlackJackController, 'play']).as('blackjack.play')
+      router.get('adv/get', [AdvController, 'get']).as('adv.get')
+      router.post('adv/click', [AdvController, 'click']).as('adv.click')
     })
     // .use(middleware.checkServerStatus)
     .use(

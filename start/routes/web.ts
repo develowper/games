@@ -21,6 +21,18 @@ import Telegram from '#services/telegram_service'
 import collect from 'collect.js'
 export default function () {
   router.get('test', async () => {
+    return
+    return await Setting.create({
+      key: 'blackjack_help',
+      title: __('blackjack_help'),
+      value: JSON.stringify([
+        { icon: 'help_blackjack', text: __('help_blackjack') },
+        { icon: 'hit', text: __('help_hit') },
+        { icon: 'stand', text: __('help_stand') },
+        { icon: 'split', text: __('help_split') },
+        { icon: 'double', text: __('help_double') },
+      ]),
+    })
     // return DabernaController.search()
     return await User.makeRefCode()
     const room = await Room.first()

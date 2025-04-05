@@ -24,6 +24,8 @@ import SocketAuthMiddleware from '#middleware/socket/socket_auth_middleware'
 import User from '#models/user'
 import { DateTime } from 'luxon'
 import Dooz from '#models/dooz'
+import db from '@adonisjs/lucid/services/db'
+import Blackjack from '#models/blackjack'
 declare module 'socket.io' {
   interface Socket {
     context: HttpContext
@@ -35,6 +37,7 @@ export default class SocketIo {
   public static wsIo: Server
   public static timer1
   public static timer2
+  public static timer3
   constructor(/*protected app: ApplicationService*/) {
     // console.log('*********   socket service created ')
     // console.log(Daberna.makeCard())
@@ -117,7 +120,7 @@ export default class SocketIo {
         socket.emit('left-room', data)
       })
 
-      let games = ['dooz']
+      let games = Helper.GAMES
       games.forEach((game: any) => {
         socket.on(`join-${game}`, async (data) => {
           // logger.info(data)
@@ -134,7 +137,10 @@ export default class SocketIo {
             }
           })
           socket.join(`${game}-${data?.id}`)
-          socket.emit(`joined-${game}`, await Dooz.find(data?.id))
+          socket.emit(
+            `joined-${game}`,
+            await (game == 'dooz' ? Dooz : Blackjack).find('id', data?.id)
+          )
           // const roomSockets2 = await SocketIo.wsIo?.in(`${game}-${data?.id}`).fetchSockets()
           // console.log(' >---game sockets---< ', roomSockets2.length)
         })
@@ -210,6 +216,7 @@ export default class SocketIo {
         console.log('****sigterm****')
         clearInterval(SocketIo.timer1)
         clearInterval(SocketIo.timer2)
+        clearInterval(SocketIo.timer3)
       })
 
       SocketIo.timer1 = setInterval(async () => {
@@ -297,6 +304,26 @@ export default class SocketIo {
               .orWhere('updated_at', '<', DateTime.now().minus({ seconds: 30 }).toJSDate())
           )) {
           const game = await Dooz.playBot(dooz)
+        }
+
+        // clearInterval(SocketIo.timer2)
+      }, 5000)
+
+      //timer blackjack
+      SocketIo.timer3 = setInterval(async () => {
+        if (app.isTerminated || app.isTerminating) {
+          clearInterval(SocketIo.timer3)
+          return
+        }
+        // await Blackjack.query().whereNot('action', 'done').update({ action: 'done' })
+        for (let game of await Blackjack.query()
+          .where((query) => {
+            query.whereNot('action', 'done').orWhereNull('action')
+          })
+          .where('is_active', true)) {
+          // console.log(`players ${room.playerCount}`, `time ${room.secondsRemaining}`)
+          // console.log(__('transactions'))
+          await Blackjack.botPlay(game)
         }
 
         // clearInterval(SocketIo.timer2)

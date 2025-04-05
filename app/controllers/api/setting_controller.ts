@@ -24,6 +24,7 @@ export default class SettingController {
         'card_to_card_title',
         'withdraw_title',
         'telegram_bot',
+        'blackjack_help',
       ])
     )
     const cards: { active: number; number: string; name: string }[] = JSON.parse(
@@ -38,6 +39,9 @@ export default class SettingController {
     const supportLinks = JSON.parse(
       settings.first((item: any) => item && item.key == 'support_links')?.value ?? '[]'
     )
+    const blackjackHelp = JSON.parse(
+      settings.first((item: any) => item && item.key == 'blackjack_help')?.value ?? '[]'
+    )
     const games = await Room.query().select(['game']).distinct('game').where('is_active', true)
 
     return response.json({
@@ -47,6 +51,8 @@ export default class SettingController {
           type: item.game,
         }
       }),
+      ad:Helper.AD,
+      blackjack_help: blackjackHelp,
       cards: Helper.BLACKJACK.cards,
       coins: Helper.BLACKJACK.coins,
       winwheel: JSON.parse(winWheel?.value),

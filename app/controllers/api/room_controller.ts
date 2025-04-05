@@ -30,7 +30,8 @@ export default class RoomController {
     let query = Room.query()
     // query = query.where('is_active', true)
     if (request.input('id')) query = query.where('id', request.input('id'))
-    if (request.input('game')) query = query.where('game', request.input('game'))
+    if (request.input('game'))
+      query = query.where('game', request.input('game')).where('is_active', true)
     else query = query.where('game', 'daberna')
     let data = await query
 
@@ -39,6 +40,7 @@ export default class RoomController {
       else if (item.type == 'd10000') item.playerCount = getRandomBetween(20, 40)
       else if (item.type == 'd20000') item.playerCount = getRandomBetween(10, 20)
       else if (item.type == 'd50000') item.playerCount = getRandomBetween(0, 10)
+      else if (item.type == 'b1') item.playerCount = getRandomBetween(0, 10)
       return item
     })
 

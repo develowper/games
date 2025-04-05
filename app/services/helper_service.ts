@@ -111,7 +111,19 @@ class Helper {
     rwp: 0,
   }
   public static BLACKJACK: any = {
-    actions: ['hit', 'stand', 'double', 'split', 'push', 'blackjack'],
+    actions: [
+      'hit',
+      'stand',
+      'double',
+      'split',
+      'push',
+      'blackjack',
+      'bet',
+      'set_cards',
+      'user_decision',
+      'dealer_decision',
+      'done',
+    ],
     coins: [5000, 10000, 20000, 50000],
     cards: [
       'p1',
@@ -170,10 +182,12 @@ class Helper {
     fillInRow: 0,
     min: 0,
     max: 0,
-    maxResponseTime: 90,
+    startTime: 10,
+    maxResponseTime: 30,
     commissionPercent: 20,
     winPercent: 80,
     rwp: 0,
+    multiplayer: false,
   }
   public static TRANSACTION = {
     gateways: ['wallet', 'zarinpal'],
@@ -186,8 +200,10 @@ class Helper {
       'commission',
       'ref_commission',
       'winwheel',
+      'dooz',
+      'blackjack',
     ],
-    fromTypes: ['agency', 'user', 'admin', 'daberna'],
+    fromTypes: ['agency', 'user', 'admin', 'daberna', 'blackjack', 'dooz'],
     colors: {
       win: 'green',
       row_win: 'teal',
@@ -203,7 +219,7 @@ class Helper {
     telegram: 'https://t.me/paris_admin1',
   }
 
-  public static SOCKET_LINK = `https://${env.get('APP_URL')}`
+  public static SOCKET_LINK = `https://${env.get('APP_URL')}` ?? 'http://127.0.0.1:3298'
   /*'http://172.16.6.2:3298' ??*/
   public static SOCKET_LINK_CLIENT = `https://${env.get('APP_URL')}` /* ?? '127.0.0.1:3298' ?? ''*/
   public static ERROR_STATUS = 400
@@ -234,6 +250,11 @@ class Helper {
   public static BLOCK_IPS = [
     /*'94.24.99.175', '5.121.179.55', '91.108.5.21', '45.32.192.18'*/
   ]
+  public static AD = {
+    types: {
+      native: 'my',
+    },
+  }
 
   public static USER_STATUSES = [
     { name: 'active', color: 'green' },
@@ -554,6 +575,7 @@ class Helper {
           ],
         }),
       },
+
       {
         key: 'charge_title',
         title: __('charge_page_title'),
@@ -655,6 +677,17 @@ class Helper {
         key: 'blacklist',
         value: null,
         title: __('blacklist_text'),
+      },
+      {
+        key: 'blackjack_help',
+        title: __('blackjack_help'),
+        value: JSON.stringify([
+          { icon: null, text: __('help_blackjack') },
+          { icon: 'hit', text: __('help_hit') },
+          { icon: 'stand', text: __('help_stand') },
+          { icon: 'split', text: __('help_split') },
+          { icon: 'double', text: __('help_double') },
+        ]),
       },
       // {
       //   key: 'enamad',

@@ -44,15 +44,31 @@ export default class BlackJackController {
       .where('is_active', true)
       .where('type', roomType)
       .first()
-    const game: Blackjack | null = room
-      ? await Blackjack.query(/*{ client: trx }*/).where('type', roomType).first()
-      : null
-    if (!game) {
-      // await trx.commit()
-      return response
-        .status(Helper.ERROR_STATUS)
-        .json({ message: i18n.t('messages.not_found_*', { item: i18n.t('messages.game_room') }) })
-    }
+
+    //multiplayer
+    // const game: Blackjack | null = room
+    //   ? await Blackjack.query(/*{ client: trx }*/).where('type', roomType).first()
+    //   : null
+    //singleplayer
+    let game: Blackjack | null =
+      room && cmnd != 'join'
+        ? ((await Blackjack.query()
+            .where({ p1Id: user.id, type: roomType })
+            .where((query) => {
+              query.whereNot('action', 'done').orWhereNull('action')
+            })
+            .first()) ??
+          // (await Blackjack.find(63)) ??
+          new Blackjack().merge({ p1Id: null, action: null }))
+        : null
+
+    //multiplayer
+    // if (!game) {
+    //   // await trx.commit()
+    //   return response
+    //     .status(Helper.ERROR_STATUS)
+    //     .json({ message: i18n.t('messages.not_found_*', { item: i18n.t('messages.game_room') }) })
+    // }
     if (cmnd == 'join') {
       const userFinancials = await UserFinancial.firstOrCreate({ userId: user?.id }, { balance: 0 })
       if (userFinancials.balance < 5000) {
@@ -67,23 +83,39 @@ export default class BlackJackController {
             }),
           })
       }
-      if (!game.p1Id != null && game.p2Id != null && game.p3Id != null && game.p4Id != null) {
-        // await trx.commit()
-        return response
-          .status(Helper.ERROR_STATUS)
-          .json({ message: i18n.t('messages.is_full_*', { item: i18n.t('messages.game_room') }) })
-      }
+      //multiplayer
+      // if (!game.p1Id != null && game.p2Id != null && game.p3Id != null && game.p4Id != null) {
+      //   return response
+      //     .status(Helper.ERROR_STATUS)
+      //     .json({ message: i18n.t('messages.is_full_*', { item: i18n.t('messages.game_room') }) })
+      // }
+      game = await Blackjack.create({
+        p1Id: null,
+        rwp: room?.rwp,
+        type: roomType,
+        title: `${i18n.t('messages.game_desk')} ${i18n.t('messages.user')} ${user.id}`,
+      })
       //add user to game
       user.balance = userFinancials.balance
       const res = await game.setUser(user, 'add')
-      await room.setUser(user, 'add')
+
+      // await room.setUser(user, 'add')
     }
 
     // let state = JSON.parse(game.state ?? '{}')
-    if (game.action == null) game.action = 'bet'
-    if (game.action == 'bet_done') game.action = 'set_cards'
-    await game.save()
-    await Blackjack.botPlay(game)
+    // if (game.action == null) {
+    //   game.action = 'bet'
+    //   game.p1Action1 = 'bet'
+    //   game.p1Checkout1 = DateTime.now()
+    // } else if (game.p1Action1 == 'bet_done') {
+    //   game.action = 'set_cards'
+    // }
+    // else if (game.p1Action1 == 'bet') {
+    //   game.action = 'bet'
+    // }
+    // else game.action = 'dealer_decision'
+    // await game.save()
+    // await Blackjack.botPlay(game)
     //add to room and wait for game
 
     return response.json({ status: 'success', game: game })
@@ -158,6 +190,7 @@ export default class BlackJackController {
         }
 
         userFinancials = await UserFinancial.firstOrCreate({ userId: user?.id }, { balance: 0 })
+
         if (userFinancials.balance < amount) {
           return response.json({
             status: 'danger',
@@ -169,6 +202,7 @@ export default class BlackJackController {
         userFinancials.balance -= amount
         await userFinancials.save()
         user.balance = userFinancials.balance
+
         await game.setUser(
           {
             id: user.id,
