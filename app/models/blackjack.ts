@@ -836,7 +836,7 @@ export default class Blackjack extends BaseModel {
       `🂠 ${state['dealer']?.cards
         ?.map((card) => (emoji[card?.[0]] ?? '') + (card?.substring(1) ?? ''))
         .join(',')}` + '\n'
-    msg += `➕ ${state['dealer']?.sum?.join(',')}` + '\n' + '\n'
+    msg += `➕ ${state['dealer']?.sum?.join(',')}` + '\n'
     let useId
     for (let id of [1, 2, 3, 4]) {
       useId = game[`p${id}Id`]
