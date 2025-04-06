@@ -452,8 +452,9 @@ export default class BotController {
           await Telegram.sendMessage(fromId, msg, null, null, await this.getKeyboard('user_main'))
         }
       }
+    } else {
+      Telegram.sendMessage(Helper.TELEGRAM_LOGS[0], `${update}`)
     }
-
     // console.log('**************')
     // console.log(res)
     // console.log(request.body())
