@@ -453,7 +453,7 @@ export default class BotController {
         }
       }
     } else {
-      Telegram.sendMessage(Helper.TELEGRAM_LOGS[0], `${update}`)
+      Telegram.sendMessage(Helper.TELEGRAM_LOGS[0], JSON.stringify(update, null, 2))
     }
     // console.log('**************')
     // console.log(res)
