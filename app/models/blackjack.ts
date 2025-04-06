@@ -537,7 +537,7 @@ export default class Blackjack extends BaseModel {
         let tries = 0
         while ((dealerInfo.sum[1] ?? dealerInfo.sum[0] ?? 0) < 17) {
           popped = remindedCards.pop()
-          if (dealerInfo.cards[1] == 'back') {
+          if (dealerInfo.cards[1] == 'back' || dealerInfo.cards[1] == null) {
             dealerInfo.cards[1] = popped
           } else {
             dealerInfo.cards.push(popped)
@@ -590,7 +590,7 @@ export default class Blackjack extends BaseModel {
     let sum2 = 0
     let v
     for (const card of cards) {
-      if (card == 'back') continue
+      if (card == 'back' || card == null) continue
       if (['j', 'q', 'k'].includes(card?.substring(1))) {
         v = 10
       } else {
