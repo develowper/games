@@ -401,8 +401,9 @@ export default class Daberna extends BaseModel {
           })
           .join('\n')}` + '\n'
       // Telegram.sendMessage(Helper.TELEGRAM_LOGS[0], logText)
-      Telegram.sendMessage(Helper.TELEGRAM_LOGS[1], logText)
-      // Telegram.logAdmins(logText)
+      // Telegram.sendMessage(Helper.TELEGRAM_LOGS[1], logText)
+
+      Telegram.logAdmins(logText, null, Helper.TELEGRAM_TOPICS.DABERNA_GAME)
     }
     // console.log(boards.map((item) => item.card))
     const af = await AgencyFinancial.find(1)

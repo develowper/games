@@ -8,10 +8,6 @@ import TelegramEvent from '#events/telegram_event'
 
 export default class Telegram {
   ///
-  public static TOPIC_LOGS: any = null /*'LOGS'*/
-  public static TOPIC_TRANSACTIONS: any = null /*'TRANSACTIONS'*/
-  public static TOPIC_BUGS: any = 'BUGS'
-  public static topic: any = null
 
   public static log(to: any, type: string, data: any) {
     TelegramEvent.dispatch(to, type, data)
@@ -49,12 +45,13 @@ export default class Telegram {
       const isCreate = type.includes('created')
       const isEdit = type.includes('edited')
       const isRemove = type.includes('remove')
-      this.topic = Telegram.TOPIC_LOGS
+      this.topic = null
 
       switch (type) {
         case 'user_created':
         case 'user_edited':
         case 'user_removed':
+          this.topic = Helper.TELEGRAM_TOPICS.USER
           if (isCreate)
             msg += `🟩\n ${isAdmin ? `ادمین *${op.username}* یک کاربر ساخت ` : 'یک کاربر ساخته شد'}\n`
           if (isEdit)
@@ -72,7 +69,7 @@ export default class Telegram {
           break
 
         case 'transaction_created':
-          this.topic = Telegram.TOPIC_TRANSACTIONS
+          this.topic = Helper.TELEGRAM_TOPICS.TRANSACTION
 
           if (data.amount > 0) msg += '🟢🟢🟢🛒 یک تراکنش انجام شد\n'
           else msg += '🟠🟠🟠🛒 یک پلن خریداری شد\n'
@@ -104,7 +101,7 @@ export default class Telegram {
           break
 
         case 'error':
-          this.topic = Telegram.TOPIC_BUGS
+          this.topic = Helper.TELEGRAM_TOPICS.BUG
           msg = `📛 خطای سیستم\n${data}`
           break
 
@@ -226,10 +223,11 @@ export default class Telegram {
   }
   public static async logAdmins(msg: string, mode: any = null, topic: any = null) {
     let res: any = null
-    for (let i = 0; i < Helper.TELEGRAM_LOGS.length; i++) {
-      const log = Helper.TELEGRAM_LOGS[i]
-      res = await this.sendMessage(`${log}`, msg, mode, null, null, false, topic)
-    }
+    // for (let i = 0; i < Helper.TELEGRAM_LOGS.length; i++) {
+    //   const log = Helper.TELEGRAM_LOGS[i]
+    //   res = await this.sendMessage(`${log}`, msg, mode, null, null, false, topic)
+    // }
+    res = await this.sendMessage(Helper.TELEGRAM_LOGS[2], msg, mode, null, null, false, topic)
     return res
   }
   public static markdownV2(text: any) {
