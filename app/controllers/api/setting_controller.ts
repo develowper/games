@@ -44,7 +44,7 @@ export default class SettingController {
       settings.first((item: any) => item && item.key == 'blackjack_help')?.value ?? '[]'
     )
     const games = await Room.query()
-      .select(['game', 'page'])
+      .select(['game', 'page', 'type'])
       .distinct('game')
       .where('is_active', true)
 
