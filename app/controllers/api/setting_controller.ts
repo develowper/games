@@ -55,7 +55,7 @@ export default class SettingController {
           return {
             title: i18n.t(`messages.${item.game}`),
             type: item.game,
-            page: item.page.match(/^\/[^/]+/)?.[0] ?? '',
+            page: item.page?.match(/^\/[^/]+/)?.[0] ?? '',
           }
         }),
       ad: Helper.AD,
