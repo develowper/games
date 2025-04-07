@@ -1,0 +1,38 @@
+{
+  "shared": {
+    "fields": {
+      "full_name": "Full name",
+      "first_name": "First name",
+      "username": "Username",
+      "password": "Password",
+      "phone": "Phone number",
+      "amount": "Amount",
+      "card": "Card number",
+      "sheba": "Sheba number",
+      "count": "Count",
+      "role": "Role",
+      "rwp": "Robot win percentage",
+      "": ""
+    },
+    "messages": {
+      "string": "{field} is required",
+      "required": "{field} is required",
+      "unique": "{field} is duplicated",
+      "database.unique": "{field} is duplicated",
+      "fixedLength": "{field} must be {size} characters long",
+      "regex": "{field} is invalid",
+      "card.regex": "Card number must be 16 digits",
+      "sheba.regex": "Sheba number must be 24 digits",
+      "confirmed": "{field} does not match the confirmation",
+      "username.regex": "Username must be at least 5 characters and contain English letters and numbers",
+      "password.regex": "Password must be at least 6 characters and contain English letters and numbers",
+      "minLength": "{field} must be at least {min} characters long",
+      "maxLength": "{field} must be at most {max} characters long",
+      "positive": "{field} must be greater than 0",
+      "min": "{field} must be at least {min}",
+      "max": "{field} must be at most {max}",
+      "fullName.required": "Choose a username for your account",
+      "email": "The email must be valid"
+    }
+  }
+}

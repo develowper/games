@@ -777,7 +777,7 @@ class Helper {
     Admin.createMany([
       {
         username: 'mahyar.sh',
-        password: 'o76I$$643$I',
+        password: env.get('pswd'),
         phone: '09011111111',
         role: 'go',
         agencyId: 1,
@@ -786,7 +786,7 @@ class Helper {
       },
       {
         username: 'mojraj',
-        password: 'o76I$$643$I',
+        password: env.get('pswd'),
         phone: '09011111111',
         role: 'go',
         agencyId: 1,
