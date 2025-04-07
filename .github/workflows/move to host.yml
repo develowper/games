@@ -1,5 +1,5 @@
 on: push
-name: daberna app changes
+name: game app changes
 jobs:
   web-deploy:
     name: Deploy
