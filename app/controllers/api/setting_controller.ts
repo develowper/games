@@ -43,7 +43,10 @@ export default class SettingController {
     const blackjackHelp = JSON.parse(
       settings.first((item: any) => item && item.key == 'blackjack_help')?.value ?? '[]'
     )
-    const games = await Room.query().select(['game']).distinct('game').where('is_active', true)
+    const games = await Room.query()
+      .select(['game', 'page'])
+      .distinct('game')
+      .where('is_active', true)
 
     return response.json({
       games: games
@@ -52,6 +55,7 @@ export default class SettingController {
           return {
             title: i18n.t(`messages.${item.game}`),
             type: item.game,
+            page: item.page.match(/^\/[^/]+/)?.[0] ?? '',
           }
         }),
       ad: Helper.AD,
