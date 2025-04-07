@@ -51,7 +51,7 @@ export default class SettingController {
           type: item.game,
         }
       }),
-      ad:Helper.AD,
+      ad: Helper.AD,
       blackjack_help: blackjackHelp,
       cards: Helper.BLACKJACK.cards,
       coins: Helper.BLACKJACK.coins,
