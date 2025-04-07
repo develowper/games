@@ -13,6 +13,7 @@ export default class SettingController {
 
   async get({ response, request, i18n }: HttpContext) {
     const appVersion = request.input('version') ?? 1
+    const appId = request.input('app_id') ?? 1
     const settings = collect(
       await Setting.query().whereIn('key', [
         'support_links',
@@ -45,12 +46,14 @@ export default class SettingController {
     const games = await Room.query().select(['game']).distinct('game').where('is_active', true)
 
     return response.json({
-      games: games.map((item) => {
-        return {
-          title: i18n.t(`messages.${item.game}`),
-          type: item.game,
-        }
-      }),
+      games: games
+        .filter((i) => (appId == null ? true : appId == i.game))
+        .map((item) => {
+          return {
+            title: i18n.t(`messages.${item.game}`),
+            type: item.game,
+          }
+        }),
       ad: Helper.AD,
       blackjack_help: blackjackHelp,
       cards: Helper.BLACKJACK.cards,
@@ -82,16 +85,7 @@ export default class SettingController {
         email: supportEmail,
         market: Helper.MARKETS,
       },
-      questions: [
-        {
-          q: 'کیف پول شارژ نمی شود',
-          a: 'به دلیل اختلال در سیستم بانکی ممکن است خرید شما با تاخیر انجام شود. لطفا پس از چند دقیقه بر روی دکمه "بروز رسانی" کیف پول که در قسمت "پروفایل" در کنار عدد کیف پول است بزنید تا بروز رسانی شود',
-        },
-        {
-          q: 'رمز عبور خود را فراموش کرده ام',
-          a: 'از حساب خود خارج شوید. در صفحه ورود روی فراموشی رمز کلیک کنید.پس از ورود به ربات تلگرامی بر روی ارسال شماره تماس کلیک کنید. در صورتی که شماره تماس اکانت تلگرام شما موجود باشد از شما درخواست رمز جدید می شود',
-        },
-      ],
+      questions: [],
     })
     // await auth.check()
   }
