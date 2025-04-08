@@ -32,6 +32,13 @@ export default class User extends compose(BaseModel, AuthFinder) {
   public financialInfo?: UserFinancial
   public balance: number
 
+  @computed()
+  public get expiresAtSeconds() {
+    const now = DateTime.now()
+    const diffInSeconds = Math.round(this.expiresAt?.diff(now, 'seconds').seconds ?? 0)
+    return diffInSeconds >= 0 ? diffInSeconds : 0
+  }
+
   public async getUserFinancial() {
     return (await UserFinancial.findBy('user_id', this.id))?.serialize()
   }
@@ -117,6 +124,8 @@ export default class User extends compose(BaseModel, AuthFinder) {
 
   @column.dateTime()
   declare lastWin: DateTime | null
+  @column.dateTime()
+  declare expiresAt: DateTime | null
 
   static accessTokens = DbAccessTokensProvider.forModel(User, { table: 'remember_me_user_tokens' })
 
