@@ -45,7 +45,6 @@ export default class SettingController {
     )
     const games = await Room.query()
       .select(['game', 'page', 'type'])
-      .orderBy('id', 'asc')
       .distinct('game')
       .where('is_active', true)
 
@@ -56,7 +55,7 @@ export default class SettingController {
           return {
             title: i18n.t(`messages.${item.game}`),
             type: item.game,
-            room: item.type,
+            room: item.game == 'dooz' ? 'z5000' : item.game == 'blackjack' ? 'b1' : 'd5000',
             page: item.page?.match(/^\/[^/]+/)?.[0] ?? '',
           }
         }),

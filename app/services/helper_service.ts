@@ -216,7 +216,7 @@ class Helper {
     } as { [key: string]: string },
   }
   public static SUPPORT = {
-    telegram: 'https://t.me/paris_admin1',
+    telegram: 'https://t.me/varta_robot',
   }
 
   public static SOCKET_LINK = `https://${env.get('APP_URL')}` ?? 'http://127.0.0.1:3298'
