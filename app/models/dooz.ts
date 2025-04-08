@@ -65,7 +65,7 @@ export default class Dooz extends BaseModel {
     if (roomPlayers.count() < 2 || realPlayersCount == 0 || (realPlayersCount == 1 && diff > 0))
       return
     const roomSockets = await SocketIo.wsIo?.in(`room-${room.type}`).fetchSockets()
-    // console.log(`room-sockets`, roomSockets.length)
+    console.log(`room-sockets`, roomSockets.length)
 
     const userConnectedIds = roomSockets.map(
       (socket) => socket.handshake.headers['user-id'] ?? socket.handshake.query['user-id']
