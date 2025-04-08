@@ -266,14 +266,14 @@ class Helper {
       native: 'my',
     },
     admob: {
-      app: 'ca-app-pub-4161485899394281~9891888180',
+      key: 'ca-app-pub-4161485899394281~9891888180',
       banner: 'ca-app-pub-4161485899394281/2252237163',
       interstitial: 'ca-app-pub-4161485899394281/9165602635',
       rewarded: 'ca-app-pub-4161485899394281/8626073822',
       native: 'ca-app-pub-4161485899394281/5065332254',
     },
     tapsell: {
-      app: 'jdngkfpbbfgtjifhakplmfgnjnbaaqtamgbqpnnjeoghidndpkjafalepmfhrtbirlcanm',
+      key: 'jdngkfpbbfgtjifhakplmfgnjnbaaqtamgbqpnnjeoghidndpkjafalepmfhrtbirlcanm',
       banner: '67f57032fdbc8028356848d1',
       interstitial: '67f5705fbaa19239e27bd0e0',
       rewarded: '67f5708dfdbc8028356848d2',
