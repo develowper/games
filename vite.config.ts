@@ -50,11 +50,12 @@ export default defineConfig({
     },
   },
   server: {
-    hmr: {
-      clientPort: 5959,
-      // host: "localhost",
-      // protocol: "wss",
-    },
+    // hmr: {
+    //
+    //   clientPort: 9204,
+    //   host: "localhost",
+    //   protocol: "wss",
+    // }
     // hmr: false,
   },
   resolve: {
