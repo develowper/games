@@ -59,13 +59,13 @@ export default class Dooz extends BaseModel {
     const diff =
       updatedAt?.plus({ seconds: room.maxSeconds })?.diff(DateTime.now(), 'seconds').seconds ?? 0
     // console.log('room players', roomPlayers.count())
-    console.log('room user players', roomPlayers.where('user_role', 'us').count())
+    // console.log('room user players', roomPlayers.where('user_role', 'us').count())
     //checks users connected to socket
     // console.log('diff', diff)
     if (roomPlayers.count() < 2 || realPlayersCount == 0 || (realPlayersCount == 1 && diff > 0))
       return
     const roomSockets = await SocketIo.wsIo?.in(`room-${room.type}`).fetchSockets()
-    console.log(`room-sockets`, roomSockets.length)
+    // console.log(`room-sockets`, roomSockets.length)
 
     const userConnectedIds = roomSockets.map(
       (socket) => socket.handshake.headers['user-id'] ?? socket.handshake.query['user-id']
