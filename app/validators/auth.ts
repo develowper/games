@@ -16,8 +16,8 @@ export const usernameValidatorObject = vine
   })
 export const phoneValidatorObject = vine
   .string()
-  .regex(/^09[0-9]+$/)
-  .fixedLength(11)
+  // .regex(/^09[0-9]+$/)
+  // .fixedLength(11)
   .unique(async (db, value, fields) => {
     const match = await db
       .from('users')
