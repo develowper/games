@@ -45,6 +45,7 @@ export default class SettingController {
     )
     const games = await Room.query()
       .select(['game', 'page', 'type'])
+      .orderBy('id', 'asc')
       .distinct('game')
       .where('is_active', true)
 
