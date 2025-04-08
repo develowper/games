@@ -272,6 +272,13 @@ class Helper {
       rewarded: 'ca-app-pub-4161485899394281/8626073822',
       native: 'ca-app-pub-4161485899394281/5065332254',
     },
+    tapsell: {
+      app: 'jdngkfpbbfgtjifhakplmfgnjnbaaqtamgbqpnnjeoghidndpkjafalepmfhrtbirlcanm',
+      banner: '67f57032fdbc8028356848d1',
+      interstitial: '67f5705fbaa19239e27bd0e0',
+      rewarded: '67f5708dfdbc8028356848d2',
+      native: '67f570bcfdbc8028356848d3',
+    },
   }
 
   public static USER_STATUSES = [
