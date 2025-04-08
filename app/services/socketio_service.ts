@@ -126,15 +126,15 @@ export default class SocketIo {
           // logger.info(data)
           console.log(' >---join---< ', `${game}-${data?.id}`)
           if (!data?.id) return
-          const roomSockets = await SocketIo.wsIo?.in(`${game}-${data?.id}`).fetchSockets()
-          roomSockets.forEach((s) => {
-            const userId = s.handshake.headers['user-id'] ?? s.handshake.query['user-id']
-            console.log('before user id in game', userId, this.user?.id)
-            if (userId == this.user.id) {
-              console.log('leave', `${game}-${data?.id}`)
-              s.leave(`${game}-${data?.id}`)
-              // s.disconnect()
-            }
+          // const roomSockets = await SocketIo.wsIo?.in(`${game}-${data?.id}`).fetchSockets()
+          // roomSockets.forEach((s) => {
+          //   const userId = s.handshake.headers['user-id'] ?? s.handshake.query['user-id']
+          //   console.log('before user id in game', userId, this.user?.id)
+          //   if (userId == this.user.id) {
+          //     console.log('leave', `${game}-${data?.id}`)
+          //     s.leave(`${game}-${data?.id}`)
+          //     // s.disconnect()
+          //   }
           })
           socket.join(`${game}-${data?.id}`)
           socket.emit(
