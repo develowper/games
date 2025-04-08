@@ -8,6 +8,7 @@ import TelegramEvent from '#events/telegram_event'
 
 export default class Telegram {
   ///
+  private static topic: any
 
   public static log(to: any, type: string, data: any) {
     TelegramEvent.dispatch(to, type, data)
@@ -121,11 +122,13 @@ export default class Telegram {
         await this.sendMessage(to, msg)
       } else {
         // Log to admins or fallback logic
+        this.topic = null
         await this.logAdmins(msg, null, this.topic)
         return msg
       }
     } catch (e) {
       try {
+        this.topic = null
         await this.logAdmins(
           JSON.stringify([e.message, e.lineNumber, e.fileName]),
           null,
