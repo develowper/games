@@ -7,7 +7,7 @@ const DabernaController = (await import('#controllers/admin/daberna_controller')
 import { middleware } from '#start/kernel'
 import Daberna from '#models/daberna'
 import Room from '#models/room'
-import Helper, { __, asPrice, replace, startsWith } from '#services/helper_service'
+import Helper, { __, asPrice, replace, shuffle, startsWith } from '#services/helper_service'
 import Transaction from '#models/transaction'
 import Setting from '../../app/models/setting.js'
 import User from '../../app/models/user.js'
@@ -21,6 +21,12 @@ import Telegram from '#services/telegram_service'
 import collect from 'collect.js'
 export default function () {
   router.get('test', async () => {
+    return shuffle(Helper.BLACKJACK.cards)
+      .filter((i) => i == null)
+      .pop()
+    return shuffle(
+      Helper.BLACKJACK.cards.filter((i: any) => !['k10', 'g3', 'kj', 'd7'].includes(i)) ?? []
+    ).pop()
     return
     return await Setting.create({
       key: 'blackjack_help',
