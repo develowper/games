@@ -60,6 +60,16 @@ export default class UserController {
           return response.send({ status: 'success', message: __('edited_successfully') })
         }
         break
+      case 'update_expire':
+        user.expiresAt = DateTime.now().plus({ minute: 5 })
+        await user.save()
+        return response.send({
+          status: 'success',
+          message: __('edited_successfully'),
+          expires_seconds: user.expiresAtSeconds(),
+        })
+
+        break
     }
   }
 
