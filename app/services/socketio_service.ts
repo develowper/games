@@ -135,7 +135,7 @@ export default class SocketIo {
           //     s.leave(`${game}-${data?.id}`)
           //     // s.disconnect()
           //   }
-          })
+          // })
           socket.join(`${game}-${data?.id}`)
           socket.emit(
             `joined-${game}`,
