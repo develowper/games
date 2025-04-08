@@ -66,7 +66,7 @@ export default class UserController {
         return response.send({
           status: 'success',
           message: __('edited_successfully'),
-          expires_seconds: user.expiresAtSeconds(),
+          expires_seconds: user.expiresAtSeconds,
         })
 
         break
