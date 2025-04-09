@@ -263,7 +263,6 @@ export default class TransactionsController {
             status: 'success',
             message: desc,
             ...res,
-            prize: winLabel,
             index: randomIndex,
           })
         }
