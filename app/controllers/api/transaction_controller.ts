@@ -224,21 +224,51 @@ export default class TransactionsController {
         if (appId == 'dooz') {
           winLabel = winWheel.labels[randomIndex].value
           const t = `${winLabel}`.split('-')
-
+          const res: any = {}
           if (t[0] == 'p') {
             const p = Number.parseInt(t[1]) ?? 0
             if (p > 0) {
               user.score = (user.score ?? 0) + p
               await user.save()
               winLabel = p
+              res.score = winLabel
             }
           } else if (t[0] == 't') {
             const tt = Number.parseInt(t[1]) ?? 0
             user.expiresAt = DateTime.now().plus({ hours: tt })
             await user.save()
-            winLabel = tt
+            winLabel = user.expiresAtSeconds
+            res.seconds = winLabel
           }
+          const msg = __('no_prize_unfortunately')
+          desc = __('winwheel_prize_*', { item: winLabel })
+
+          const transaction = await Transaction.create({
+            agencyId: user?.agencyId,
+            title: desc,
+            type: type,
+            gateway: 'wallet',
+            fromType: 'agency',
+            fromId: user?.agencyId,
+            toType: 'user',
+            toId: user?.id,
+            amount: winLabel,
+            payId: `${orderId}`,
+            appVersion: appVersion,
+            info: null,
+            payedAt: now,
+          })
+
+          return response.json({
+            status: 'success',
+            message: desc,
+            ...res,
+            prize: winLabel,
+            index: randomIndex,
+          })
         }
+        ///
+        let msg = __('no_prize_unfortunately')
 
         desc = __('winwheel_prize_*', { item: asPrice(`${winLabel}`) })
 
@@ -257,8 +287,8 @@ export default class TransactionsController {
           info: null,
           payedAt: now,
         })
-        let msg = __('no_prize_unfortunately')
-        if (winLabel > 0) {
+
+        if (winLabel > 0 && appId == 'daberna') {
           const financial = await UserFinancial.firstOrNew({
             userId: transaction.toId,
           })

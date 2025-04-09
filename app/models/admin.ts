@@ -89,6 +89,9 @@ export default class Admin extends compose(BaseModel, AuthFinder) {
     inertiaError(errIncorrect)
   }
   public expiresAt
+  public get expiresAtSeconds() {
+    return 0
+  }
   public score
   public inviterId
   @column({ isPrimary: true })
