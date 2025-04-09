@@ -241,7 +241,7 @@ export default class TransactionsController {
             res.seconds = winLabel
           }
           const msg = __('no_prize_unfortunately')
-          desc = __('winwheel_prize_*', { item: winLabel })
+          desc = __('winwheel_prize_*', { item: winWheel.labels[randomIndex].name })
 
           const transaction = await Transaction.create({
             agencyId: user?.agencyId,
