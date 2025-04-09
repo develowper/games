@@ -30,6 +30,7 @@ export default class TransactionsController {
     const orderId = Date.now()
     const fromCard = request.input('card')
     const toCard = request.input('to_card')
+    const appId = request.input('app_id')
     const now = DateTime.now()
     let desc
     const gapTransactionMinutes = await getSettings('cardtocard_minute_limit')
@@ -194,22 +195,22 @@ export default class TransactionsController {
             message: __('try_*_*_later', { item1: `${hour}`, item2: `${min}` }),
           })
         }
-
-        const played = await Daberna.query()
-          .where('boards', 'like', `%id":${fromId},%`)
-          .count('* as total')
-        const playedCount = played[0]?.$extras.total ?? 0
-        if (playedCount < Helper.PLAY_COUNT_FOR_ACTIVE_WINWHEEL)
-          return response.status(Helper.ERROR_STATUS).json({
-            status: 'danger',
-            message: __('you_most_play_*_for_winwheel_yours_*', {
-              item1: Helper.PLAY_COUNT_FOR_ACTIVE_WINWHEEL,
-              item2: playedCount,
-            }),
-          })
-
+        if (appId == 'daberna') {
+          const played = await Daberna.query()
+            .where('boards', 'like', `%id":${fromId},%`)
+            .count('* as total')
+          const playedCount = played[0]?.$extras.total ?? 0
+          if (playedCount < Helper.PLAY_COUNT_FOR_ACTIVE_WINWHEEL)
+            return response.status(Helper.ERROR_STATUS).json({
+              status: 'danger',
+              message: __('you_most_play_*_for_winwheel_yours_*', {
+                item1: Helper.PLAY_COUNT_FOR_ACTIVE_WINWHEEL,
+                item2: playedCount,
+              }),
+            })
+        }
         const randomIndex = Math.floor(Math.random() * winWheel.labels.length)
-        const winLabel = Number.parseInt(`${winWheel.labels[randomIndex].value}`)
+        let winLabel = Number.parseInt(`${winWheel.labels[randomIndex].value}`)
 
         // rotate again
         if (winLabel == -1)
@@ -219,6 +220,26 @@ export default class TransactionsController {
             prize: winLabel,
             index: randomIndex,
           })
+
+        if (appId == 'dooz') {
+          winLabel = winWheel.labels[randomIndex].value
+          const t = `${winLabel}`.split('-')
+
+          if (t[0] == 'p') {
+            const p = Number.parseInt(t[1]) ?? 0
+            if (p > 0) {
+              user.score = (user.score ?? 0) + p
+              await user.save()
+              winLabel = p
+            }
+          } else if (t[0] == 't') {
+            const tt = Number.parseInt(t[1]) ?? 0
+            user.expiresAt = DateTime.now().plus({ hours: tt })
+            await user.save()
+            winLabel = tt
+          }
+        }
+
         desc = __('winwheel_prize_*', { item: asPrice(`${winLabel}`) })
 
         const transaction = await Transaction.create({
