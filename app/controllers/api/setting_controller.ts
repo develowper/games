@@ -18,6 +18,7 @@ export default class SettingController {
       await Setting.query().whereIn('key', [
         'support_links',
         'policy',
+        `policy_${appId}`,
         'card_to_card',
         'min_charge',
         'winwheel',
