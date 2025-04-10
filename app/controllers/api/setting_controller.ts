@@ -35,7 +35,7 @@ export default class SettingController {
     const telegramBot = settings.first((item: any) => item && item.key == 'telegram_bot')?.value
     const supportTelegram = settings.first((item: any) => item && item.key == 'support_telegram')
     const supportEmail = settings.first((item: any) => item && item.key == 'support_email')
-    const policy = settings.first((item: any) => item && item.key == 'policy')?.value
+    const policy = settings.first((item: any) => item && item.key == `policy_${appId}`)?.value
     const winWheel = settings.first((item: any) => item && item.key == 'winwheel')
     const supportLinks = JSON.parse(
       settings.first((item: any) => item && item.key == 'support_links')?.value ?? '[]'
