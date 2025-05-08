@@ -92,7 +92,7 @@ export default class UserController {
       agencyId: 1,
       agencyLevel: 0,
       isActive: true,
-      expiresAt: DateTime.now().plus({ hours: 1000 }),
+      // expiresAt: DateTime.now().plus({ hours: 1000 }),
     })
     const tokenData = await User.accessTokens.create(user)
     const financial = await UserFinancial.create({ userId: user.id, balance: 0 })
