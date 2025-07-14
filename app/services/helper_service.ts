@@ -263,7 +263,7 @@ class Helper {
   ]
   public static AD = {
     types: {
-      native: 'admob', //my admob
+      native: 'tapsell', //my admob tapsell
       rewarded: 'admob',
       interstitial: 'admob',
       banner: 'admob',
